@@ -1,0 +1,31 @@
+{
+  "name": "arraylist.js",
+  "version": "1.0.0",
+  "description": "A simple combination of some map reduce functions and key value operations",
+  "main": "arraylist.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thiagomata/mapreducekv.js.git"
+  },
+  "keywords": [
+    "map",
+    "reduce",
+    "key",
+    "value"
+  ],
+  "author": "Thiago Mata <thiago.henrique.mata@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thiagomata/mapreducekv.js/issues"
+  },
+  "homepage": "https://github.com/thiagomata/mapreducekv.js#readme",
+  "dependencies": {},
+  "testRegex": ".*-test\\.js$",
+  "testEnvironment": "nodccone",
+  "devDependencies": {
+    "jest": "^22.4.2"
+  }
+}

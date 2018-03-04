@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for mapreducekv.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="prettify.css" />
+    <link rel="stylesheet" href="base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="index.html">All files</a> mapreducekv.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">14.93% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>10/67</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25.64% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>10/39</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.16% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>5/38</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">13.33% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>8/60</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150</td><td class="line-coverage quiet"><span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module.exports = class MapReduceArray extends Array {
+&nbsp;
+  isEmpty() {
+    return ( this.length === 0 );
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ta</span>ke(n) {
+<span class="cstat-no" title="statement not covered" >    return this.slice(0, n);</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  he</span>ad(n = <span class="branch-0 cbranch-no" title="branch not covered" >10)</span> {
+<span class="cstat-no" title="statement not covered" >    return this.take(n);</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ta</span>il(n = <span class="branch-0 cbranch-no" title="branch not covered" >10)</span> {
+<span class="cstat-no" title="statement not covered" >    return this.slice(this.length - n);</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ha</span>s( f ) {
+<span class="cstat-no" title="statement not covered" >    return this.findIndex( f ) &gt; -1;</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  un</span>ique() {
+<span class="cstat-no" title="statement not covered" >    if (this.isEmpty()) {</span>
+<span class="cstat-no" title="statement not covered" >      return this;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return this.</span>
+      map( <span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >[x] </span>).
+      reduce( <span class="fstat-no" title="function not covered" >(x</span>, y) =&gt; <span class="cstat-no" title="statement not covered" >x.concat(</span>
+        y.filter( <span class="fstat-no" title="function not covered" >y1</span> =&gt; <span class="cstat-no" title="statement not covered" >x.indexOf(y1) == -1 </span>)
+      ),
+      new MapReduceArray()
+    );
+  }
+&nbsp;
+  max( emptyValue = null ) {
+    if( this.isEmpty() ) {
+      return emptyValue;
+    }
+    return this.reduce((x, y) =&gt; (x &gt; y ? x : y));
+  }
+&nbsp;
+  min( emptyValue = null ) {
+    if( this.isEmpty() ) {
+      return emptyValue;
+    }
+    return this.reduce((x, y) =&gt; (x &lt; y ? x : y));
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  su</span>m( emptyValue = <span class="branch-0 cbranch-no" title="branch not covered" >null </span>) {
+<span class="cstat-no" title="statement not covered" >    if( this.isEmpty() ) {</span>
+<span class="cstat-no" title="statement not covered" >      return emptyValue;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return this.reduce(<span class="fstat-no" title="function not covered" >(x</span>, y) =&gt; <span class="cstat-no" title="statement not covered" >x + y)</span>;</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  av</span>g( emptyValue = <span class="branch-0 cbranch-no" title="branch not covered" >null </span>) {
+<span class="cstat-no" title="statement not covered" >    if( this.isEmpty() ) {</span>
+<span class="cstat-no" title="statement not covered" >      return emptyValue;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return this.sum() / this.length;</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  no</span>rmalize( emptyValue = <span class="branch-0 cbranch-no" title="branch not covered" >[] </span>) {
+<span class="cstat-no" title="statement not covered" >    if( this.isEmpty() ) {</span>
+<span class="cstat-no" title="statement not covered" >      return MapReduceArray.cast( emptyValue );</span>
+    }
+    var total = <span class="cstat-no" title="statement not covered" >this.sum();</span>
+<span class="cstat-no" title="statement not covered" >    return this.map(<span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x / total)</span>;</span>
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ac</span>cumulate() {
+<span class="cstat-no" title="statement not covered" >    return this.</span>
+    map( <span class="fstat-no" title="function not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >MapReduceArray.cast(x) </span>).
+    reduce(
+<span class="fstat-no" title="function not covered" >      (x</span>, y) =&gt; {
+        var s = <span class="cstat-no" title="statement not covered" >x.max();</span>
+        var yAcc = <span class="cstat-no" title="statement not covered" >y.map(<span class="fstat-no" title="function not covered" >v </span>=&gt; <span class="cstat-no" title="statement not covered" >v + s)</span>;</span>
+<span class="cstat-no" title="statement not covered" >        return x.concat(yAcc);</span>
+      },
+      new MapReduceArray()
+    )
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ag</span>gregate(
+    otherArray,
+    aggregateFunction    = <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >(x</span>, y) =&gt; <span class="cstat-no" title="statement not covered" >x + y,</span></span>
+    onlyOneFoundFunction = <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >x </span>=&gt; <span class="cstat-no" title="statement not covered" >x</span></span>
+  ) {
+    const size = <span class="cstat-no" title="statement not covered" >Math.max( this.length, otherArray.length );</span>
+    const self = <span class="cstat-no" title="statement not covered" >this;</span>
+<span class="cstat-no" title="statement not covered" >    return MapReduceArray.</span>
+    range( 0, size, 1 ).
+    map(
+<span class="fstat-no" title="function not covered" >      (k</span>) =&gt; {
+<span class="cstat-no" title="statement not covered" >        if (k &gt;= otherArray.length) {</span>
+<span class="cstat-no" title="statement not covered" >          return onlyOneFoundFunction( self[ k ] );</span>
+        }
+<span class="cstat-no" title="statement not covered" >        if (k &gt;= self.length) {</span>
+<span class="cstat-no" title="statement not covered" >          return onlyOneFoundFunction( otherArray[ k ] );</span>
+        }
+<span class="cstat-no" title="statement not covered" >        return aggregateFunction(self[k], otherArray[ k ]);</span>
+      }
+    )
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  ov</span>erlaps(
+    ys         = <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >(a</span>,b) =&gt; <span class="cstat-no" title="statement not covered" >a == b,</span></span>
+    fSearch    = <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >(a</span>,b) =&gt; <span class="cstat-no" title="statement not covered" >a == b,</span></span>
+    fGet       = <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >(a</span>) =&gt; <span class="cstat-no" title="statement not covered" >a,</span></span>
+    valueEmpty = <span class="branch-0 cbranch-no" title="branch not covered" >null</span>
+  ) {
+<span class="cstat-no" title="statement not covered" >    return this.map(</span>
+<span class="fstat-no" title="function not covered" >      ( </span>xv ) =&gt; {
+        const p = <span class="cstat-no" title="statement not covered" >ys.findIndex( <span class="fstat-no" title="function not covered" >( </span>yv ) =&gt; <span class="cstat-no" title="statement not covered" >fSearch( xv, yv ) </span>);</span>
+<span class="cstat-no" title="statement not covered" >        if( p === -1 ) <span class="cstat-no" title="statement not covered" >return valueEmpty;</span></span>
+<span class="cstat-no" title="statement not covered" >        return fGet( ys[ p ] )</span>
+      }
+    )
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  er</span>rorComparing( otherArray ) {
+<span class="cstat-no" title="statement not covered" >    return this.</span>
+    aggregate(
+      otherArray,
+<span class="fstat-no" title="function not covered" >      (x</span>, y) =&gt; <span class="cstat-no" title="statement not covered" >Math.round(x - y)</span>
+    );
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  fl</span>at() {
+<span class="cstat-no" title="statement not covered" >    return this.map(</span>
+<span class="fstat-no" title="function not covered" >      v </span>=&gt; <span class="cstat-no" title="statement not covered" >MapReduceArray(v)</span>
+    ).
+    reduce(
+<span class="fstat-no" title="function not covered" >      (a</span>,b) =&gt; <span class="cstat-no" title="statement not covered" >a.concat(b),</span>
+      new MapReduceArray()
+    )
+  }
+&nbsp;
+<span class="fstat-no" title="function not covered" >  st</span>atic cast( v ) {
+<span class="cstat-no" title="statement not covered" >    if( v.constructor ===  MapReduceArray ) {</span>
+<span class="cstat-no" title="statement not covered" >      return v;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    if( v.constructor === Array ) {</span>
+<span class="cstat-no" title="statement not covered" >      return new MapReduceArray().concat(v);</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return new MapReduceArray().concat([v]);</span>
+  }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun Mar 04 2018 02:15:12 GMT+1300 (NZDT)
+</div>
+</div>
+<script src="prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="sorter.js"></script>
+</body>
+</html>
