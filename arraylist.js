@@ -85,6 +85,20 @@ module.exports = class ArrayList extends Array {
     return a === b;
   }
 
+  static range( a, b = 0, step = 1 ) {
+    var list = new ArrayList();
+    if( a < b ) {
+        step = Math.abs( step );
+    } else {
+        step = Math.abs( step ) * -1;
+    }
+
+    for( var i = a; i != b; i += step ) {
+        list.push(i);
+    }
+    return list;
+  }
+
   parentConcat( data ) {
     return super.concat( data );
   }
