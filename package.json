@@ -1,14 +1,14 @@
 {
-  "name": "arraylist.js",
+  "name": "arraymore.js",
   "version": "1.0.0",
   "description": "A simple combination of some map reduce functions and key value operations",
-  "main": "arraylist.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thiagomata/mapreducekv.js.git"
+    "url": "git+https://github.com/thiagomata/arraymore.js.git"
   },
   "keywords": [
     "map",
@@ -19,9 +19,9 @@
   "author": "Thiago Mata <thiago.henrique.mata@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/thiagomata/mapreducekv.js/issues"
+    "url": "https://github.com/thiagomata/arraymore.js/issues"
   },
-  "homepage": "https://github.com/thiagomata/mapreducekv.js#readme",
+  "homepage": "https://github.com/thiagomata/arraymore.js#readme",
   "dependencies": {},
   "testRegex": ".*-test\\.js$",
   "testEnvironment": "nodccone",
