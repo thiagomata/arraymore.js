@@ -8,11 +8,11 @@ This class extends the Javascript Array. So, all the previous features are still
 
 ## Basic methods
 
-This new class provides some new expected methods like sum(), max(), min(), equals(), append(), prepend() and copy(). 
+This new class provides some new expected methods like head(), tail(), equals(), append(), prepend() and copy(). 
 
 ## Mathematic
 
-Also, it provides some more mathematical methods like range(), normalize(), derivate(), integrate(c), sqrt(), pow(x), times(x), plus(x) that can make more easy to write and read some mathematical transformations.
+Also, it provides some mathematical methods like sum(), max(), min(), range(), normalize(), derivate(), integrate(c), sqrt(), pow(x), times(x), plus(x) that can make more easy to write and read some mathematical transformations.
 
 ## List combinations
 
