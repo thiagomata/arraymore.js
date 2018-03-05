@@ -1,0 +1,2 @@
+# remove coverage report from the package
+coverage/

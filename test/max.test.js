@@ -1,4 +1,4 @@
-const List = require('../arraylist');
+const List = require('../index');
 describe('max', () => {
 
   it('should take the max of two numbers', () => {

@@ -1,4 +1,4 @@
-const List = require('../arraylist');
+const List = require('../index');
 describe('head', () => {
 
   it('should head the first element of two numbers', () => {
@@ -14,7 +14,12 @@ describe('head', () => {
   });
 
   it('should head the last elements of the List', () => {
-    expect(new List(1, 2, 3, 4, 5, 6).head(-2)).toEqual(new List(5, 6));
+    expect(new List(1, 2, 3, 4, 5, 6).head(-2)).toEqual(new List(3, 4, 5, 6));
+  });
+
+  it('should head negative more positive equals full list', () => {
+    let l = new List(1, 2, 3, 4, 5, 6);
+    expect( l.head(5).concat( l.head(-5) ) ).toEqual(l);
   });
 
   it('should head letters', () => {

@@ -1,4 +1,4 @@
-const List = require('../arraylist');
+const List = require('../index');
 describe('tail', () => {
 
   it('should tail the last element of two numbers', () => {
@@ -14,7 +14,12 @@ describe('tail', () => {
   });
 
   it('should tail return the head elements of the List', () => {
-    expect(new List(1, 2, 3, 4, 5, 6).tail(-2)).toEqual(new List(1,2));
+    expect(new List(1, 2, 3, 4, 5, 6).tail(-2)).toEqual(new List(1,2,3,4));
+  });
+
+  it('should tail  negative more positive equals full list', () => {
+    let l = new List(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+    expect( l.tail(-5).concat( l.tail(5) ) ).toEqual(l);
   });
 
   it('should tail letters', () => {

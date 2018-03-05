@@ -1,4 +1,4 @@
-const List = require('../arraylist');
+const List = require('../index');
 describe('min', () => {
 
   it('should take the min of two numbers', () => {

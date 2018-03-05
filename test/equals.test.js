@@ -1,8 +1,16 @@
-const List = require('../arraylist');
+const List = require('../index');
 describe('equals', () => {
 
   it('should equals be true to the empty list', () => {
     expect(new List().equals([])).toEqual(true);
+  });
+
+  it('should equals be false to [1] and [2]', () => {
+    expect(new List([1]).equals([2])).toEqual(false);
+  });
+
+  it('should equals be false to [1] and [2]', () => {
+    expect(new List([2]).equals([1])).toEqual(false);
   });
 
   it('should equals be true to the no value list', () => {
@@ -21,8 +29,16 @@ describe('equals', () => {
     expect(new List(1, 2, 3).equals([1, 2, 3, 4])).toEqual(false);
   });
 
+  it('should not be equals when a contains b values', () => {
+    expect(new List(1, 2, 3, 3).equals([1, 2, 3, 4])).toEqual(false);
+  });
+
   it('should not be equals when b contains a', () => {
     expect(new List(1, 2, 3, 4).equals([1, 2, 3])).toEqual(false);
+  });
+
+  it('should not be equals when b contains a values', () => {
+    expect(new List(1, 2, 3, 4).equals([1, 2, 3, 3])).toEqual(false);
   });
 
   it('should not be equals when compare list to value', () => {
@@ -45,7 +61,7 @@ describe('equals', () => {
     expect(new List(1, 2, 3).equals([2,1,3],false)).toEqual(false);
   });
 
-  it('should equals not ignoring order be true to same list', () => {
+  it('should equals not ignoring order be true to same list in the same order', () => {
     expect(new List(1, 2, 3).equals([1, 2, 3],false)).toEqual(true);
   });
 

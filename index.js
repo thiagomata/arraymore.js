@@ -1,32 +1,28 @@
-module.exports = class ArrayList extends Array {
+module.exports = class ArrayMore extends Array {
 
   static cast( v, castNoValueToNull = true ) {
-    if( v === undefined || v === null || v === NaN ) {
-      return new ArrayList().push( castNoValueToNull ? null : v );
+    if( v === undefined || v === null || Number.isNaN( v ) ) {
+      return new ArrayMore().append( castNoValueToNull ? null : v );
     }
-    if( v.constructor ===  ArrayList ) {
+    if( v.constructor ===  ArrayMore ) {
       return v;
     }
     if( v.constructor === Array ) {
       const isEmpty = v.every( e => e === undefined );
       if( ! isEmpty ) {
-        return new ArrayList().parentConcat(v);
+        return new ArrayMore().parentConcat(v);
       }
-      var result = new ArrayList();
-      for( var i = 0; i < v.length; i++ ) {
-        result.push( undefined );
-      }
-      return result;
+      return new ArrayMore( v.length ).fill( undefined );
     }
-    return new ArrayList().parentConcat([v]);
+    return new ArrayMore().parentConcat([v]);
   }
 
   static  comparable( a, b, castSimilar = false, anyOrder = true ) {
     // console.log("comparable",a,b);
     const listA = (
         () => {
-          if ( a.constructor === Array || a.constructor === ArrayList ) {
-            return ArrayList.cast(a);
+          if ( a.constructor === Array || a.constructor === ArrayMore ) {
+            return ArrayMore.cast(a);
           }
           return null;
         }
@@ -35,8 +31,8 @@ module.exports = class ArrayList extends Array {
 
     const listB = (
       () => {
-        if ( b.constructor === Array || b.constructor === ArrayList  ) {
-          return ArrayList.cast(b);
+        if ( b.constructor === Array || b.constructor === ArrayMore  ) {
+          return ArrayMore.cast(b);
         }
         return null;
       }
@@ -59,8 +55,8 @@ module.exports = class ArrayList extends Array {
 
     if( listA !== null || listB !== null ) {
       // console.log("similar comparable");
-      return ArrayList.cast(a).listComparable(
-        ArrayList.cast(b),
+      return ArrayMore.cast(a).listComparable(
+        ArrayMore.cast(b),
         castSimilar,
         anyOrder
       );
@@ -86,15 +82,17 @@ module.exports = class ArrayList extends Array {
   }
 
   static range( a, b = 0, step = 1 ) {
-    var list = new ArrayList();
+    var list = new ArrayMore();
     if( a < b ) {
-        step = Math.abs( step );
+      step = Math.abs( step );
+      for( var i = a; i < b; i += step ) {
+          list.push(i);
+      }
     } else {
-        step = Math.abs( step ) * -1;
-    }
-
-    for( var i = a; i != b; i += step ) {
-        list.push(i);
+      step = Math.abs( step ) * -1;
+      for( var i = a; i > b; i += step ) {
+          list.push(i);
+      }
     }
     return list;
   }
@@ -108,58 +106,67 @@ module.exports = class ArrayList extends Array {
   }
 
   /*
-   * When we expends the Array the concat method did not behaves as expected
-   * So, we have to make a bugfix over the push of empty value arrays
+   * When we extends the Array the concat method did not behaves as expected.
+   * So, we have to make a ugly bugfix over the push of empty value arrays
    */
   concat( data ) {
-    const otherList = ArrayList.cast( data );
+    const otherList = ArrayMore.cast( data );
     if( ! otherList.isEmptyValues() ) {
       return this.copy().parentConcat( otherList );
     }
-    var copy = this.copy();
-    for( var i = 0; i < otherList.length; i++ ) {
-      copy.push( undefined );
-    }
-    return copy;
+    return copy = this.copy().concat(
+      otherList.fill( undefined )
+    );
   }
 
   isEmptyValues() {
     return this.every( v => v == undefined );
   }
 
-  isNull() {
-    return this.every( v => v == null );
+  isNullValues() {
+    if( this.length === 0 ) {
+      return true;
+    }
+    if( this.isUndefinedValues() ) {
+      return false;
+    }
+    return this.every( v => v === null );
+  }
+
+  isUndefinedValues() {
+    return this.every( v => v === undefined );
   }
 
   listComparable( otherList, castSimilar = false, anyOrder = true ) {
-    // console.log("list comparable inside");
     const thisList = this;
     if( otherList.length != this.length ) {
-      // console.log("diff size");
+      // console.log("otherList.length", otherList.length );
+      // console.log("this.length", this.length );
+      // console.log("diff length");
       return false;
     }
 
     if( this.isEmptyValues() || otherList.isEmptyValues() ) {
-      // console.log("comparing empty values");
+      // console.log("diff empty values");
       return this.isEmptyValues === otherList.isEmptyValues;
     }
 
     if( ! anyOrder ) {
-      // console.log("order comparable");
+      // console.log("test in order");
       return this.every(
         ( element, key ) => {
-          return ArrayList.comparable( element, otherList[ key ] );
+          // console.log("call comparable");
+          return ArrayMore.comparable( element, otherList[ key ] );
         }
       )
     }
-    // console.log("any order comparable");
 
     if( ! otherList.
       every(
         otherElement =>  thisList.some(
           thisElement => {
             // console.log("in the loop");
-            return ArrayList.comparable(
+            return ArrayMore.comparable(
               thisElement,
               otherElement,
               castSimilar,
@@ -169,7 +176,7 @@ module.exports = class ArrayList extends Array {
         )
       )
     ) {
-      // console.log("fail other find this ");
+      // console.log("other => this");
       return false;
     }
     if( ! thisList.
@@ -177,7 +184,7 @@ module.exports = class ArrayList extends Array {
         thisElement =>  otherList.some(
           otherElement => {
             // console.log("in the loop");
-            return ArrayList.comparable(
+            return ArrayMore.comparable(
               otherElement,
               thisElement,
               castSimilar,
@@ -187,18 +194,17 @@ module.exports = class ArrayList extends Array {
         )
       )
     ) {
-      // console.log("fail this find other ");
       return false;
     }
     return true;
   }
 
   equals( other, anyOrder = true ) {
-    return ArrayList.comparable( this, other, false, anyOrder );
+    return ArrayMore.comparable( this, other, false, anyOrder );
   }
 
   similar( other, anyOrder = true ) {
-    return ArrayList.comparable( this, other, true, anyOrder );
+    return ArrayMore.comparable( this, other, true, anyOrder );
   }
 
   isEmpty() {
@@ -206,7 +212,9 @@ module.exports = class ArrayList extends Array {
   }
 
   take(n) {
-    if( n < 0 ) return this.tail( n * -1 );
+    if( n < 0 ) {
+      return this.slice( n * -1 );
+    }
     return this.slice(0, n);
   }
 
@@ -215,8 +223,20 @@ module.exports = class ArrayList extends Array {
   }
 
   tail(n = 10) {
-    if( n < 0 ) return this.head( n * -1 );
+    if( n < 0 ) {
+      return this.slice( 0, this.length - ( n * -1 ) );
+    }
     return this.slice(this.length - n);
+  }
+
+  append( v ) {
+    var copy = this.copy();
+    copy.push( v );
+    return copy;
+  }
+
+  prepend( v ) {
+    return ArrayMore.cast(v).concat( this );
   }
 
   has( f ) {
@@ -232,7 +252,7 @@ module.exports = class ArrayList extends Array {
       reduce( (x, y) => x.concat(
         y.filter( y1 => x.indexOf(y1) == -1 )
       ),
-      new ArrayList()
+      new ArrayMore()
     );
   }
 
@@ -266,23 +286,49 @@ module.exports = class ArrayList extends Array {
 
   normalize( emptyValue = [] ) {
     if( this.isEmpty() ) {
-      return ArrayList.cast( emptyValue );
+      return ArrayMore.cast( emptyValue );
     }
     var total = this.sum();
     return this.map(x => x / total);
   }
 
-  accumulate() {
+  accumulate( c = 0 ) {
     return this.
-    map( x => ArrayList.cast(x) ).
+    map( x => ArrayMore.cast(x) ).
     reduce(
       (x, y) => {
-        var s = x.max();
+        var s = x.last();
         var yAcc = y.map(v => v + s);
         return x.concat(yAcc);
       },
-      new ArrayList()
+      ArrayMore.cast( c )
     )
+  }
+
+  integrate( c = 0 ) {
+    return this.accumulate( c ).head(-1);
+  }
+
+  last() {
+    return this[ this.length - 1 ];
+  }
+
+  first() {
+    return this[0];
+  }
+
+  derivate() {
+    return this.
+    reduce(
+      (x, y) => {
+        return x.concat(
+          ArrayMore.cast(
+            y - x.sum()
+          )
+        )
+      },
+      ArrayMore.cast( 0 )
+    ).head(-1)
   }
 
   aggregate(
@@ -292,7 +338,7 @@ module.exports = class ArrayList extends Array {
   ) {
     const size = Math.max( this.length, otherArray.length );
     const self = this;
-    return ArrayList.
+    return ArrayMore.
     range( 0, size, 1 ).
     map(
       (k) => {
@@ -322,21 +368,62 @@ module.exports = class ArrayList extends Array {
     )
   }
 
-  errorComparing( otherArray ) {
+  sqrt() {
+      return this.map( x => Math.sqrt( x ) )
+  }
+
+  round() {
+      return this.map( x => Math.round( x ) )
+  }
+
+  abs() {
+      return this.map( x => Math.abs( x ) )
+  }
+
+  plus( v ) {
+      return this.map( x => x + v )
+  }
+
+  more( v ) {
+    return this.plus( v );
+  }
+
+  times( v ) {
+      return this.map( x => x * v )
+  }
+
+  squared() {
+    return this.pow(2);
+  }
+
+  pow( value = 2 ) {
+    return this.map( x => Math.pow( x, value ))
+  }
+
+  diff( otherArray ) {
     return this.
     aggregate(
       otherArray,
-      (x, y) => Math.round(x - y)
+      (x, y) => x - y,
+      (v) => v
+    );
+  }
+  errorRate( otherArray ) {
+    return this.
+    aggregate(
+      otherArray,
+      (x, y) => Math.pow(x - y, 2),
+      (v) => v * v
     );
   }
 
   flat() {
     return this.map(
-      v => ArrayList(v)
+      v => ArrayMore(v)
     ).
     reduce(
       (a,b) => a.concat(b),
-      new ArrayList()
+      new ArrayMore()
     )
   }
 }
