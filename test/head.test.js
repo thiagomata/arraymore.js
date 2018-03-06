@@ -5,7 +5,7 @@ describe('head', () => {
     expect(new List(1, 2).head(1)).toEqual(List.cast([1]));
   });
 
-  it('should head the as string element of two numbers', () => {
+  it('should head accepts string value', () => {
     expect(new List(1, 2).head('1')).toEqual(List.cast([1]));
   });
 
@@ -32,5 +32,9 @@ describe('head', () => {
 
   it('should head -100 of empty return empty List', () => {
     expect(new List().head(-100)).toEqual(new List());
+  });
+
+  it('should head return the first 10 by default', () => {
+      expect(List.range(1,20).head()).toEqual(List.range(1,11));
   });
 });

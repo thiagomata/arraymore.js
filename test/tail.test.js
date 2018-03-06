@@ -33,4 +33,9 @@ describe('tail', () => {
   it('should tail -100 of empty return empty List', () => {
     expect(new List().tail(-100)).toEqual(new List());
   });
+
+  it('should tail return the last 10 by default', () => {
+      expect(List.range(1,21).tail()).toEqual(List.range(11,21));
+  });
+
 });

@@ -1,6 +1,6 @@
 {
   "name": "arraymore.js",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "A simple combination of some map reduce functions and key value operations",
   "main": "index.js",
   "scripts": {
