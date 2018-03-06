@@ -36,5 +36,12 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
 ```javascript
     const List = require("arraymore.js")
-    new List(1,5,3,6,3,8,2,3,7).normalize().sqrt().derivate().times(100).integrate().avg()
+    new List(1,5,3,6,3,8,2,3,7).
+        normalize().
+        sqrt().
+        derivate().
+        times(100).
+        sort().
+        head(5).
+        integrate()
 ```
