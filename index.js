@@ -425,11 +425,11 @@ module.exports = class ArrayMore extends Array {
     return this.plus( v, emptyValue );
   }
 
-  times( v ) {
+  times( value = 1, emptyValue = null ) {
     return this.rotate( value, emptyValue, (x,y) => x * y )
   }
 
-  div( v ) {
+  div( value = 1, emptyValue = null ) {
     return this.rotate( value, emptyValue, (x,y) => x / y )
   }
 
