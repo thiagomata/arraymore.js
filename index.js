@@ -81,7 +81,11 @@ module.exports = class ArrayMore extends Array {
     return a === b;
   }
 
-  static range( a, b = 0, step = 1 ) {
+  static range( a, b = null, step = 1 ) {
+    if( b === null ) {
+      b = a;
+      a = 0;
+    }
     var list = new ArrayMore();
     if( a < b ) {
       step = Math.abs( step );
@@ -242,8 +246,22 @@ module.exports = class ArrayMore extends Array {
     return ArrayMore.cast(v).concat( this );
   }
 
-  has( f ) {
-    return this.some( f );
+  has( value ) {
+    if( value.constructor == Function ) {
+      return this.some( value );
+    }
+    return this.some(
+      ( element ) => ArrayMore.comparable( element, value )
+    );
+  }
+
+  hasPosition( value ) {
+    if( value.constructor == Function ) {
+      return this.findIndex( value );
+    }
+    return this.findIndex(
+      ( element ) => ArrayMore.comparable( element, value )
+    );
   }
 
   unique() {
