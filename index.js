@@ -10,11 +10,11 @@ module.exports = class ArrayMore extends Array {
     if( v.constructor === Array ) {
       const isEmpty = v.every( e => e === undefined );
       if( ! isEmpty ) {
-        return new ArrayMore().parentConcat(v);
+        return new ArrayMore().parent().concat(v);
       }
       return new ArrayMore( v.length ).fill( undefined );
     }
-    return new ArrayMore().parentConcat([v]);
+    return new ArrayMore().parent().concat([v]);
   }
 
   static  comparable( a, b, castSimilar = false, anyOrder = true ) {
@@ -101,6 +101,40 @@ module.exports = class ArrayMore extends Array {
     return list;
   }
 
+  /**
+   * Provides access to the parent method
+   */
+  parent() {
+    return {
+      concat: super.concat.bind(this),
+      copyWithin: super.concat.bind(this),
+      entries: super.entries.bind(this),
+      every: super.every.bind(this),
+      fill: super.fill.bind(this),
+      filter: super.filter.bind(this),
+      find: super.find.bind(this),
+      findIndex: super.findIndex.bind(this),
+      forEach: super.forEach.bind(this),
+      includes: super.includes.bind(this),
+      indexOf: super.indexOf.bind(this),
+      join: super.join.bind(this),
+      keys: super.keys.bind(this),
+      lastIndexOf: super.lastIndexOf.bind(this),
+      map: super.map.bind(this),
+      pop: super.pop.bind(this),
+      push: super.push.bind(this),
+      reduce: super.reduce.bind(this),
+      reduceRight: super.reduceRight.bind(this),
+      reverse: super.reverse.bind(this),
+      shift: super.shift.bind(this),
+      slice: super.slice.bind(this),
+      some: super.some.bind(this),
+      sort: super.sort.bind(this),
+      splice: super.splice.bind(this),
+      unshift: super.unshift.bind(this),
+    };
+  }
+
   parentConcat( data ) {
     return super.concat( data );
   }
@@ -119,7 +153,7 @@ module.exports = class ArrayMore extends Array {
     }
     const otherList = ArrayMore.cast( data );
     if( ! otherList.isUndefinedValues() ) {
-      return this.copy().parentConcat( otherList );
+      return this.copy().parent().concat( otherList );
     }
     return this.copy().parentConcat(
       otherList.fill( undefined )
