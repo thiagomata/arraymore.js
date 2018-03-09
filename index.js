@@ -436,16 +436,16 @@ module.exports = class ArrayMore extends Array {
   }
 
   overlaps(
-    ys         = (a,b) => a == b,
+    ys,
     fSearch    = (a,b) => a == b,
     fGet       = (a) => a,
     valueEmpty = null
   ) {
-    return this.map(
-      ( xv ) => {
-        const p = ys.findIndex( ( yv ) => fSearch( xv, yv ) );
+    return ArrayMore.cast(ys).map(
+      ( yv ) => {
+        const p = this.hasIndex( ( xv ) => fSearch( xv, yv ) );
         if( p === -1 ) return valueEmpty;
-        return fGet( ys[ p ] )
+        return fGet( this[ p ] )
       }
     )
   }
