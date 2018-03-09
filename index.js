@@ -552,7 +552,7 @@ module.exports = class ArrayMore extends Array {
 
   flat() {
     return this.map(
-      v => ArrayMore(v)
+      v => ArrayMore.cast(v)
     ).
     reduce(
       (a,b) => a.concat(b),
