@@ -24,4 +24,5 @@ describe('sum', () => {
   it('sum should "work" with letters', () => {
     expect(List.cast(['a','b','c']).sum()).toEqual("abc");
   });
+
 });

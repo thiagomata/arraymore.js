@@ -1,6 +1,10 @@
 const List = require('../index');
 describe('range', () => {
 
+  it('should range with one value return the list with 0 to value - 1', () => {
+    expect(List.range(10)).toEqual(new List(0,1,2,3,4,5,6,7,8,9));
+  });
+
   it('should range of no interval creates empty array', () => {
     expect(List.range(0,0)).toEqual(new List());
   });

@@ -81,11 +81,18 @@ describe('equals', () => {
       }
 
       equals( otherExample ) {
-        return ( this.x > 10 ) === ( otherExample.x > 10 );
+        if( otherExample.constructor == Example ) {
+          return ( this.x > 10 ) === ( otherExample.x > 10 );
+        }
+        return ( this.x > 10 ) === ( otherExample > 10 );
       }
     }
 
-    expect(List.cast([new Example(2)]).equals(List.cast([new Example(1)]))).toEqual(true);
-    expect(List.cast([new Example(2)]).equals(List.cast([new Example(100)]))).toEqual(false);
+    expect( List.cast( [ new Example(2) ] ).equals( List.cast( [ new Example(1) ] ) ) ).toEqual(true);
+    expect( List.cast( [ new Example(2) ] ).equals( List.cast( [ new Example(100) ] ) ) ).toEqual(false);
+    expect( List.cast( [ new Example(2) ] ).equals( List.cast( [1] ) ) ).toEqual(true);
+    expect( List.cast( [ new Example(2) ] ).equals( List.cast( [100] ) ) ).toEqual(false);
+    expect( List.cast( [2] ).equals( List.cast( [ new Example(1) ] ) ) ).toEqual(true);
+    expect( List.cast( [2] ).equals( List.cast( [ new Example(100) ] ) ) ).toEqual(false);
   });
 });

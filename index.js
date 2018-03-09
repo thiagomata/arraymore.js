@@ -1,5 +1,8 @@
 module.exports = class ArrayMore extends Array {
 
+  /**
+   * Cast any input to ArrayMore
+   */
   static cast( v, castNoValueToNull = true ) {
     if( v === undefined || v === null || Number.isNaN( v ) ) {
       return new ArrayMore().append( castNoValueToNull ? null : v );
@@ -17,44 +20,55 @@ module.exports = class ArrayMore extends Array {
     return new ArrayMore().parent().concat([v]);
   }
 
+  /**
+   * Cast and convert a and b and check if they are equivalent
+   *
+   * @return boolean true if a equivalent b
+   */
   static  comparable( a, b, castSimilar = false, anyOrder = true ) {
-    //console.log("comparable",a,b);
+    // console.log("comparable",a,b);
     const listA = (
         () => {
+          if( a == undefined ) {
+            return null;
+          }
           if ( a.constructor === Array || a.constructor === ArrayMore ) {
             return ArrayMore.cast(a);
           }
           return null;
         }
     )();
-    //console.log("listA = ",listA);
+    // console.log("listA = ",listA);
 
     const listB = (
       () => {
+        if( b == undefined ) {
+          return null;
+        }
         if ( b.constructor === Array || b.constructor === ArrayMore  ) {
           return ArrayMore.cast(b);
         }
         return null;
       }
     )();
-    //console.log("listB = ",listB);
+    // console.log("listB = ",listB);
 
     if( ! castSimilar && (
         ( listA === null && listB !== null ) ||
         ( listB === null && listA !== null )
       )
     ) {
-      //console.log("not similar");
+      // console.log("not similar");
       return false;
     }
 
     if( listA !== null && listB !== null ) {
-      //console.log("list comparable");
+      // console.log("list comparable");
       return listA.listComparable( listB, castSimilar, anyOrder );
     }
 
     if( listA !== null || listB !== null ) {
-      //console.log("similar comparable");
+      // console.log("similar comparable");
       return ArrayMore.cast(a).listComparable(
         ArrayMore.cast(b),
         castSimilar,
@@ -62,22 +76,22 @@ module.exports = class ArrayMore extends Array {
       );
     }
 
-    if( a.equals !== undefined ) {
-      //console.log("object a comparable");
+    if( a !== undefined && a.equals !== undefined ) {
+      // console.log("object a comparable");
       return a.equals( b );
     }
 
-    if( b.equals !== undefined ) {
-      //console.log("object b comparable");
+    if( b !== undefined && b.equals !== undefined ) {
+      // console.log("object b comparable");
       return b.equals( a );
     }
 
     if( castSimilar ) {
-      //console.log("value comparable ",a,b);
+      // console.log("value comparable ",a,b);
       return a == b;
     }
 
-    //console.log("absolute value comparable ",a,b);
+    // console.log("absolute value comparable ",a,b);
     return a === b;
   }
 
@@ -107,7 +121,7 @@ module.exports = class ArrayMore extends Array {
   parent() {
     return {
       concat: super.concat.bind(this),
-      copyWithin: super.concat.bind(this),
+      copyWithin: super.copyWithin.bind(this),
       entries: super.entries.bind(this),
       every: super.every.bind(this),
       fill: super.fill.bind(this),
@@ -135,10 +149,6 @@ module.exports = class ArrayMore extends Array {
     };
   }
 
-  parentConcat( data ) {
-    return super.concat( data );
-  }
-
   copy() {
     return this.slice(0);
   }
@@ -155,7 +165,7 @@ module.exports = class ArrayMore extends Array {
     if( ! otherList.isUndefinedValues() ) {
       return this.copy().parent().concat( otherList );
     }
-    return this.copy().parentConcat(
+    return this.copy().parent().concat(
       otherList.fill( undefined )
     );
   }
@@ -181,22 +191,22 @@ module.exports = class ArrayMore extends Array {
   listComparable( otherList, castSimilar = false, anyOrder = true ) {
     const thisList = this;
     if( otherList.length != this.length ) {
-      //console.log("otherList.length", otherList.length );
-      //console.log("this.length", this.length );
-      //console.log("diff length");
+      // console.log("otherList.length", otherList.length );
+      // console.log("this.length", this.length );
+      // console.log("diff length");
       return false;
     }
 
     if( this.isEmptyValues() || otherList.isEmptyValues() ) {
-      //console.log("diff empty values");
+      // console.log("diff empty values");
       return this.isEmptyValues === otherList.isEmptyValues;
     }
 
     if( ! anyOrder ) {
-      //console.log("test in order");
+      // console.log("test in order");
       return this.every(
         ( element, key ) => {
-          //console.log("call comparable");
+          // console.log("call comparable");
           return ArrayMore.comparable( element, otherList[ key ] );
         }
       )
@@ -206,7 +216,7 @@ module.exports = class ArrayMore extends Array {
       every(
         otherElement =>  thisList.some(
           thisElement => {
-            //console.log("in the loop");
+            // console.log("in the loop");
             return ArrayMore.comparable(
               thisElement,
               otherElement,
@@ -217,14 +227,14 @@ module.exports = class ArrayMore extends Array {
         )
       )
     ) {
-      //console.log("other => this");
+      // console.log("other => this");
       return false;
     }
     if( ! thisList.
       every(
         thisElement =>  otherList.some(
           otherElement => {
-            //console.log("in the loop");
+            // console.log("in the loop");
             return ArrayMore.comparable(
               otherElement,
               thisElement,
@@ -289,7 +299,7 @@ module.exports = class ArrayMore extends Array {
     );
   }
 
-  hasPosition( value ) {
+  hasIndex( value ) {
     if( value.constructor == Function ) {
       return this.findIndex( value );
     }
@@ -322,40 +332,46 @@ module.exports = class ArrayMore extends Array {
     return result;
   }
 
-  max( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.reduce((x, y) => (x > y ? x : y));
+  max( emptyValue = null, invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        return list.reduce((x, y) => (x > y ? x : y));
+      }
+    )
   }
 
-  min( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.reduce((x, y) => (x < y ? x : y));
+  min( emptyValue = null, invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        return list.reduce((x, y) => (x < y ? x : y));
+      }
+    )
   }
 
-  sum( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.reduce((x, y) => x + y);
+  sum( emptyValue = null, invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        return list.reduce((x, y) => x + y);
+      }
+    )
   }
 
-  avg( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.sum() / this.length;
+  avg( emptyValue = null, invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        var total = list.sum();
+        return list.sum() / list.length;
+      }
+    )
   }
 
-  normalize( emptyValue = [] ) {
-    if( this.isEmpty() ) {
-      return ArrayMore.cast( emptyValue );
-    }
-    var total = this.sum();
-    return this.map(x => x / total);
+  normalize( emptyValue = [], invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        var total = list.sum();
+        return list.map( x => x / total );
+      }
+    )
   }
 
   accumulate( c = 0 ) {
@@ -375,12 +391,12 @@ module.exports = class ArrayMore extends Array {
     return this.accumulate( c ).head(-1);
   }
 
-  last() {
-    return this[ this.length - 1 ];
+  last( emptyValue = null ) {
+    return ( this[this.length - 1] === undefined ) ? emptyValue : this[this.length - 1];
   }
 
-  first() {
-    return this[0];
+  first( emptyValue = null ) {
+    return ( this[0] === undefined ) ? emptyValue : this[0];
   }
 
   derivate() {
@@ -434,63 +450,86 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  sqrt( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.map( x => Math.sqrt( x ) )
+  sqrt( emptyValue = [], invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.map( x => Math.sqrt(x) )
+    )
   }
 
-  round( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.map( x => Math.round( x ) )
+  round( emptyValue = [], invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.map( x => Math.round(x) )
+    )
   }
 
-  abs( emptyValue = null ) {
-    if( this.isEmpty() ) {
-      return emptyValue;
-    }
-    return this.map( x => Math.abs( x ) )
+  abs( emptyValue = [], invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.map( x => Math.abs(x) )
+    )
   }
 
-  rotate( value, emptyValue, operation ) {
-    var list = ArrayMore.cast( value );
-    if( this.isEmpty() ) {
-      return emptyValue;
+  map( callback ) {
+    return ArrayMore.cast( this.parent().map( callback ) );
+  }
+
+  replaceNaN( invalidValue = NaN ) {
+    if( Number.isNaN( invalidValue ) ) {
+      return this;
+    }
+    if( Number.isNaN( 1 * invalidValue ) ) {
+      throw new Error( "invalid value replacer must be a valid number" );
     }
     return this.map(
-      (x, key) => operation( x, list[ key % list.length ] )
+      x => Number.isNaN( 1 * x ) ? invalidValue : x
     );
   }
 
-  plus( value = 1, emptyValue = null ) {
-    return this.rotate( value, emptyValue, (x,y) => x + y )
+  rotate( rotation, emptyValue, operation, invalidValue = NaN) {
+    var rotateList = ArrayMore.cast( rotation );
+    if( this.isEmpty() ) {
+      return emptyValue;
+    }
+    return this.replaceNaN( invalidValue ).map(
+      (x, key) => operation( x, rotateList[ key % rotateList.length ] )
+    );
   }
 
-  less( value = 1, emptyValue = null ) {
-    return this.rotate( value, emptyValue, (x,y) => x - y )
+  applyOperation( emptyValue, invalidValue = NaN, operation ) {
+    if( this.isEmpty() ) {
+      return emptyValue;
+    }
+    var cleanList = this.replaceNaN(
+      invalidValue
+    );
+    return operation( cleanList );
   }
 
-  more( value = 1, emptyValue = null ) {
-    return this.plus( v, emptyValue );
+  plus( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => x + y, invalidValue )
   }
 
-  times( value = 1, emptyValue = null ) {
-    return this.rotate( value, emptyValue, (x,y) => x * y )
+  more( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.plus( value, emptyValue, invalidValue );
   }
 
-  div( value = 1, emptyValue = null ) {
-    return this.rotate( value, emptyValue, (x,y) => x / y )
+  less( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => x - y, invalidValue )
   }
 
-  squared() {
-    return this.pow(2);
+  times( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => x * y, invalidValue )
   }
 
-  pow( value = 2, emptyValue = null ) {
-    return this.rotate( value, emptyValue, (x,y) => Math.pow(x,y) )
+  div( value = 1, emptyValue = [], invalidValue ) {
+    return this.rotate( value, emptyValue, (x,y) => x / y, invalidValue )
+  }
+
+  squared( emptyValue = [], invalidValue = NaN ) {
+    return this.pow(2, emptyValue, invalidValue );
+  }
+
+  pow( value = 2, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => Math.pow(x,y), invalidValue )
   }
 
   diff( otherArray ) {
