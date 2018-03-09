@@ -399,8 +399,8 @@ module.exports = class ArrayMore extends Array {
     return ( this[0] === undefined ) ? emptyValue : this[0];
   }
 
-  derivate() {
-    return this.
+  derivate( invalidValue = NaN ) {
+    return this.replaceNaN( invalidValue ).
     reduce(
       (x, y) => {
         return x.concat(
