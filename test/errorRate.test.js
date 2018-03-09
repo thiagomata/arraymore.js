@@ -35,7 +35,7 @@ describe('errorRate', () => {
     );
   });
 
-  it('error rate assumes 0 to missing values', () => {
+  it('error rate assumes 0 to missing values (1)', () => {
     let from  = new List(3,3,3,3);
     let to    = new List(1,1);
     let toRef = new List(1,1,0,0);
@@ -43,6 +43,20 @@ describe('errorRate', () => {
     expect(
       from.errorRate( to ).equals(
         from.diff( toRef ).squared()
+      )
+    ).toBe(
+      true
+    );
+  });
+
+  it('error rate assumes 0 to missing values (2)', () => {
+    let to      = new List(3,3,3,3);
+    let from    = new List(1,1);
+    let fromRef = new List(1,1,0,0);
+
+    expect(
+      from.errorRate( to ).equals(
+        fromRef.diff( to ).squared()
       )
     ).toBe(
       true
