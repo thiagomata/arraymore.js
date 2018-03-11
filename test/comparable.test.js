@@ -1,5 +1,13 @@
 const List = require('../index');
 describe('comparable', () => {
+    
+  it('should comparable be able to compare equal simple values', () => {
+    expect(List.comparable(3,3)).toEqual(true);
+  });
+
+  it('should comparable be able to compare diff simple values', () => {
+    expect(List.comparable(3,4)).toEqual(false);
+  });
 
   it('should comparable empty array with empty list', () => {
     expect(List.comparable([],new List())).toEqual(true);

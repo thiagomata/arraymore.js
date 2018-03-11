@@ -33,8 +33,16 @@ describe('cast', () => {
     expect(List.cast(undefined)).toEqual(List.cast([null]));
   });
 
+  it('Casting undefined shoud not create [null] if flag', () => {
+    expect(List.cast(undefined,false)).not.toEqual(List.cast([null], false ));
+  });
+
   it('Casting NaN shoud create [null]', () => {
     expect(List.cast(NaN)).toEqual(List.cast([null]));
+  });
+
+  it('Casting NaN shoud not create [null] if flag', () => {
+    expect(List.cast(NaN,false)).not.toEqual(List.cast([null],false));
   });
 
 });

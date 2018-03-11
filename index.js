@@ -26,7 +26,7 @@ module.exports = class ArrayMore extends Array {
    * @return boolean true if a equivalent b
    */
   static  comparable( a, b, castSimilar = false, anyOrder = true ) {
-    // console.log("comparable",a,b);
+    //console.log("comparable",a,b);
     const listA = (
         () => {
           if( a == undefined ) {
@@ -38,7 +38,7 @@ module.exports = class ArrayMore extends Array {
           return null;
         }
     )();
-    // console.log("listA = ",listA);
+    //console.log("listA = ",listA);
 
     const listB = (
       () => {
@@ -51,24 +51,24 @@ module.exports = class ArrayMore extends Array {
         return null;
       }
     )();
-    // console.log("listB = ",listB);
+    //console.log("listB = ",listB);
 
     if( ! castSimilar && (
         ( listA === null && listB !== null ) ||
         ( listB === null && listA !== null )
       )
     ) {
-      // console.log("not similar");
+      //console.log("not similar");
       return false;
     }
 
     if( listA !== null && listB !== null ) {
-      // console.log("list comparable");
+      //console.log("list comparable");
       return listA.listComparable( listB, castSimilar, anyOrder );
     }
 
     if( listA !== null || listB !== null ) {
-      // console.log("similar comparable");
+      //console.log("similar comparable");
       return ArrayMore.cast(a).listComparable(
         ArrayMore.cast(b),
         castSimilar,
@@ -77,21 +77,21 @@ module.exports = class ArrayMore extends Array {
     }
 
     if( a !== undefined && a.equals !== undefined ) {
-      // console.log("object a comparable");
+      //console.log("object a comparable");
       return a.equals( b );
     }
 
     if( b !== undefined && b.equals !== undefined ) {
-      // console.log("object b comparable");
+      //console.log("object b comparable");
       return b.equals( a );
     }
 
     if( castSimilar ) {
-      // console.log("value comparable ",a,b);
+      //console.log("value comparable ",a,b);
       return a == b;
     }
 
-    // console.log("absolute value comparable ",a,b);
+    //console.log("absolute value comparable ",a,b);
     return a === b;
   }
 
@@ -191,23 +191,23 @@ module.exports = class ArrayMore extends Array {
   listComparable( otherList, castSimilar = false, anyOrder = true ) {
     const thisList = this;
     if( otherList.length != this.length ) {
-      // console.log("otherList.length", otherList.length );
-      // console.log("this.length", this.length );
-      // console.log("diff length");
+      //console.log("otherList.length", otherList.length );
+      //console.log("this.length", this.length );
+      //console.log("diff length");
       return false;
     }
 
     if( this.isEmptyValues() || otherList.isEmptyValues() ) {
-      // console.log("diff empty values");
-      return this.isEmptyValues === otherList.isEmptyValues;
+      //console.log("diff empty values");
+      return this.isEmptyValues === ArrayMore.cast(otherList).isEmptyValues;
     }
 
     if( ! anyOrder ) {
-      // console.log("test in order");
+      //console.log("test in order");
       return this.every(
         ( element, key ) => {
-          // console.log("call comparable");
-          return ArrayMore.comparable( element, otherList[ key ] );
+          //console.log("call comparable");
+          return ArrayMore.comparable( element, otherList[ key ], castSimilar, anyOrder );
         }
       )
     }
@@ -216,7 +216,7 @@ module.exports = class ArrayMore extends Array {
       every(
         otherElement =>  thisList.some(
           thisElement => {
-            // console.log("in the loop");
+            //console.log("in the loop");
             return ArrayMore.comparable(
               thisElement,
               otherElement,
@@ -227,14 +227,14 @@ module.exports = class ArrayMore extends Array {
         )
       )
     ) {
-      // console.log("other => this");
+      //console.log("other => this");
       return false;
     }
     if( ! thisList.
       every(
         thisElement =>  otherList.some(
           otherElement => {
-            // console.log("in the loop");
+            //console.log("in the loop");
             return ArrayMore.comparable(
               otherElement,
               thisElement,
@@ -430,7 +430,8 @@ module.exports = class ArrayMore extends Array {
         if (k >= self.length) {
           return onlyOneFoundFunction( otherArray[ k ] );
         }
-        return aggregateFunction(self[k], otherArray[ k ]);
+        var result = aggregateFunction(self[k], otherArray[ k ]);
+        return result;
       }
     )
   }
@@ -494,7 +495,7 @@ module.exports = class ArrayMore extends Array {
     );
   }
 
-  applyOperation( emptyValue, invalidValue = NaN, operation ) {
+  applyOperation( emptyValue, invalidValue /*= NaN*/, operation ) {
     if( this.isEmpty() ) {
       return emptyValue;
     }
