@@ -495,7 +495,7 @@ module.exports = class ArrayMore extends Array {
     );
   }
 
-  applyOperation( emptyValue, invalidValue /*= NaN*/, operation ) {
+  applyOperation( emptyValue, invalidValue, operation ) {
     if( this.isEmpty() ) {
       return emptyValue;
     }

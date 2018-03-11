@@ -6,7 +6,7 @@ describe('overlaps', () => {
     var data = [];
     data[3] = 30;
     data[5] = 50;
-    var expected = [0,0,30,0,50,0,0]
+    var expected = [null,null,30,null,50,null,null]
 
     expect( List.cast(data).overlaps(
       years

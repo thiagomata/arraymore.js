@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1520769461220" clover="3.2.0">
-  <project timestamp="1520769461220" name="All files">
+<coverage generated="1520769642601" clover="3.2.0">
+  <project timestamp="1520769642601" name="All files">
     <metrics statements="194" coveredstatements="193" conditionals="171" coveredconditionals="171" methods="103" coveredmethods="102" elements="468" coveredelements="466" complexity="0" loc="194" ncloc="194" packages="1" files="1" classes="1">
       <file name="index.js" path="/var/www/html/npm-mapreducekv-js/index.js">
         <metrics statements="194" coveredstatements="193" conditionals="171" coveredconditionals="171" methods="103" coveredmethods="102"/>
