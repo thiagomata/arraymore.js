@@ -29,12 +29,12 @@ describe('unique', () => {
     expect(List.cast(null).unique()).toEqual(List.cast([null]));
   });
 
-  it('Unique undefined list shoud create [null]', () => {
-    expect(List.cast(undefined).unique()).toEqual(List.cast([null]));
+  it('Unique undefined list shoud create [undefined]', () => {
+    expect(List.cast(undefined).unique()).toEqual(List.cast([undefined]));
   });
 
-  it('Casting NaN shoud create [null]', () => {
-    expect(List.cast(NaN).unique()).toEqual(List.cast([null]));
+  it('Casting NaN shoud create [NaN]', () => {
+    expect(List.cast(NaN).unique()).toEqual(List.cast([NaN]));
   });
 
 });

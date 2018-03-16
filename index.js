@@ -3,7 +3,7 @@ module.exports = class ArrayMore extends Array {
   /**
    * Cast any input to ArrayMore
    */
-  static cast( v, castNoValueToNull = true ) {
+  static cast( v, castNoValueToNull = false ) {
     if( v === undefined || v === null || Number.isNaN( v ) ) {
       return new ArrayMore().append( castNoValueToNull ? null : v );
     }
@@ -13,12 +13,32 @@ module.exports = class ArrayMore extends Array {
     if( v.constructor === Array ) {
       const isEmpty = v.every( e => e === undefined );
       if( ! isEmpty ) {
-        return new ArrayMore().parent().concat(v);
+        // return new ArrayMore().parent().concat(v);
+        var result = new ArrayMore();
+        for( let i = 0; i < v.length; i++ ) {
+          let element = v[i];
+          result.push( ArrayMore.safeCast( element, castNoValueToNull ) );
+        }
+        return result;
       }
       return new ArrayMore( v.length ).fill( undefined );
     }
     return new ArrayMore().parent().concat([v]);
   }
+
+  static safeCast( value, castNoValueToNull = false ) {
+    if( value === undefined || value === null || Number.isNaN( value ) ) {
+      if( castNoValueToNull ) {
+        return null;
+      }
+      return value;
+    }
+    if( value.constructor === Array ) {
+      return ArrayMore.cast( value );
+    }
+    return value;
+  }
+
 
   /**
    * Cast and convert a and b and check if they are equivalent
@@ -33,7 +53,7 @@ module.exports = class ArrayMore extends Array {
             return null;
           }
           if ( a.constructor === Array || a.constructor === ArrayMore ) {
-            return ArrayMore.cast(a);
+            return ArrayMore.cast(a,castSimilar);
           }
           return null;
         }
@@ -46,7 +66,7 @@ module.exports = class ArrayMore extends Array {
           return null;
         }
         if ( b.constructor === Array || b.constructor === ArrayMore  ) {
-          return ArrayMore.cast(b);
+          return ArrayMore.cast(b,castSimilar);
         }
         return null;
       }
@@ -69,8 +89,8 @@ module.exports = class ArrayMore extends Array {
 
     if( listA !== null || listB !== null ) {
       //console.log("similar comparable");
-      return ArrayMore.cast(a).listComparable(
-        ArrayMore.cast(b),
+      return ArrayMore.cast(a,castSimilar).listComparable(
+        ArrayMore.cast(b,castSimilar),
         castSimilar,
         anyOrder
       );
@@ -199,7 +219,7 @@ module.exports = class ArrayMore extends Array {
 
     if( this.isEmptyValues() || otherList.isEmptyValues() ) {
       //console.log("diff empty values");
-      return this.isEmptyValues === ArrayMore.cast(otherList).isEmptyValues;
+      return this.isEmptyValues() === ArrayMore.cast(otherList).isEmptyValues();
     }
 
     if( ! anyOrder ) {
@@ -368,27 +388,35 @@ module.exports = class ArrayMore extends Array {
   normalize( emptyValue = [], invalidValue = NaN ) {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
+        console.log(list);
         var total = list.sum();
         return list.map( x => x / total );
       }
     )
   }
 
-  accumulate( c = 0 ) {
-    return this.
-    map( x => ArrayMore.cast(x) ).
-    reduce(
-      (x, y) => {
-        var s = x.last();
-        var yAcc = y.map(v => v + s);
-        return x.concat(yAcc);
-      },
-      ArrayMore.cast( c )
+  accumulate( c = 0, emptyValue = [0], invalidValue = NaN ) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => {
+        return list.
+        map( x => ArrayMore.cast(x) ).
+        reduce(
+          (x, y) => {
+            var s = x.last();
+            var yAcc = y.map(v => v + s);
+            return x.concat(yAcc);
+          },
+          ArrayMore.cast( c )
+        )
+      }
     )
   }
 
-  integrate( c = 0 ) {
-    return this.accumulate( c ).head(-1);
+  integrate( c = 0, emptyValue = [], invalidValue = NaN ) {
+    console.log("integrate",this);
+    var acc = this.accumulate( c, emptyValue, invalidValue );
+    console.log("acc",acc);
+    return acc.head(-1);
   }
 
   last( emptyValue = null ) {
@@ -473,6 +501,16 @@ module.exports = class ArrayMore extends Array {
     return ArrayMore.cast( this.parent().map( callback ) );
   }
 
+  reduce( callback, initialValue = null ) {
+    var reduceResult;
+    if( initialValue === null) {
+      reduceResult = this.parent().reduce( callback );
+    } else {
+      reduceResult = this.parent().reduce( callback, initialValue );
+    }
+    return ArrayMore.safeCast( reduceResult );
+  }
+
   replaceNaN( invalidValue = NaN ) {
     if( Number.isNaN( invalidValue ) ) {
       return this;
@@ -488,7 +526,7 @@ module.exports = class ArrayMore extends Array {
   rotate( rotation, emptyValue, operation, invalidValue = NaN) {
     var rotateList = ArrayMore.cast( rotation );
     if( this.isEmpty() ) {
-      return emptyValue;
+      return ArrayMore.safeCast( emptyValue );
     }
     return this.replaceNaN( invalidValue ).map(
       (x, key) => operation( x, rotateList[ key % rotateList.length ] )
@@ -497,7 +535,7 @@ module.exports = class ArrayMore extends Array {
 
   applyOperation( emptyValue, invalidValue, operation ) {
     if( this.isEmpty() ) {
-      return emptyValue;
+      return ArrayMore.safeCast( emptyValue );
     }
     var cleanList = this.replaceNaN(
       invalidValue

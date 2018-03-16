@@ -4,13 +4,16 @@ describe('overlaps', () => {
   it('create the overlaps from data object', () => {
     var years = [1,2,3,4,5,6,7];
     var data = [];
-    data[3] = 30;
-    data[5] = 50;
-    var expected = [null,null,30,null,50,null,null]
+    data[3] = 3;
+    data[5] = 5;
+    var expected = [null,null,3,null,5,null,null]
 
+    // expect( List.cast(data).overlaps(
+    //   years
+    // ).equals(expected)).toEqual(true);
     expect( List.cast(data).overlaps(
       years
-    ).equals(expected)).toEqual(true);
+    )).toEqual(expected);
   });
 
   it('create the overlaps from data object', () => {

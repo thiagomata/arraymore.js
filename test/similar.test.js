@@ -34,7 +34,7 @@ describe('similar', () => {
   });
 
   it('should not be similar when compare list to value', () => {
-    expect(new List(1).similar(1)).toEqual(true);
+    expect(new List(1).similar(1)).toEqual(false);
   });
 
   it('should not be similar when compare list to value', () => {

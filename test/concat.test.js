@@ -37,8 +37,8 @@ describe('concat', () => {
     expect(List.cast(new Array([1,2,3])).concat(undefined)).toEqual(new List([1,2,3]));
   });
 
-  it('null concat [1,2,3] + NaN = [1,2,3,null]', () => {
-    expect(List.cast(new Array(1,2,3)).concat(NaN)).toEqual(new List(1,2,3,null));
+  it('null concat [1,2,3] + NaN = [1,2,3,NaN]', () => {
+    expect(List.cast(new Array(1,2,3)).concat(NaN)).toEqual(new List(1,2,3,NaN));
   });
 
   it('null on trees', () => {

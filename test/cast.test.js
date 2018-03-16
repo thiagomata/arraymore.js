@@ -30,7 +30,7 @@ describe('cast', () => {
   });
 
   it('Casting undefined shoud create [null]', () => {
-    expect(List.cast(undefined)).toEqual(List.cast([null]));
+    expect(List.cast(undefined,true)).toEqual(List.cast([null]));
   });
 
   it('Casting undefined shoud not create [null] if flag', () => {
@@ -38,7 +38,7 @@ describe('cast', () => {
   });
 
   it('Casting NaN shoud create [null]', () => {
-    expect(List.cast(NaN)).toEqual(List.cast([null]));
+    expect(List.cast(NaN,true)).toEqual(List.cast([null]));
   });
 
   it('Casting NaN shoud not create [null] if flag', () => {

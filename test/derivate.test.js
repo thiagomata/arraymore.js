@@ -22,7 +22,7 @@ describe('derivate', () => {
   });
 
   it('derivate should not "work" with letters', () => {
-    expect(List.cast(['a','b','c']).derivate()).toEqual(List.cast([null, null, null]));
+    expect(List.cast(['a','b','c']).derivate()).toEqual(List.cast([NaN, NaN, NaN]));
   });
 
   it('derivate should allow replace NaN by values', () => {

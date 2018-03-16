@@ -30,16 +30,16 @@ describe('normalize', () => {
   });
 
   it('replace NaN by 0', () => {
-    expect(List.cast([ "trash", 1, 1, 2, 4 ], -1 ).normalize(0,0)).toEqual([ 0, 0.125, 0.125, 0.25, 0.5 ]);
+    expect(List.cast([ "trash", 1, 1, 2, 4 ], false ).normalize(0,0)).toEqual([ 0, 0.125, 0.125, 0.25, 0.5 ]);
   });
 
   it('replace NaN by 1', () => {
-    expect(List.cast([ "trash", 1, 2, 4 ], -1 ).normalize(0,1)).toEqual([ 0.125, 0.125, 0.25, 0.5 ]);
+    expect(List.cast([ "trash", 1, 2, 4 ], false ).normalize(0,1)).toEqual([ 0.125, 0.125, 0.25, 0.5 ]);
   });
 
   it('replace NaN by trash should throw error', () => {
     expect( () => {
-      List.cast([ "trash", 1, 2, 4 ], -1 ).normalize(0,"other-trash")
+      List.cast([ "trash", 1, 2, 4 ], false ).normalize(0,"other-trash")
     }).toThrow();
   });
 

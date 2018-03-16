@@ -1,6 +1,6 @@
 const List = require('../index');
 describe('comparable', () => {
-    
+
   it('should comparable be able to compare equal simple values', () => {
     expect(List.comparable(3,3)).toEqual(true);
   });
@@ -86,7 +86,7 @@ describe('comparable', () => {
   });
 
   it('comparable [NaN] with [null]', () => {
-    expect(List.comparable([NaN],[null])).toEqual(true);
+    expect(List.comparable([NaN],[null],true)).toEqual(true);
   });
 
   it('should equals call object equals method', () => {
