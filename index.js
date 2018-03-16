@@ -3,7 +3,8 @@ module.exports = class ArrayMore extends Array {
   /**
    * Cast any input to ArrayMore
    */
-  static cast( v, castNoValueToNull = false ) {
+  static cast( v, castNoValueToNull = false, keepHoles = false ) {
+    //console.log("cast",v,castNoValueToNull,keepHoles);
     if( v === undefined || v === null || Number.isNaN( v ) ) {
       return new ArrayMore().append( castNoValueToNull ? null : v );
     }
@@ -12,12 +13,19 @@ module.exports = class ArrayMore extends Array {
     }
     if( v.constructor === Array ) {
       const isEmpty = v.every( e => e === undefined );
-      if( ! isEmpty ) {
-        // return new ArrayMore().parent().concat(v);
-        var result = new ArrayMore();
+      if( ! isEmpty && !keepHoles ) {
+        let result = new ArrayMore();
         for( let i = 0; i < v.length; i++ ) {
           let element = v[i];
-          result.push( ArrayMore.safeCast( element, castNoValueToNull ) );
+          result.push( ArrayMore.safeCast( element, castNoValueToNull, keepHoles ) );
+        }
+        return result;
+      }
+      if ( ! isEmpty && keepHoles ) {
+        let result = new ArrayMore( v.length );
+        for( let i in v ) {
+          let element = v[i];
+          result[i] = ArrayMore.safeCast( element, castNoValueToNull, keepHoles );
         }
         return result;
       }
@@ -26,7 +34,8 @@ module.exports = class ArrayMore extends Array {
     return new ArrayMore().parent().concat([v]);
   }
 
-  static safeCast( value, castNoValueToNull = false ) {
+  static safeCast( value, castNoValueToNull = false, keepHoles = false ) {
+    //console.log('safe cast',value,castNoValueToNull,keepHoles);
     if( value === undefined || value === null || Number.isNaN( value ) ) {
       if( castNoValueToNull ) {
         return null;
@@ -34,7 +43,7 @@ module.exports = class ArrayMore extends Array {
       return value;
     }
     if( value.constructor === Array ) {
-      return ArrayMore.cast( value );
+      return ArrayMore.cast( value, castNoValueToNull, keepHoles );
     }
     return value;
   }
@@ -139,34 +148,37 @@ module.exports = class ArrayMore extends Array {
    * Provides access to the parent method
    */
   parent() {
-    return {
-      concat: super.concat.bind(this),
-      copyWithin: super.copyWithin.bind(this),
-      entries: super.entries.bind(this),
-      every: super.every.bind(this),
-      fill: super.fill.bind(this),
-      filter: super.filter.bind(this),
-      find: super.find.bind(this),
-      findIndex: super.findIndex.bind(this),
-      forEach: super.forEach.bind(this),
-      includes: super.includes.bind(this),
-      indexOf: super.indexOf.bind(this),
-      join: super.join.bind(this),
-      keys: super.keys.bind(this),
-      lastIndexOf: super.lastIndexOf.bind(this),
-      map: super.map.bind(this),
-      pop: super.pop.bind(this),
-      push: super.push.bind(this),
-      reduce: super.reduce.bind(this),
-      reduceRight: super.reduceRight.bind(this),
-      reverse: super.reverse.bind(this),
-      shift: super.shift.bind(this),
-      slice: super.slice.bind(this),
-      some: super.some.bind(this),
-      sort: super.sort.bind(this),
-      splice: super.splice.bind(this),
-      unshift: super.unshift.bind(this),
-    };
+    if( this._parent === undefined ) {
+      this._parent = {
+        concat: super.concat.bind(this),
+        copyWithin: super.copyWithin.bind(this),
+        entries: super.entries.bind(this),
+        every: super.every.bind(this),
+        fill: super.fill.bind(this),
+        filter: super.filter.bind(this),
+        find: super.find.bind(this),
+        findIndex: super.findIndex.bind(this),
+        forEach: super.forEach.bind(this),
+        includes: super.includes.bind(this),
+        indexOf: super.indexOf.bind(this),
+        join: super.join.bind(this),
+        keys: super.keys.bind(this),
+        lastIndexOf: super.lastIndexOf.bind(this),
+        map: super.map.bind(this),
+        pop: super.pop.bind(this),
+        push: super.push.bind(this),
+        reduce: super.reduce.bind(this),
+        reduceRight: super.reduceRight.bind(this),
+        reverse: super.reverse.bind(this),
+        shift: super.shift.bind(this),
+        slice: super.slice.bind(this),
+        some: super.some.bind(this),
+        sort: super.sort.bind(this),
+        splice: super.splice.bind(this),
+        unshift: super.unshift.bind(this),
+      };
+    }
+    return this._parent;
   }
 
   copy() {
@@ -177,7 +189,7 @@ module.exports = class ArrayMore extends Array {
    * When we extends the Array the concat method did not behaves as expected.
    * So, we have to make a ugly bugfix over the push of empty value arrays
    */
-  concat( data = undefined) {
+  concat( data = undefined, castNoValueToNull = false, keepHoles = false) {
     if( data === undefined ) {
       return this;
     }
@@ -186,7 +198,8 @@ module.exports = class ArrayMore extends Array {
       return this.copy().parent().concat( otherList );
     }
     return this.copy().parent().concat(
-      otherList.fill( undefined )
+      ArrayMore.cast(data,castNoValueToNull,keepHoles)
+      // otherList.fill( undefined )
     );
   }
 
@@ -388,7 +401,7 @@ module.exports = class ArrayMore extends Array {
   normalize( emptyValue = [], invalidValue = NaN ) {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
-        console.log(list);
+        //console.log(list);
         var total = list.sum();
         return list.map( x => x / total );
       }
@@ -413,18 +426,26 @@ module.exports = class ArrayMore extends Array {
   }
 
   integrate( c = 0, emptyValue = [], invalidValue = NaN ) {
-    console.log("integrate",this);
+    //console.log("integrate",this);
     var acc = this.accumulate( c, emptyValue, invalidValue );
-    console.log("acc",acc);
+    //console.log("acc",acc);
     return acc.head(-1);
   }
 
   last( emptyValue = null ) {
-    return ( this[this.length - 1] === undefined ) ? emptyValue : this[this.length - 1];
+    return this.get(this.length - 1, emptyValue );
   }
 
   first( emptyValue = null ) {
-    return ( this[0] === undefined ) ? emptyValue : this[0];
+    return this.get(0, emptyValue );
+  }
+
+  get( key, emptyValue = null ) {
+    return ( this[key] === undefined ) ? emptyValue : this[key];
+  }
+
+  getRotate( key, emptyValue = null ) {
+    return this.get( key % this.length, emptyValue );
   }
 
   derivate( invalidValue = NaN ) {
@@ -485,9 +506,10 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  round( emptyValue = [], invalidValue = NaN ) {
+  round( precision = 0, emptyValue = [], invalidValue = NaN ) {
+    var factor = Math.pow(10,precision);
     return this.applyOperation( emptyValue, invalidValue,
-      (list) => list.map( x => Math.round(x) )
+      (list) => list.times(factor).map( x => Math.round(x) ).div(factor)
     )
   }
 
@@ -529,7 +551,7 @@ module.exports = class ArrayMore extends Array {
       return ArrayMore.safeCast( emptyValue );
     }
     return this.replaceNaN( invalidValue ).map(
-      (x, key) => operation( x, rotateList[ key % rotateList.length ] )
+      (x, key) => operation( x, rotateList.getRotate( key, emptyValue ) )
     );
   }
 
@@ -569,6 +591,14 @@ module.exports = class ArrayMore extends Array {
 
   pow( value = 2, emptyValue = [], invalidValue = NaN ) {
     return this.rotate( value, emptyValue, (x,y) => Math.pow(x,y), invalidValue )
+  }
+
+  sin( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => Math.sin(x*y), invalidValue )
+  }
+
+  cos( value = 1, emptyValue = [], invalidValue = NaN ) {
+    return this.rotate( value, emptyValue, (x,y) => Math.cos(x*y), invalidValue )
   }
 
   diff( otherArray ) {
