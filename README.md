@@ -2,10 +2,35 @@
 
 A extension of the Javascript Array with super powers.
 
+```javascript
+class ArrayMore extends Array {
+ ...
+}
+```
 ## All the oll Javascript Array
 
-This class extends the Javascript Array. So, all the previous features are still over there. The goal is keep all the javascript methods working as usual.
+This class extends the Javascript Array. So, all the previous features are still over there. The goal is keep all the javascript methods working as usual and not change the Array class.
 
+## General Guidelines
+
+This project uses method chaining, call by copy and array rotation. So, if the result of the method call is an array, it should be a new array. The old array should be preserved.
+
+### Method Chaining
+```javascript
+const ArrayMore = require("arraymore.js");
+console.log( new ArrayMore(1,2,3,4).plus(1).normalize().times(100).round() ); // ArrayMore [ 14, 21, 29, 36 ]
+```
+### Call by Copy
+```javascript
+const ArrayMore = require("arraymore.js");
+var foo = new ArrayMore(1,2,3,4); // ArrayMore [ 1, 2, 3, 4 ]
+var bar = foo.plus(1);            // ArrayMore [ 2, 3, 4, 5 ]
+console.log( foo );               // ArrayMore [ 1, 2, 3, 4 ]
+```
+### Array Rotation
+```javascript
+console.log( new ArrayMore(1,2,3,4,5,6,7).plus([10,100]) ); // ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
+```
 ## Basic methods
 
 This new class provides some new expected methods like head(), tail(), equals(), append(), prepend() and copy().
@@ -17,34 +42,6 @@ Also, it provides some mathematical methods like sum(), max(), min(), range(), n
 ## List combinations
 
 There are others methods like overlaps(list), diff(list), errorRate(list), aggregate(list) that intent to help the combination of two lists.
-
-```javascript
-    const List = require("arraymore.js")
-    List.
-      /* [1,2...10] */
-      range(10).
-      /* ArrayList [0.18181818181818182, 0.16363636363636364, ... , 0.01818181818181818 ] */
-      normalize().
-      /* native filter */
-      filter(
-        /*  filter elements bigger than the average of the list */
-        (value , key, list) => v > list.avg()
-      ).
-      /*  sum the value of the list */
-      sum();
-```
-
-```javascript
-    const List = require("arraymore.js")
-    new List(1,5,3,6,3,8,2,3,7).
-        normalize().
-        sqrt().
-        derivate().
-        times(100).
-        sort().
-        head(5).
-        integrate()
-```
 
 ## Constructors
 
