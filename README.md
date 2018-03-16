@@ -146,42 +146,257 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
 ```
 
-## New Methods
+## Empty Value and Invalid Value
 
-All 
+Almost all the transformations receive the emptyValue attribute and the invalidValue attribute. 
 
-### Abs
+### Using the Empty Value
 
+The empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list. 
+
+```javascript
+  const ArrayMore = require("arraymore.js")
+  console.log(new ArrayMore().abs());        // ArrayMore [] // default empty value
+  console.log(new ArrayMore().abs(":("));    // ":(" defined empty value
+```  
+### Using the Invalid Value
+
+The invalidValue attribute defines what should be the value that replace invalid values. The default emptyValue is, in general, the NaN value.
+
+```javascript
+  console.log(new ArrayMore([1,2,3,"a",5]).abs();       // ArrayMore [1,2,3,NaN,5] // default invalidValue
+  console.log(new ArrayMore([1,2,3,"a",5]).abs([],-1)); // ArrayMore [1,2,3,-1,5] // defined invalidValue
+```
+
+## Transformations
+
+### ArrayMore.abs
+
+```javascript
+ArrayMore.abs( emptyValue = [], invalidValue = NaN )
+```
 Create a new list with all the values changed to the abs
 
 ```javascript
-  const List = require("arraymore.js")
-  new List( -1, -2, -3, 4, 5 ).abs()) // [ 1, 2, 3, 4, 5 ]
+  const ArrayMore = require("arraymore.js")
+  new ArrayMore( -1, -2, -3, 4, 5 ).abs()) // ArrayMore [ 1, 2, 3, 4, 5 ]
 ```
 
-You can replace the value of the return to empty inputs, the default value is empty list.
+### ArrayMore.accumulate
 
 ```javascript
-  const List = require("arraymore.js")
-  console.log(new List().abs()); // []
-  console.log(new List().abs(":(")); // ":("
+ArrayMore.accumulate( c = 0, emptyValue = [0], invalidValue = NaN ) {
 ```
 
-You can replace the value of invalid numbers input, the default value is NaN.
+Starting from the constante c (zero), add each value of the array and create a new array with size n + 1
 
 ```javascript
-  const List = require("arraymore.js")
-  console.log(new List(1,2,"x",3).abs()); // [1,2,3,NaN,3]
-  console.log(new List(1,2,"x",3).abs([],0)); // [1,2,3,0,3]
+  const ArrayMore = require("arraymore.js")
+  new ArrayMore( 1, 1, 1, 1, 1 ).accumulate() // ArrayMore [ 0, 1, 2, 3, 4, 5 ]
+  new ArrayMore( 1, 2, 3, 4, 5 ).accumulate() // ArrayMore [ 0, 1, 3, 6, 10, 15 ]
 ```
 
-### Accumulate
+## Missing Documentation
 
-Starting from zero, add each value of the array and create a new array with size n + 1
+This functions exists and work. But there is not properly documentation yet. The unitary test may be the best place to see examples of how to use them.
 
-```javascript
-  const List = require("arraymore.js")
-  new List( 1, 1, 1, 1, 1 ).accumulate()) // [ 0, 1, 2, 3, 4, 5 ]
-```
+### ArrayMore.parent
 
-### Aggregate
+@todo
+
+### ArrayMore.copy
+
+@todo
+
+### ArrayMore.concat
+
+@todo
+
+### ArrayMore.isEmptyValues
+
+@todo
+
+### ArrayMore.isNullValues
+
+@todo
+
+### ArrayMore.isUndefinedValues
+
+@todo
+
+### ArrayMore.equals
+
+@todo
+
+### ArrayMore.similar
+
+@todo
+
+### ArrayMore.isEmpty
+
+@todo
+
+### ArrayMore.take
+
+@todo
+
+### ArrayMore.head
+
+@todo
+
+### ArrayMore.tail
+
+@todo
+
+### ArrayMore.append
+
+@todo
+
+### ArrayMore.prepend
+
+@todo
+
+### ArrayMore.has
+
+@todo
+
+### ArrayMore.hasIndex
+
+@todo
+
+### ArrayMore.unique
+
+@todo
+
+### ArrayMore.max
+
+@todo
+
+### ArrayMore.min
+
+@todo
+
+### ArrayMore.sum
+
+@todo
+
+### ArrayMore.avg
+
+@todo
+
+### ArrayMore.normalize
+
+@todo
+
+### ArrayMore.integrate
+
+@todo
+
+### ArrayMore.last
+
+@todo
+
+### ArrayMore.first
+
+@todo
+
+### ArrayMore.get
+
+@todo
+
+### ArrayMore.getRotate
+
+@todo
+
+### ArrayMore.derivate
+
+@todo
+
+### ArrayMore.aggregate
+
+@todo
+
+### ArrayMore.overlaps
+
+@todo
+
+### ArrayMore.sqrt
+
+@todo
+
+### ArrayMore.round
+
+@todo
+
+### ArrayMore.map
+
+@todo
+
+### ArrayMore.reduce
+
+@todo
+
+### ArrayMore.replaceNaN
+
+@todo
+
+### ArrayMore.rotate
+
+@todo
+
+### ArrayMore.applyOperation
+
+@todo
+
+### ArrayMore.plus
+
+@todo
+
+### ArrayMore.more
+
+@todo
+
+### ArrayMore.less
+
+@todo
+
+### ArrayMore.times
+
+@todo
+
+### ArrayMore.times
+
+@todo
+
+### ArrayMore.div
+
+@todo
+
+### ArrayMore.squared
+
+@todo
+
+### ArrayMore.pow
+
+@todo
+
+### ArrayMore.sin
+
+@todo
+
+### ArrayMore.cos
+
+@todo
+
+### ArrayMore.diff
+
+@todo
+
+### ArrayMore.errorRate
+
+@todo
+
+### ArrayMore.flat
+
+@todo
+
