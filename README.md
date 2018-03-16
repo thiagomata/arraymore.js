@@ -47,26 +47,26 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
 ### From Cast
 ```javascript
-  const List = require("arraymore.js")
+  const ArrayMore = require("arraymore.js")
   var arr1to5 = [1,2,3,4,5];
-  var list1to5FromCast = List.cast(arr1to5);
+  var list1to5FromCast = ArrayMore.cast(arr1to5);
 ```
 ### From Arguments
 ```javascript
-  const List = require("arraymore.js")
-  var list1to5FromArgs = new List(1,2,3,4,5);
+  const ArrayMore = require("arraymore.js")
+  var list1to5FromArgs = new ArrayMore(1,2,3,4,5);
 ```
 ### From Range
 ```javascript
-  var list1to5FromRange = List.range(1,6); // [min,max)
+  var list1to5FromRange = ArrayMore.range(1,6); // [min,max)
 ```
 ### From Transformations
 ```javascript
-  var list1to5FromRange2 = List.range(5).plus(1); // [0,1,2,3,4] + 1 = [1,2,3,4,5]
+  var list1to5FromRange2 = ArrayMore.range(5).plus(1); // [0,1,2,3,4] + 1 = [1,2,3,4,5]
 ```
 ### From Empty List more Append Methods
 ```javascript
-  var list1to5FromAppend = new List().
+  var list1to5FromAppend = new ArrayMore().
     append(1).
     append(2).
     append(3).
@@ -75,7 +75,7 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 ```
 ### From Empty List more Prepend Methods
 ```javascript
-  var list1to5FromPrepend = new List().
+  var list1to5FromPrepend = new ArrayMore().
     prepend(5).
     prepend(4).
     prepend(3).
@@ -98,10 +98,10 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
   // ArrayMore [ 1 ]
   var arr1 = [1];
-  var list1FromCastArray = List.cast(arr1);
-  var list1FromCastValue = List.cast(1);
-  var list1FromAppend    = new List().append(1);
-  var list1FromAppend    = new List().prepend(1);
+  var list1FromCastArray = ArrayMore.cast(arr1);
+  var list1FromCastValue = ArrayMore.cast(1);
+  var list1FromAppend    = new ArrayMore().append(1);
+  var list1FromAppend    = new ArrayMore().prepend(1);
   console.log( list1FromCastArray.equals( arr1 ) );               // true
   console.log( list1FromCastArray.equals( list1FromCastArray ) ); // true
   console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
@@ -112,8 +112,8 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
   // Empty List
   var arrEmpty3 = new Array(3);
-  var listEmpty3 = new List(3);
-  var listEmpty3FromCast = List.cast([undefined,undefined,undefined]);
+  var listEmpty3 = new ArrayMore(3);
+  var listEmpty3FromCast = ArrayMore.cast([undefined,undefined,undefined]);
   console.log( listEmpty3.equals(arrEmpty3) ); // true
   console.log( listEmpty3.equals(listEmpty3FromCast) ); // true
 ```
@@ -128,10 +128,10 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
   var arrEmpty3  = new Array(1).concat(new Array(2)); // Array [ <3 empty items> ]
   console.log( arrValue12.toString() == arrEmpty3.toString() ); // false
 
-  var listEmpty1 = new List(1);                 // ArrayMore [ undefined ]
-  var listValue1FromCast = List.cast(1);        // ArrayMore [ 1 ]
-  var listValue1FromCastArr1 = List.cast([1]);  // ArrayMore [ 1 ]
-  var listValueArr1 = new List([1]);            // ArrayMore [ [ 1 ] ]
+  var listEmpty1 = new ArrayMore(1);                 // ArrayMore [ undefined ]
+  var listValue1FromCast = ArrayMore.cast(1);        // ArrayMore [ 1 ]
+  var listValue1FromCastArr1 = ArrayMore.cast([1]);  // ArrayMore [ 1 ]
+  var listValueArr1 = new ArrayMore([1]);            // ArrayMore [ [ 1 ] ]
 
   console.log( listEmpty1.equals( listValueArr1 ) );          // false
   console.log( listEmpty1.equals( listValue1FromCast ) );     // false
