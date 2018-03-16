@@ -145,6 +145,15 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
   console.log( listValueArr1.equals( listEmpty1 ) );                       // false
 
 ```
+## ArrayMore where fits
+
+This project intents to make all arrays generated from this class as also ArrayMore. So, if the expected result of any method would be an Array object, you should expected receive an ArrayMore object.
+
+```javascript
+  const ArrayMore = require("arraymore.js")
+  console.log(ArrayMore.cast([[[1]]])[0][0]);  // ArrayMore [1]
+  ArrayMore.range(1).map( x => 1 )             // ArrayMore [1]
+```  
 
 ## Empty Value and Invalid Value
 
@@ -185,7 +194,7 @@ Create a new list with all the values changed to the abs
 ### ArrayMore.accumulate
 
 ```javascript
-ArrayMore.accumulate( c = 0, emptyValue = [0], invalidValue = NaN ) {
+ArrayMore.accumulate( c = 0, emptyValue = [0], invalidValue = NaN )
 ```
 
 Starting from the constante c (zero), add each value of the array and create a new array with size n + 1
@@ -202,38 +211,70 @@ This functions exists and work. But there is not properly documentation yet. The
 
 ### ArrayMore.parent
 
+```javascript
+ArrayMore.parent()
+```
+
 @todo
 
 ### ArrayMore.copy
 
+```javascript
+ArrayMore.copy()
+```
 @todo
 
 ### ArrayMore.concat
 
+```javascript
+ArrayMore.concat( data = undefined, castNoValueToNull = false, keepHoles = false)
+```
 @todo
 
 ### ArrayMore.isEmptyValues
 
+```javascript
+ArrayMore.isEmptyValues()
+```
 @todo
 
 ### ArrayMore.isNullValues
+
+```javascript
+ArrayMore.isNullValues()
+```
 
 @todo
 
 ### ArrayMore.isUndefinedValues
 
+```javascript
+ArrayMore.isUndefinedValues()
+```
+
 @todo
 
 ### ArrayMore.equals
+
+```javascript
+ArrayMore.equals( other, anyOrder = true ) 
+```
 
 @todo
 
 ### ArrayMore.similar
 
+```javascript
+ArrayMore.similar( other, anyOrder = true ) 
+```
+
 @todo
 
 ### ArrayMore.isEmpty
 
+```javascript
+ArrayMore.isEmpty()
+```
 @todo
 
 ### ArrayMore.take
