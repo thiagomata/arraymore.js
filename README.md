@@ -7,7 +7,7 @@ class ArrayMore extends Array {
  ...
 }
 ```
-## All the oll Javascript Array
+## Is the old Javascript Array - and more.
 
 This class extends the Javascript Array. So, all the previous features are still over there. The goal is keep all the javascript methods working as usual and not change the Array class.
 
