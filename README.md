@@ -46,29 +46,47 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
         integrate()
 ```
 
-## Constructor
+## Constructors
 
+### From Cast
 ```javascript
   const List = require("arraymore.js")
-
-  // ArrayMore [ 1, 2, 3, 4, 5 ]
   var arr1to5 = [1,2,3,4,5];
   var list1to5FromCast = List.cast(arr1to5);
+```
+### From Arguments
+```javascript
+  const List = require("arraymore.js")
   var list1to5FromArgs = new List(1,2,3,4,5);
+```
+### From Range
+```javascript
   var list1to5FromRange = List.range(1,6); // [min,max)
+```
+### From Transformations
+```javascript
   var list1to5FromRange2 = List.range(5).plus(1); // [0,1,2,3,4] + 1 = [1,2,3,4,5]
+```
+### From Empty List more Append Methods
+```javascript
   var list1to5FromAppend = new List().
     append(1).
     append(2).
     append(3).
     append(4).
     append(5);
+```
+### From Empty List more Prepend Methods
+```javascript
   var list1to5FromPrepend = new List().
     prepend(5).
     prepend(4).
     prepend(3).
     prepend(2).
     prepend(1);
+```
+### They all should generate the same result
+```javascript
 
   console.log( list1to5FromCast.equals( arr1to5 ) );             // true
   console.log( list1to5FromCast.equals( list1to5FromCast ) );    // true
@@ -77,6 +95,9 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
   console.log( list1to5FromCast.equals( list1to5FromRange2 ) );  // true
   console.log( list1to5FromCast.equals( list1to5FromAppend ) );  // true
   console.log( list1to5FromCast.equals( list1to5FromPrepend ) ); // true
+```
+## Special Attention with one parameter inputs
+```javascript
 
   // ArrayMore [ 1 ]
   var arr1 = [1];
@@ -88,6 +109,9 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
   console.log( list1FromCastArray.equals( list1FromCastArray ) ); // true
   console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
   console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
+```
+## Special Attention with empty list inputs
+```javascript
 
   // Empty List
   var arrEmpty3 = new Array(3);
@@ -95,8 +119,9 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
   var listEmpty3FromCast = List.cast([undefined,undefined,undefined]);
   console.log( listEmpty3.equals(arrEmpty3) ); // true
   console.log( listEmpty3.equals(listEmpty3FromCast) ); // true
-
-  // common mistakes
+```
+## Common Mistakes
+```javascript
 
   var arrValue1 = [1];           // Array [ 1 ]
   var arrEmpty1 = new Array(1);  // Array [ undefined ]
