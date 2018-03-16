@@ -18,7 +18,13 @@ This project uses method chaining, call by copy and array rotation. So, if the r
 ### Method Chaining
 ```javascript
 const ArrayMore = require("arraymore.js");
-console.log( new ArrayMore(1,2,3,4).plus(1).normalize().times(100).round() ); // ArrayMore [ 14, 21, 29, 36 ]
+console.log( 
+  new ArrayMore(1,2,3,4).
+      plus(1).
+      normalize().
+      times(100).
+      round()
+); // ArrayMore [ 14, 21, 29, 36 ]
 ```
 ### Call by Copy
 ```javascript
