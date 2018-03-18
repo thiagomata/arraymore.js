@@ -292,9 +292,9 @@ console.log( bar ); ArrayMore [ 1, 200, 3]
 This is not a deep copy. So, if some attributes is an object, any change will affect both arrays.
 
 ```javascript
-var oldBob = new ArrayMore({name:"bob");
-var newBob = olbBob.copy();
-var oldBob[0].name = "Mr. Bob";
+var oldBob = new ArrayMore({name:"bob"});
+var newBob = oldBob.copy();
+oldBob[0].name = "Mr. Bob";
 console.log( oldBob ); ArrayMore [ {name:"Mr. Bob"} ]
 console.log( newBob ); ArrayMore [ {name:"Mr. Bob"} ]
 ```
