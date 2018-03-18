@@ -177,7 +177,10 @@ The optional empty value attribute defines what should be the result if the List
 ```javascript
 const ArrayMore = require("arraymore.js")
 
-console.log(new ArrayMore().abs());        // ArrayMore [] // default empty value
+console.log(new ArrayMore().
+
+
+());        // ArrayMore [] // default empty value
 console.log(new ArrayMore().abs(":("));    // ":(" defined empty value
 ```  
 ### Using the Invalid Value
@@ -294,166 +297,273 @@ ArrayMore.isEmpty()
 @todo
 
 ### ArrayMore.take
-
+```javascript
+ArrayMore.take(n)
+```
 @todo
 
 ### ArrayMore.head
-
+```javascript
+ArrayMore.head(n)
+```
 @todo
 
 ### ArrayMore.tail
 
+```javascript
+ArrayMore.tail(n)
+```
 @todo
 
 ### ArrayMore.append
+
+```javascript
+ArrayMore.append(value)
+```
 
 @todo
 
 ### ArrayMore.prepend
 
+```javascript
+ArrayMore.prepend(value)
+```
+
 @todo
 
 ### ArrayMore.has
 
+```javascript
+ArrayMore.has(value)
+```
 @todo
 
 ### ArrayMore.hasIndex
+```javascript
+ArrayMore.hasIndex(value)
+```
 
 @todo
 
 ### ArrayMore.unique
+```javascript
+ArrayMore.unique()
+```
 
 @todo
 
 ### ArrayMore.max
+```javascript
+ArrayMore.max( emptyValue = null, invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.min
 
+```javascript
+ArrayMore.min( emptyValue = null, invalidValue = NaN )
+```
+
 @todo
 
 ### ArrayMore.sum
+```javascript
+ArrayMore.sum( emptyValue = null, invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.avg
+```javascript
+ArrayMore.avg( emptyValue = null, invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.normalize
+```javascript
+ArrayMore.normalize( emptyValue = [], invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.integrate
-
+```javascript
+ArrayMore.integrate( c = 0, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.last
-
+```javascript
+ArrayMore.last( emptyValue = null )
+```
 @todo
 
 ### ArrayMore.first
+```javascript
+ArrayMore.first( emptyValue = null )
+```
 
 @todo
 
 ### ArrayMore.get
+```javascript
+ArrayMore.get( key, emptyValue = null )
+```
 
 @todo
 
 ### ArrayMore.getRotate
+```javascript
+ArrayMore.getRotate( key, emptyValue = null )
+```
 
 @todo
 
 ### ArrayMore.derivate
-
+```javascript
+ArrayMore.derivate( invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.aggregate
-
+```javascript
+ArrayMore.aggregate(
+    otherArray,
+    aggregateFunction    = (x, y) => x + y,
+    onlyOneFoundFunction = x => x
+  )
+```
 @todo
 
 ### ArrayMore.overlaps
-
+```javascript
+ArrayMore.overlaps(
+    otherArray,
+    fSearch    = (a,b) => a == b,
+    fGet       = (a) => a,
+    valueEmpty = null
+  )
+```
 @todo
 
 ### ArrayMore.sqrt
-
+```javascript
+ArrayMore.sqrt( emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.round
-
+```javascript
+ArrayMore.round( precision = 0, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.map
+```javascript
+ArrayMore.map( callback, thisArg = undefined )
+```
 
 @todo
 
 ### ArrayMore.reduce
-
+```javascript
+ArrayMore.reduce( callback, initialValue = null )
+```
 @todo
 
 ### ArrayMore.replaceNaN
-
+```javascript
+ArrayMore.replaceNaN( invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.rotate
-
+```javascript
+ArrayMore.rotate( rotation, emptyValue, operation, invalidValue = NaN)
+```
 @todo
 
 ### ArrayMore.applyOperation
-
+```javascript
+ArrayMore.applyOperation( emptyValue, invalidValue, operation )
+```
 @todo
 
 ### ArrayMore.plus
-
+```javascript
+plus( value = 1, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.more
-
+```javascript
+more( value = 1, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.less
-
+```javascript
+ArrayMore.less( value = 1, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.times
-
-@todo
-
-### ArrayMore.times
+```javascript
+ArrayMore.times( value = 1, emptyValue = [], invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.div
+```javascript
+ArrayMore.div( value = 1, emptyValue = [], invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.squared
+```javascript
+ArrayMore.squared( value = 1, emptyValue = [], invalidValue = NaN )
+```
 
 @todo
 
 ### ArrayMore.pow
-
+```javascript
+ArrayMore.pow( value = 2, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.sin
-
+```javascript
+ArrayMore.sin( value = 1, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.cos
-
+```javascript
+ArrayMore.cos( value = 1, emptyValue = [], invalidValue = NaN )
+```
 @todo
 
 ### ArrayMore.diff
-
+```javascript
+ArrayMore.diff( otherArray )
+```
 @todo
 
 ### ArrayMore.errorRate
+```javascript
+ArrayMore.diff( errorRate )
+```
 
 @todo
 
 ### ArrayMore.flat
-
+```javascript
+ArrayMore.flat()
+```
 @todo
 
