@@ -280,6 +280,8 @@ ArrayMore.copy()
 ```
 Create a copy of the array. This is not a deep copy. So, if some attributes are objects any change will affect both arrays.
 
+#### Example
+
 ```javascript
 var foo = new ArrayMore(1,2,3);
 var bar = foo.copy();
@@ -287,9 +289,6 @@ var bar[1] = 200;
 console.log( foo ); ArrayMore [ 1, 2, 3]
 console.log( bar ); ArrayMore [ 1, 200, 3]
 ```
-#### Example
-
-@todo
 
 ### ArrayMore.concat
 
