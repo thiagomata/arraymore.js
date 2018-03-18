@@ -17,7 +17,6 @@ This project uses method chaining, call by copy and array rotation. So, if the r
 
 ### Method Chaining
 ```javascript
-const ArrayMore = require("arraymore.js");
 console.log( 
   new ArrayMore(1,2,3,4).
       plus(1).
@@ -28,14 +27,12 @@ console.log(
 ```
 ### Call by Copy
 ```javascript
-const ArrayMore = require("arraymore.js");
 var foo = new ArrayMore(1,2,3,4); // ArrayMore [ 1, 2, 3, 4 ]
 var bar = foo.plus(1);            // ArrayMore [ 2, 3, 4, 5 ]
 console.log( foo );               // ArrayMore [ 1, 2, 3, 4 ]
 ```
 ### Array Rotation
 ```javascript
-const ArrayMore = require("arraymore.js");
 console.log( new ArrayMore(1,2,3,4,5,6,7).plus([10,100]) ); // ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
 ```
 ## Basic methods
@@ -54,13 +51,11 @@ There are others methods like overlaps(list), diff(list), errorRate(list), aggre
 
 ### From Cast
 ```javascript
-const ArrayMore = require("arraymore.js")
 var arr1to5 = [1,2,3,4,5];
 var list1to5FromCast = ArrayMore.cast(arr1to5);
 ```
 ### From Arguments
 ```javascript
-const ArrayMore = require("arraymore.js")
 var list1to5FromArgs = new ArrayMore(1,2,3,4,5);
 ```
 ### From Range
@@ -69,12 +64,10 @@ var list1to5FromRange = ArrayMore.range(1,6); // [min,max)
 ```
 ### From Transformations
 ```javascript
-const ArrayMore = require("arraymore.js");
 var list1to5FromRange2 = ArrayMore.range(5).plus(1); // [0,1,2,3,4] + 1 = [1,2,3,4,5]
 ```
 ### From Empty List more Append Methods
 ```javascript
-const ArrayMore = require("arraymore.js");
 var list1to5FromAppend = new ArrayMore().
   append(1).
   append(2).
@@ -84,7 +77,6 @@ var list1to5FromAppend = new ArrayMore().
 ```
 ### From Empty List more Prepend Methods
 ```javascript
-const ArrayMore = require("arraymore.js");
 var list1to5FromPrepend = new ArrayMore().
   prepend(5).
   prepend(4).
@@ -94,7 +86,6 @@ var list1to5FromPrepend = new ArrayMore().
 ```
 ### They all should generate the same result
 ```javascript
-const ArrayMore = require("arraymore.js");
 console.log( list1to5FromCast.equals( arr1to5 ) );             // true
 console.log( list1to5FromCast.equals( list1to5FromCast ) );    // true
 console.log( list1to5FromCast.equals( list1to5FromArgs ) );    // true
@@ -105,8 +96,6 @@ console.log( list1to5FromCast.equals( list1to5FromPrepend ) ); // true
 ```
 ## Special Attention with one parameter inputs
 ```javascript
-const ArrayMore = require("arraymore.js");
-
 // ArrayMore [ 1 ]
 var arr1 = [1];
 var list1FromCastArray = ArrayMore.cast(arr1);
@@ -120,8 +109,6 @@ console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
 ```
 ## Special Attention with empty list inputs
 ```javascript
-const ArrayMore = require("arraymore.js");
-
 // Empty List
 var arrEmpty3 = new Array(3);
 var listEmpty3 = new ArrayMore(3);
@@ -131,8 +118,6 @@ console.log( listEmpty3.equals(listEmpty3FromCast) ); // true
 ```
 ## Common Mistakes
 ```javascript
-const ArrayMore = require("arraymore.js");
-
 var arrValue1 = [1];           // Array [ 1 ]
 var arrEmpty1 = new Array(1);  // Array [ undefined ]
 console.log( arrValue1.toString() == arrEmpty1.toString() ); // false
@@ -160,8 +145,6 @@ console.log( listValueArr1.equals( listEmpty1 ) );                       // fals
 This project intents to make all arrays generated from this class as also ArrayMore. So, if the expected result of any method would be an Array object, you should expected receive an ArrayMore object.
 
 ```javascript
-const ArrayMore = require("arraymore.js")
-
 console.log(ArrayMore.cast([[[1]]])[0][0]);  // ArrayMore [1]
 ArrayMore.range(1).map( x => 1 )             // ArrayMore [1]
 ```  
@@ -175,8 +158,6 @@ Almost all the transformations can receive the emptyValue attribute and the inva
 The optional empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list. 
 
 ```javascript
-const ArrayMore = require("arraymore.js")
-
 console.log(new ArrayMore().
 
 
@@ -188,8 +169,6 @@ console.log(new ArrayMore().abs(":("));    // ":(" defined empty value
 The optional invalidValue attribute defines what should be the value that replace invalid values. The default emptyValue is, in general, the NaN value.
 
 ```javascript
-const ArrayMore = require("arraymore.js");
-
 console.log(new ArrayMore([1,2,3,"a",5]).abs();       // ArrayMore [1,2,3,NaN,5] // default invalidValue
 console.log(new ArrayMore([1,2,3,"a",5]).abs([],-1)); // ArrayMore [1,2,3,-1,5] // defined invalidValue
 ```
@@ -204,8 +183,6 @@ ArrayMore.abs( emptyValue = [], invalidValue = NaN )
 Create a new list with all the values changed to the abs
 
 ```javascript
-const ArrayMore = require("arraymore.js")
-
 new ArrayMore( -1, -2, -3, 4, 5 ).abs()) // ArrayMore [ 1, 2, 3, 4, 5 ]
 ```
 
@@ -218,8 +195,6 @@ ArrayMore.accumulate( c = 0, emptyValue = [0], invalidValue = NaN )
 Starting from the constante c (zero), add each value of the array and create a new array with size n + 1
 
 ```javascript
-const ArrayMore = require("arraymore.js")
-
 new ArrayMore( 1, 1, 1, 1, 1 ).accumulate() // ArrayMore [ 0, 1, 2, 3, 4, 5 ]
 new ArrayMore( 1, 2, 3, 4, 5 ).accumulate(100) // ArrayMore [ 100, 101, 103, 106, 110, 115 ]
 ```
