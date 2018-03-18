@@ -278,7 +278,7 @@ console.log( new ArrayMore([1],[2]).parent().concat([[3]])[2] ); // [ 3 ]
 ```javascript
 ArrayMore.copy()
 ```
-Create a copy of the array. This is not a deep copy. So, if some attributes are objects any change will affect both arrays.
+Create a copy of the array. 
 
 #### Example
 
@@ -288,6 +288,15 @@ var bar = foo.copy();
 var bar[1] = 200;
 console.log( foo ); ArrayMore [ 1, 2, 3]
 console.log( bar ); ArrayMore [ 1, 200, 3]
+```
+This is not a deep copy. So, if some attributes is an object, any change will affect both arrays.
+
+```javascript
+var oldBob = new ArrayMore({name:"bob");
+var newBob = olbBob.copy();
+var oldBob[0].name = "Mr. Bob";
+console.log( oldBob ); ArrayMore [ {name:"Mr. Bob"} ]
+console.log( newBob ); ArrayMore [ {name:"Mr. Bob"} ]
 ```
 
 ### ArrayMore.concat
