@@ -221,7 +221,7 @@ Starting from the constante c (zero), add each value of the array and create a n
 const ArrayMore = require("arraymore.js")
 
 new ArrayMore( 1, 1, 1, 1, 1 ).accumulate() // ArrayMore [ 0, 1, 2, 3, 4, 5 ]
-new ArrayMore( 1, 2, 3, 4, 5 ).accumulate() // ArrayMore [ 0, 1, 3, 6, 10, 15 ]
+new ArrayMore( 1, 2, 3, 4, 5 ).accumulate(100) // ArrayMore [ 100, 101, 103, 106, 110, 115 ]
 ```
 
 ## Missing Documentation
