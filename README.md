@@ -1,4 +1,4 @@
-# arraymore.js
+# Arraymore.js
 
 A extension of the Javascript Array with super powers.
 
@@ -91,7 +91,7 @@ console.log( list1to5FromCast.equals( list1to5FromCast ) );    // true
 console.log( list1to5FromCast.equals( list1to5FromArgs ) );    // true
 console.log( list1to5FromCast.equals( list1to5FromRange ) );   // true
 console.log( list1to5FromCast.equals( list1to5FromRange2 ) );  // true
-console.log( list1to5FromCast.equals( list1to5FromAppend ) );  // true
+console.log( list1to5FromCast.equals( list1to5From ) );  // true
 console.log( list1to5FromCast.equals( list1to5FromPrepend ) ); // true
 ```
 ## Special Attention with one parameter inputs
@@ -358,33 +358,43 @@ ArrayMore.similar( other, anyOrder = true )
 
 Similar to the ArrayMore.equals method but cast elements. So, '2' is similar to 2, for example.
 
-
+#### Example
+```javascript
+console.log(ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4])); // true
+```
 
 ### ArrayMore.isEmpty
 
 ```javascript
 ArrayMore.isEmpty()
 ```
-@todo
+True if the array has no elements.
+
 
 ### ArrayMore.take
 ```javascript
 ArrayMore.take(n)
 ```
-@todo
+Create a new array with the first n elements. If n is negative returns a new array without the first n elements.
+
+#### Example
+```javascript
+console.log( new ArrayMore(1,2,3,4,5).take(2) ); // ArrayMore [ 1, 2 ]
+console.log( new ArrayMore(1,2,3,4,5).take(-2) ); // ArrayMore [ 3, 4, 5 ]
+```
 
 ### ArrayMore.head
 ```javascript
-ArrayMore.head(n)
+ArrayMore.head(n = 10)
 ```
-@todo
+Alias to the take method with default 10.
 
 ### ArrayMore.tail
 
 ```javascript
 ArrayMore.tail(n)
 ```
-@todo
+Create a new array with the last n elements. If n is negative returns a new array without the last n elements.
 
 ### ArrayMore.append
 
@@ -392,7 +402,13 @@ ArrayMore.tail(n)
 ArrayMore.append(value)
 ```
 
-@todo
+Create a new array with all the previous elements more the new one received at the last position.
+
+#### Example
+
+```javascript
+console.log( new ArrayMore(1,2,3).append(4).append(5) ); // ArrayMore [ 1, 2, 3, 4, 5 ]
+```
 
 ### ArrayMore.prepend
 
@@ -400,34 +416,58 @@ ArrayMore.append(value)
 ArrayMore.prepend(value)
 ```
 
-@todo
+Create a new array with all the previous elements more the new one received at the fist position.
+
+#### Example
+
+```javascript
+console.log( new ArrayMore(1,2,3).prepend(4).prepend(5) ); // ArrayMore [ 5, 4, 1, 2, 3 ]
+```
 
 ### ArrayMore.has
 
 ```javascript
 ArrayMore.has(value)
 ```
-@todo
+Returns true if find the value into the array. If the value is a function, returns true if the function is true to some element of the array.
 
+#### Example
+```javascript
+console.log( new ArrayMore(1,2,3,4,5).has(3) ); // true
+console.log( new ArrayMore(1,2,3,4,5).has(6) ); // false
+console.log( new ArrayMore(1,2,3,4,5).has( (x) => x*x > 20) ); // true
+console.log( new ArrayMore(1,2,3,4,5).has( (x) => x*x > 40) ); // false
+console.log( new ArrayMore({name:"anna"},{name:"bob"}).has( n => n.name[0] === 'a' ) ); // true
+```
 ### ArrayMore.hasIndex
 ```javascript
 ArrayMore.hasIndex(value)
 ```
-
-@todo
+Similar to the ArrayMore.has, but returns the key position if found or -1 if not found.
+```javascript
+console.log( new ArrayMore(1,2,3,4,5).hasIndex(3) ); // 2
+console.log( new ArrayMore(1,2,3,4,5).hasIndex(6) ); // -1
+console.log( new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 20) ); // 4
+console.log( new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 40) ); // -1
+console.log( new ArrayMore({name:"anna"},{name:"bob"}).hasIndex( n => n.name[0] === 'a' ) ); // 0
+```
 
 ### ArrayMore.unique
 ```javascript
 ArrayMore.unique()
 ```
+Create a new array with just one occurrence of every value.
 
-@todo
+#### Example
+```javascript
+console.log( new ArrayMore(1,2,3,1,2,4).unique() ); // ArrayMore [ 1, 2, 3, 4 ]
+```
 
 ### ArrayMore.max
 ```javascript
 ArrayMore.max( emptyValue = null, invalidValue = NaN )
 ```
-
+Return the max value of the Array.
 @todo
 
 ### ArrayMore.min
@@ -435,62 +475,91 @@ ArrayMore.max( emptyValue = null, invalidValue = NaN )
 ```javascript
 ArrayMore.min( emptyValue = null, invalidValue = NaN )
 ```
+Return the min value of the Array.
 
-@todo
 
 ### ArrayMore.sum
 ```javascript
 ArrayMore.sum( emptyValue = null, invalidValue = NaN )
 ```
 
-@todo
+Return the sum of the values of the Array.
 
 ### ArrayMore.avg
 ```javascript
 ArrayMore.avg( emptyValue = null, invalidValue = NaN )
 ```
 
-@todo
+Return the average of the values of the Array.
 
 ### ArrayMore.normalize
 ```javascript
 ArrayMore.normalize( emptyValue = [], invalidValue = NaN )
 ```
 
-@todo
+Return the normalized version of the values of the Array. The normalized values should keep the same proportion of the original values but the sum of the normalized values should be equals 1.
 
+### Examples 
+```javascript
+console.log(new ArrayMore(1,1,2,4,8).normalize()); // ArrayMore [ 0.0625, 0.0625, 0.125, 0.25, 0.5 ]
+```
 ### ArrayMore.integrate
 ```javascript
 ArrayMore.integrate( c = 0, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+Create a new array, with the same size of the original where every element is added by the sum of the previous one. Very similar to the ArrayMore.accumulate.
 
 ### ArrayMore.last
 ```javascript
 ArrayMore.last( emptyValue = null )
 ```
-@todo
+Get the last element of the array or the emptyValue if not exists or undefined.
 
 ### ArrayMore.first
 ```javascript
 ArrayMore.first( emptyValue = null )
 ```
+Get the first element of the array or the emptyValue if not exists or undefined.
 
-@todo
-
+#### Examples
+```javascript
+console.log(new ArrayMore(1,2,3).first()); // 1
+console.log(new ArrayMore(undefined,2,3).first()); // null
+console.log(new ArrayMore(undefined,2,3).first(-1)); // -1
+console.log(new ArrayMore().first(-1)); // -1
+```
 ### ArrayMore.get
 ```javascript
 ArrayMore.get( key, emptyValue = null )
 ```
-
-@todo
+Get any element of the array or the emptyValue if not exists or undefined.
+#### Examples
+```javascript
+console.log(new ArrayMore(1,2,3).last()); // 3
+console.log(new ArrayMore(1,2,undefined).last()); // null
+console.log(new ArrayMore(1,2,undefined).last(-1)); // -1
+console.log(new ArrayMore().last(-1)); // -1
+```
 
 ### ArrayMore.getRotate
 ```javascript
 ArrayMore.getRotate( key, emptyValue = null )
 ```
+Looking to the array as a rotation values, get the value of the position.
 
-@todo
+#### Examples
+
+```javascript
+//   0, 1, 2, 3, 4, 5, 6, 7, ...   position
+// [ 0, 1, 2, 3, 0, 1, 2, 3, ... ] value
+console.log(new ArrayMore(0,1,2,3).getRotate(5)); // 1
+```
+The empty value still works to undefined values.
+```javascript
+//   0, 1, 2, 3, 4, 5, 6, 7, ...   position
+// [ 0, 1, undefined, 3, 0, 1, undefined, 3, ... ] value
+console.log(new ArrayMore(0,1,undefined,3).getRotate(6,-1)); // -1
+```
 
 ### ArrayMore.derivate
 ```javascript
