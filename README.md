@@ -304,14 +304,23 @@ console.log( newBob ); // ArrayMore [ {name:"Mr. Bob"} ]
 ```javascript
 ArrayMore.concat( data = undefined, castNoValueToNull = false, keepHoles = false)
 ```
-@todo
+
+Create a new ArrayMore with elements of both arrays. Input data is cast to Arraymore using ArrayMore.cast.
+
+#### Examples
+```javascript
+console.log(new ArrayMore(1,2,3).concat(new ArrayMore(4,5))); // ArrayMore [ 1, 2, 3, 4, 5 ]
+console.log(ArrayMore.cast([1,2,3]).concat([4,5])); // ArrayMore [ 1, 2, 3, 4, 5 ]
+console.log(ArrayMore.cast([1,2,3]).concat(4).concat(5)); // ArrayMore [ 1, 2, 3, 4, 5 ]
+console.log(ArrayMore.cast([1,2,3]).concat([1,2,3])); // ArrayMore [ 1, 2, 3, 1, 2, 3 ]
+```
 
 ### ArrayMore.isEmptyValues
 
 ```javascript
 ArrayMore.isEmptyValues()
 ```
-@todo
+Check if all the items of the array are null, NaN, undefined or empty values.
 
 ### ArrayMore.isNullValues
 
@@ -319,7 +328,7 @@ ArrayMore.isEmptyValues()
 ArrayMore.isNullValues()
 ```
 
-@todo
+Check if all the items of the array are null values.
 
 ### ArrayMore.isUndefinedValues
 
@@ -327,15 +336,47 @@ ArrayMore.isNullValues()
 ArrayMore.isUndefinedValues()
 ```
 
-@todo
+Check if all the items of the array are undefined values.
 
 ### ArrayMore.equals
 
 ```javascript
 ArrayMore.equals( other, anyOrder = true ) 
 ```
+Compare if two ArrayMore arrays are equals. Do that, using deep compare. 
 
-@todo
+#### Examples
+```javascript
+console.log(new ArrayMore().equals([])); // true
+console.log(new ArrayMore(1, [2], [[3],[[4]]]).equals([1, [2], [[3],[[4]]]])); // true
+console.log(ArrayMore.cast([1,2,3,4]).equals([4,3,2,1])); // true
+
+console.log(ArrayMore.cast([1]).equals([2])); // false
+console.log(ArrayMore.cast([1,2,3,3]).equals([1,2,3,4])); // false
+console.log(ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4])); // false
+```
+When comparing objects, try to use the equals method.
+
+```javascript
+
+    class Example {
+      constructor( x ) {
+        this.x = x;
+      }
+
+      equals( otherExample ) {
+        if( otherExample.constructor == Example ) {
+          return ( this.x > 10 ) === ( otherExample.x > 10 );
+        }
+        return ( this.x > 10 ) === ( otherExample > 10 );
+      }
+    }
+
+    console.log( ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(1) ] ) ) ); // true
+    console.log( ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ) ); // false
+    console.log( ArrayMore.cast( [ new Example(200) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ) ); // true
+
+```
 
 ### ArrayMore.similar
 
@@ -343,7 +384,9 @@ ArrayMore.equals( other, anyOrder = true )
 ArrayMore.similar( other, anyOrder = true ) 
 ```
 
-@todo
+Similar to the ArrayMore.equals method but cast elements. So, '2' is similar to 2, for example.
+
+
 
 ### ArrayMore.isEmpty
 
