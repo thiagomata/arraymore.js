@@ -158,10 +158,7 @@ Almost all the transformations can receive the emptyValue attribute and the inva
 The optional empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list. 
 
 ```javascript
-console.log(new ArrayMore().
-
-
-());        // ArrayMore [] // default empty value
+console.log(new ArrayMore().abs());        // ArrayMore [] // default empty value
 console.log(new ArrayMore().abs(":("));    // ":(" defined empty value
 ```  
 ### Using the Invalid Value
