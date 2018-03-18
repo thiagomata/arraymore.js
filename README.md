@@ -233,8 +233,45 @@ This functions exists and work. But there is not properly documentation yet. The
 ```javascript
 ArrayMore.parent()
 ```
+Some array methods native were overrides in ArrayMore. They intent to have the closest similar behavior of the native as possible. But, if you still need to access the real native code, for any reason, the parent object returns one object with all this array native methods:
 
-@todo
+```javascript
+{
+  concat: [Function native concat]
+  copyWithin: [Function native copyWithin]
+  entries: [Function native entries]
+  every: [Function native every]
+  fill: [Function native fill]
+  filter: [Function native filter]
+  find: [Function native find]
+  findIndex: [Function native findIndex]
+  forEach: [Function native forEach]
+  includes: [Function native includes]
+  indexOf: [Function native indexOf]
+  join: [Function native join]
+  keys: [Function native keys]
+  lastIndexOf: [Function native lastIndexOf]
+  map: [Function native map]
+  pop: [Function native pop]
+  push: [Function native push]
+  reduce: [Function native reduce]
+  reduceRight: [Function native reduceRight]
+  reverse: [Function native reverse]
+  shift: [Function native shift]
+  slice: [Function native slice]
+  some: [Function native some]
+  sort: [Function native sort]
+  splice: [Function native splice]
+  unshift: [Function native unshift]
+}
+```
+#### Example
+```javascript
+/* ArrayMore concat method convert Arrays to ArrayMore */
+console.log( new ArrayMore([1],[2]).concat([[3]])[2] ); // ArrayMore [ 3 ]
+/* Native concat method, called by using parent() did not */
+console.log( new ArrayMore([1],[2]).parent().concat([[3]])[2] ); // [ 3 ]
+```
 
 ### ArrayMore.copy
 
