@@ -565,7 +565,16 @@ console.log(new ArrayMore(0,1,undefined,3).getRotate(6,-1)); // -1
 ```javascript
 ArrayMore.derivate( invalidValue = NaN )
 ```
-@todo
+Returns one array with the discrete derivate from the original array.
+
+derivate[0] = original[0]
+derivate[n] = original[n] - original[n-1]
+
+#### Examples
+```javascript
+console.log( new ArrayMore(1,2,4,8,16).derivate() ); // ArrayMore [ 1, 1, 2, 4, 8 ]
+console.log( new ArrayMore(1,2,3,4,5).derivate() ); // ArrayMore [ 1, 2, 3, 4, 5 ]
+```
 
 ### ArrayMore.aggregate
 ```javascript
@@ -575,7 +584,12 @@ ArrayMore.aggregate(
     onlyOneFoundFunction = x => x
   )
 ```
-@todo
+Used to combine informations from two arrays. This method did not rotate the values.
+
+```javascript
+console.log( new ArrayMore(1,2,3,4,5).aggregate([100,200]) ); // ArrayMore [ 101, 202, 3, 4, 5 ]
+console.log( new ArrayMore(1,2,3,4,5).aggregate([100,200],(x,y)=>x*y,x => -x); // ArrayMore [ 100, 400, -3, -4, -5 ]
+```
 
 ### ArrayMore.overlaps
 ```javascript
@@ -586,107 +600,137 @@ ArrayMore.overlaps(
     valueEmpty = null
   )
 ```
-@todo
+Similar to aggregate, but where you can define what should be the search function and the get value function.
+
+#### Examples 
+```javascript
+var years = [1,2,3,4,5,6,7];
+var data = [{x:10,y:100},{x:3,y:30},{x:5,y:50},{x:11,y:110}]
+ArrayMore.cast(data).overlaps(
+  years,
+  (node,year) => node.x == year,
+  (node) => node.y * 10,
+  0
+); // ArrayMore [ 0, 0, 300, 0, 500, 0, 0 ]
+```
 
 ### ArrayMore.sqrt
 ```javascript
 ArrayMore.sqrt( emptyValue = [], invalidValue = NaN )
 ```
-@todo
-
+### Example
+```javascript
+new ArrayMore(1,4,9).sqrt(); // ArrayMore [ 1, 2, 3 ]
+```
 ### ArrayMore.round
 ```javascript
 ArrayMore.round( precision = 0, emptyValue = [], invalidValue = NaN )
 ```
-@todo
-
+```javascript
+new ArrayMore(1.11,2.22,3.333, 3.77, 4.89).round(1); // ArrayMore [ 1.1, 2.2, 3.3, 3.8, 4.9 ]
+```
 ### ArrayMore.map
 ```javascript
 ArrayMore.map( callback, thisArg = undefined )
 ```
 
-@todo
+The same as the native map Array function, but returns a ArrayMore instead Array.
 
 ### ArrayMore.reduce
 ```javascript
 ArrayMore.reduce( callback, initialValue = null )
 ```
-@todo
+The same as the native map Array function, but replace by ArrayMore if the result is an Array.
 
 ### ArrayMore.replaceNaN
 ```javascript
 ArrayMore.replaceNaN( invalidValue = NaN )
 ```
-@todo
+```javascript
+new ArrayMore(1,NaN,3).replaceNaN(2); // ArrayMore [ 1, 2, 3 ]
+```
 
 ### ArrayMore.rotate
 ```javascript
 ArrayMore.rotate( rotation, emptyValue, operation, invalidValue = NaN)
 ```
-@todo
+Apply one operation in one array in rotation. Created for internal use.
 
 ### ArrayMore.applyOperation
 ```javascript
 ArrayMore.applyOperation( emptyValue, invalidValue, operation )
 ```
-@todo
+Apply one operation in one array. Created for internal use.
 
 ### ArrayMore.plus
 ```javascript
 plus( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+```javascript
+new ArrayMore(1,2,3).plus([10,100]); // ArrayMore [ 11,  102, 13 ]
+```
 
 ### ArrayMore.more
 ```javascript
 more( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+Same as ArrayMore.plus
 
 ### ArrayMore.less
 ```javascript
 ArrayMore.less( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+```javascript
+new ArrayMore(10,20,30).less([1,10]); // ArrayMore [ 9, 10, 29 ]
+```
 
 ### ArrayMore.times
 ```javascript
 ArrayMore.times( value = 1, emptyValue = [], invalidValue = NaN )
 ```
 
-@todo
+```javascript
+new ArrayMore(1,2,3,4,5,6,7,8,9,10).times([2,10]); // ArrayMore  [ 2, 20, 6, 40, 10, 60, 14, 80, 18, 100 ]
+```
 
 ### ArrayMore.div
 ```javascript
 ArrayMore.div( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-
-@todo
+```javascript
+new ArrayMore(1,2,3,4,5,6,7,8,9,10).div([2,10]); // ArrayMore [ 0.5, 0.2, 1.5, 0.4, 2.5, 0.6, 3.5, 0.8, 4.5, 1 ]
+```
 
 ### ArrayMore.squared
 ```javascript
 ArrayMore.squared( value = 1, emptyValue = [], invalidValue = NaN )
 ```
 
-@todo
-
+```javascript
+new ArrayMore(1,2,3,4,5,6,7,8,9,10).squared(); // ArrayMore [ 1, 4, 9, 16, 25, 36, 49, 64, 81, 100 ]
+```
 ### ArrayMore.pow
 ```javascript
 ArrayMore.pow( value = 2, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+```javascript
+new ArrayMore(1,2,3,4,5,6,7,8,9,10).pow(3); // ArrayMore [ 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000 ]
+```
 
 ### ArrayMore.sin
 ```javascript
 ArrayMore.sin( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-@todo
-
+```javascript
+ArrayRange.range(10).times(Math.PI/2).sin().round(10); // ArrayMore [ 0, 1, 0, -1, -0, 1, 0, -1, -0, 1 ]
+```
 ### ArrayMore.cos
 ```javascript
 ArrayMore.cos( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-@todo
+```javascript
+ArrayMore.range(10).times(Math.PI/2).cos().round(10); // ArrayMore [ 1, 0, -1, -0, 1, 0, -1, -0, 1, 0 ]
+```
 
 ### ArrayMore.diff
 ```javascript
