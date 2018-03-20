@@ -13,6 +13,10 @@ describe('normalize', () => {
     expect(List.cast([10,10,20,40]).normalize(100)).toEqual( [ 100/8, 100/8, 100/4, 100/2 ] );
   });
 
+  it('normalize should respect proportions', () => {
+    expect(List.cast([10,10,20,40]).normalize(l => l.avg()).sum()).toEqual( List.cast([10,10,20,40]).avg() );
+  });
+
   it('normalize of [10,20,30,40,50] * (10+20+30+40+50) = [10,20,30,40,50]', () => {
     expect(List.cast([10,20,30,40,50]).normalize().times(10+20+30+40+50)).toEqual(List.cast([10,20,30,40,50]));
   });

@@ -404,10 +404,13 @@ module.exports = class ArrayMore extends Array {
   }
 
   normalize( area = 1, emptyValue=[], invalidValue=NaN) {
+    if( area.constructor == Function ) {
+      area = area(this);
+    }
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
         const total = list.sum();
-        return list.map( x => area * x / total );
+        return list.map( x => x / total ).times(area);
       }
     )
   }
