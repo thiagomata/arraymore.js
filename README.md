@@ -468,8 +468,9 @@ new ArrayMore(1,2,3,1,2,4).unique(); // ArrayMore [ 1, 2, 3, 4 ]
 ArrayMore.max( emptyValue = null, invalidValue = NaN )
 ```
 Return the max value of the Array.
-@todo
-
+```javascript
+ArrayMore.cast([1,2,3,10,4]).max(); // 10
+```
 ### ArrayMore.min
 
 ```javascript
@@ -759,13 +760,21 @@ ArrayMore.range(10).times(Math.PI/2).cos().round(10); // ArrayMore [ 1, 0, -1, -
 ```javascript
 ArrayMore.diff( otherArray )
 ```
-@todo
+Get the difference from two arrays without rotate. In case of missing pair, returns the value of the single element.
+#### Example
+```javascript
+ArrayMore.cast([1,2,3,4,5]).diff([100,200]); // ArrayMore [ -99, -198, 3, 4, 5 ]
+```
+If you want the difference with rotation, just use the ArrayMore.less method.
+```javascript
+ArrayMore.cast([1,2,3,4,5]).less([100,200]); // ArrayMore [ -99, -198, -97, -196, -95 ]
+```
 
 ### ArrayMore.errorRate
 ```javascript
 ArrayMore.diff( errorRate )
 ```
-The errorRate currently does not rotate. The errorRate to missing values is the single value.
+The errorRate is the squared difference of the array values. It does not rotate. The errorRate to missing values is the single value squared.
 
 ### Examples
 ```javascript
