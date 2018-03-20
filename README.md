@@ -387,7 +387,7 @@ new ArrayMore(1,2,3,4,5).take(-2); // ArrayMore [ 3, 4, 5 ]
 ```javascript
 ArrayMore.head(n = 10)
 ```
-Alias to the take method with default 10.
+Alias to the ArrayMore.take method with default 10.
 
 ### ArrayMore.tail
 
@@ -698,7 +698,7 @@ new ArrayMore(1,2,3).plus([10,100]); // ArrayMore [ 11,  102, 13 ]
 ```javascript
 more( value = 1, emptyValue = [], invalidValue = NaN )
 ```
-Same as ArrayMore.plus
+Alias to ArrayMore.plus
 
 ### ArrayMore.less
 ```javascript
