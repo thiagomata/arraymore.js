@@ -403,11 +403,11 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  normalize(emptyValue=[], invalidValue=NaN) {
+  normalize( area = 1, emptyValue=[], invalidValue=NaN) {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
         const total = list.sum();
-        return list.map( x => x / total );
+        return list.map( x => area * x / total );
       }
     )
   }

@@ -9,6 +9,10 @@ describe('normalize', () => {
     expect(List.cast([10,10,20,40]).normalize()).toEqual( [ 1/8, 1/8, 1/4, 1/2 ] );
   });
 
+  it('normalize should respect proportions', () => {
+    expect(List.cast([10,10,20,40]).normalize(100)).toEqual( [ 100/8, 100/8, 100/4, 100/2 ] );
+  });
+
   it('normalize of [10,20,30,40,50] * (10+20+30+40+50) = [10,20,30,40,50]', () => {
     expect(List.cast([10,20,30,40,50]).normalize().times(10+20+30+40+50)).toEqual(List.cast([10,20,30,40,50]));
   });
@@ -18,7 +22,7 @@ describe('normalize', () => {
   });
 
   it('override empty answer', () => {
-    expect(List.cast([]).normalize([1])).toEqual([1]);
+    expect(List.cast([]).normalize(1,[1])).toEqual([1]);
   });
 
   it('normalize of new List =>  []', () => {
@@ -30,16 +34,16 @@ describe('normalize', () => {
   });
 
   it('replace NaN by 0', () => {
-    expect(List.cast([ "trash", 1, 1, 2, 4 ], false ).normalize(0,0)).toEqual([ 0, 0.125, 0.125, 0.25, 0.5 ]);
+    expect(List.cast([ "trash", 1, 1, 2, 4 ], false ).normalize(1,0,0)).toEqual([ 0, 0.125, 0.125, 0.25, 0.5 ]);
   });
 
   it('replace NaN by 1', () => {
-    expect(List.cast([ "trash", 1, 2, 4 ], false ).normalize(0,1)).toEqual([ 0.125, 0.125, 0.25, 0.5 ]);
+    expect(List.cast([ "trash", 1, 2, 4 ], false ).normalize(1,0,1)).toEqual([ 0.125, 0.125, 0.25, 0.5 ]);
   });
 
   it('replace NaN by trash should throw error', () => {
     expect( () => {
-      List.cast([ "trash", 1, 2, 4 ], false ).normalize(0,"other-trash")
+      List.cast([ "trash", 1, 2, 4 ], false ).normalize(1,0,"other-trash")
     }).toThrow();
   });
 
@@ -48,7 +52,7 @@ describe('normalize', () => {
   });
 
   it('normalize should allow replace letters, forcing to 0', () => {
-    expect(List.cast([1, 'a','b','c']).normalize(0,0)).toEqual([1,0,0,0]);
+    expect(List.cast([1, 'a','b','c']).normalize(1,0,0)).toEqual([1,0,0,0]);
   });
 
 });
