@@ -636,6 +636,29 @@ ArrayMore.map( callback, thisArg = undefined )
 
 The same as the native map Array function, but returns a ArrayMore instead Array.
 
+#### Examples
+```javascript
+ArrayMore.range(10).map( (x,k,p) => p.copy().more(x) )
+/*
+ArrayMore [
+  ArrayMore [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ],
+  ArrayMore [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ],
+  ArrayMore [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 ],
+  ArrayMore [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ],
+  ArrayMore [ 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ],
+  ArrayMore [ 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ],
+  ArrayMore [ 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ],
+  ArrayMore [ 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 ],
+  ArrayMore [ 8, 9, 10, 11, 12, 13, 14, 15, 16, 17 ],
+  ArrayMore [ 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 ] ]
+*/
+```
+
+#### Examples
+```javascript
+ArrayMore.range(10).map( x => ( x + 3 ) / 2 ) // ArrayMore [ 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6 ]
+```
+
 ### ArrayMore.reduce
 ```javascript
 ArrayMore.reduce( callback, initialValue = null )
@@ -742,12 +765,43 @@ ArrayMore.diff( otherArray )
 ```javascript
 ArrayMore.diff( errorRate )
 ```
+The errorRate currently does not rotate. The errorRate to missing values is the single value.
 
-@todo
+### Examples
+```javascript
+ArrayMore.range(10).errorRate(new ArrayMore(10).fill(1)); // ArrayMore [ 1, 0, 1, 4, 9, 16, 25, 36, 49, 64 ]
+ArrayMore.range(10).errorRate(new ArrayMore(9).fill(4)); // ArrayMore [ 16, 9, 4, 1, 0, 1, 4, 9, 16, 81 ]
+```
+If you want something similar to the errorRate but that rotates, you can do that using the regular methods:
+
+```javascript
+ArrayMore.range(10).less(new ArrayMore(9).fill(4) ).squared(); // ArrayMore [ 16, 9, 4, 1, 0, 1, 4, 9, 16, 25 ]
+```
 
 ### ArrayMore.flat
 ```javascript
 ArrayMore.flat()
 ```
-@todo
+Convert every array to its elements. This is not a recursive or deep flat.
 
+#### Example
+```javascript
+var example = ArrayMore.cast([[1],[[2]],[[[3]]]]); 
+/* 
+ArrayMore [ 
+  ArrayMore [ 1 ], 
+  ArrayMore [ 
+    ArrayMore [ 2 ] 
+  ],
+  ArrayMore [ 
+    ArrayMore [ 
+      ArrayMore [ 3 ] 
+    ] 
+  ] 
+]
+*/
+example.flat(); // ArrayMore [ 1, ArrayMore [ 2 ], ArrayMore [ ArrayMore [ 3 ] ] ]
+example.flat().flat(); // ArrayMore [ 1, 2, ArrayMore [ 3 ] ]
+example.flat().flat().flat(); // ArrayMore [ 1, 2, 3 ]
+example.flat().flat().flat().flat(); // ArrayMore [ 1, 2, 3 ]
+```
