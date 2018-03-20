@@ -519,8 +519,11 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  map( callback ) {
-    return ArrayMore.cast( this.parent().map( callback ) );
+  map( callback, thisRef = undefined ) {
+    if( thisRef === undefined ) {
+      return ArrayMore.cast( this.parent().map( callback ) );
+    }
+    return ArrayMore.cast( this.parent().map( callback, thisRef ) );
   }
 
   reduce( callback, initialValue = null ) {
@@ -604,7 +607,7 @@ module.exports = class ArrayMore extends Array {
   diff( otherArray ) {
     return this.
     aggregate(
-      otherArray,
+      ArrayMore.cast(otherArray),
       (x, y) => x - y,
       (v) => v
     );
@@ -627,5 +630,10 @@ module.exports = class ArrayMore extends Array {
       (a,b) => a.concat(b),
       new ArrayMore()
     )
+  }
+
+  toString() {
+    this._parent = undefined;
+    return this;
   }
 }
