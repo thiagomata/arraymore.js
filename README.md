@@ -310,9 +310,18 @@ new ArrayMore(1,2,3,4,5).take(-2); // ArrayMore [ 3, 4, 5 ]
 ArrayMore.head(n = 10)
 ```
 Alias to the ArrayMore.take method with default 10.
+```javascript
+ArrayMore.range(100).head();       // ArrayMore [ 0, 1, 2, ..., 9 ]
+new ArrayMore(1,2,3,4,5).head(2);  // ArrayMore [ 1, 2 ]
+ArrayMore(1,2,3,4,5).head(-2);     // ArrayMore [ 3, 4, 5 ]
+```
 ### ArrayMore.tail
 ```javascript
 ArrayMore.tail(n)
+```
+```javascript
+new ArrayMore(1,2,3,4,5).tail(2);  // ArrayMore [ 4, 5 ]
+new ArrayMore(1,2,3,4,5).tail(-2); // ArrayMore [ 1, 2, 3 ]
 ```
 Create a new array with the last n elements. If n is negative returns a new array without the last n elements.
 ### ArrayMore.append
