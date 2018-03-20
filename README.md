@@ -360,7 +360,7 @@ Similar to the ArrayMore.equals method but cast elements. So, '2' is similar to 
 
 #### Example
 ```javascript
-ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4]); // true
+ArrayMore.cast([1,2,3,'4']).similar([1,2,3,4]); // true
 ```
 
 ### ArrayMore.isEmpty
