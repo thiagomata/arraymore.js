@@ -9,12 +9,20 @@ describe('concat', () => {
     expect(List.cast(1).concat(2)).toEqual(new List(1,2));
   });
 
-  it('zero concat [1,2,3] + [] = [1,2,3]', () => {
+  it('concat [1,2,3] + [] = [1,2,3]', () => {
     expect(List.cast([1,2,3]).concat(List.cast([]))).toEqual(new List(1,2,3));
   });
 
-  it('zero concat [1,2,3] + ([]) = [1,2,3]', () => {
+  it('concat [1,2,3] + ([]) = [1,2,3]', () => {
     expect(List.cast([1,2,3]).concat(new List())).toEqual(new List(1,2,3));
+  });
+
+  it('concat [1,2,3] + reverse = [1,2,3,3,2,1]', () => {
+    expect(List.cast([1,2,3]).concat( l => l.reverse() ) ).toEqual(new List(1,2,3,3,2,1));
+  });
+
+  it('concat [1,2,3] + -list = [1,2,3,-1,-2,-3]', () => {
+    expect(List.cast([1,2,3]).concat( l => l.times(-1) ) ).toEqual(new List(1,2,3,-1,-2,-3));
   });
 
   it('empty concat [1,2,3].concat() = [1,2,3]', () => {
