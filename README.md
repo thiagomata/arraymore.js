@@ -17,23 +17,21 @@ This project uses method chaining, call by copy and array rotation. So, if the r
 
 ### Method Chaining
 ```javascript
-console.log( 
-  new ArrayMore(1,2,3,4).
+new ArrayMore(1,2,3,4).
       plus(1).
       normalize().
       times(100).
-      round()
-); // ArrayMore [ 14, 21, 29, 36 ]
+      round(); // ArrayMore [ 14, 21, 29, 36 ]
 ```
 ### Call by Copy
 ```javascript
 var foo = new ArrayMore(1,2,3,4); // ArrayMore [ 1, 2, 3, 4 ]
 var bar = foo.plus(1);            // ArrayMore [ 2, 3, 4, 5 ]
-console.log( foo );               // ArrayMore [ 1, 2, 3, 4 ]
+foo; // ArrayMore [ 1, 2, 3, 4 ]
 ```
 ### Array Rotation
 ```javascript
-console.log( new ArrayMore(1,2,3,4,5,6,7).plus([10,100]) ); // ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
+new ArrayMore(1,2,3,4,5,6,7).plus([10,100]); // ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
 ```
 ## Basic methods
 
@@ -86,13 +84,13 @@ var list1to5FromPrepend = new ArrayMore().
 ```
 ### They all should generate the same result
 ```javascript
-console.log( list1to5FromCast.equals( arr1to5 ) );             // true
-console.log( list1to5FromCast.equals( list1to5FromCast ) );    // true
-console.log( list1to5FromCast.equals( list1to5FromArgs ) );    // true
-console.log( list1to5FromCast.equals( list1to5FromRange ) );   // true
-console.log( list1to5FromCast.equals( list1to5FromRange2 ) );  // true
-console.log( list1to5FromCast.equals( list1to5From ) );  // true
-console.log( list1to5FromCast.equals( list1to5FromPrepend ) ); // true
+list1to5FromCast.equals( arr1to5 );             // true
+list1to5FromCast.equals( list1to5FromCast );    // true
+list1to5FromCast.equals( list1to5FromArgs );    // true
+list1to5FromCast.equals( list1to5FromRange );   // true
+list1to5FromCast.equals( list1to5FromRange2 );  // true
+list1to5FromCast.equals( list1to5From );        // true
+list1to5FromCast.equals( list1to5FromPrepend ); // true
 ```
 ## Special Attention with one parameter inputs
 ```javascript
@@ -102,10 +100,10 @@ var list1FromCastArray = ArrayMore.cast(arr1);
 var list1FromCastValue = ArrayMore.cast(1);
 var list1FromAppend    = new ArrayMore().append(1);
 var list1FromAppend    = new ArrayMore().prepend(1);
-console.log( list1FromCastArray.equals( arr1 ) );               // true
-console.log( list1FromCastArray.equals( list1FromCastArray ) ); // true
-console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
-console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
+list1FromCastArray.equals( arr1 );               // true
+list1FromCastArray.equals( list1FromCastArray ); // true
+list1FromCastArray.equals( list1FromAppend );    // true
+list1FromCastArray.equals( list1FromAppend );    // true
 ```
 ## Special Attention with empty list inputs
 ```javascript
@@ -113,14 +111,14 @@ console.log( list1FromCastArray.equals( list1FromAppend ) );    // true
 var arrEmpty3 = new Array(3);
 var listEmpty3 = new ArrayMore(3);
 var listEmpty3FromCast = ArrayMore.cast([undefined,undefined,undefined]);
-console.log( listEmpty3.equals(arrEmpty3) ); // true
-console.log( listEmpty3.equals(listEmpty3FromCast) ); // true
+listEmpty3.equals(arrEmpty3); // true
+listEmpty3.equals(listEmpty3FromCast); // true
 ```
 ## Common Mistakes
 ```javascript
 var arrValue1 = [1];           // Array [ 1 ]
 var arrEmpty1 = new Array(1);  // Array [ undefined ]
-console.log( arrValue1.toString() == arrEmpty1.toString() ); // false
+arrValue1.toString() == arrEmpty1.toString(); // false
 
 var arrValue12 = new Array(1,2);                    // Array [ 1, 2 ]
 var arrEmpty3  = new Array(1).concat(new Array(2)); // Array [ <3 empty items> ]
@@ -131,13 +129,13 @@ var listValue1FromCast = ArrayMore.cast(1);        // ArrayMore [ 1 ]
 var listValue1FromCastArr1 = ArrayMore.cast([1]);  // ArrayMore [ 1 ]
 var listValueArr1 = new ArrayMore([1]);            // ArrayMore [ [ 1 ] ]
 
-console.log( listEmpty1.equals( listValueArr1 ) );          // false
-console.log( listEmpty1.equals( listValue1FromCast ) );     // false
-console.log( listEmpty1.equals( listValue1FromCastArr1 ) ); // false
+listEmpty1.equals( listValueArr1 );          // false
+listEmpty1.equals( listValue1FromCast );     // false
+listEmpty1.equals( listValue1FromCastArr1 ); // false
 
-console.log( listValueArr1.equals( listValue1FromCast ) );               // false
-console.log( listValueArr1.equals( listValue1listValue1FromCastArr1 ) ); // false
-console.log( listValueArr1.equals( listEmpty1 ) );                       // false
+listValueArr1.equals( listValue1FromCast );               // false
+listValueArr1.equals( listValue1listValue1FromCastArr1 ); // false
+listValueArr1.equals( listEmpty1 );                       // false
 
 ```
 ## ArrayMore where fits
@@ -145,7 +143,7 @@ console.log( listValueArr1.equals( listEmpty1 ) );                       // fals
 This project intents to make all arrays generated from this class as also ArrayMore. So, if the expected result of any method would be an Array object, you should expected receive an ArrayMore object.
 
 ```javascript
-console.log(ArrayMore.cast([[[1]]])[0][0]);  // ArrayMore [1]
+ArrayMore.cast([[[1]]])[0][0];  // ArrayMore [1]
 ArrayMore.range(1).map( x => 1 )             // ArrayMore [1]
 ```  
 
@@ -158,16 +156,16 @@ Almost all the transformations can receive the emptyValue attribute and the inva
 The optional empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list. 
 
 ```javascript
-console.log(new ArrayMore().abs());        // ArrayMore [] // default empty value
-console.log(new ArrayMore().abs(":("));    // ":(" defined empty value
+new ArrayMore().abs();        // ArrayMore [] // default empty value
+new ArrayMore().abs(":(");    // ":(" defined empty value
 ```  
 ### Using the Invalid Value
 
 The optional invalidValue attribute defines what should be the value that replace invalid values. The default emptyValue is, in general, the NaN value.
 
 ```javascript
-console.log(new ArrayMore([1,2,3,"a",5]).abs();       // ArrayMore [1,2,3,NaN,5] // default invalidValue
-console.log(new ArrayMore([1,2,3,"a",5]).abs([],-1)); // ArrayMore [1,2,3,-1,5] // defined invalidValue
+new ArrayMore([1,2,3,"a",5]).abs();      // ArrayMore [1,2,3,NaN,5] // default invalidValue
+new ArrayMore([1,2,3,"a",5]).abs([],-1); // ArrayMore [1,2,3,-1,5] // defined invalidValue
 ```
 
 ## Transformations
@@ -240,9 +238,9 @@ Some array methods native were overrides in ArrayMore. They intent to have the c
 #### Example
 ```javascript
 /* ArrayMore concat method convert Arrays to ArrayMore */
-console.log( new ArrayMore([1],[2]).concat([[3]])[2] ); // ArrayMore [ 3 ]
+new ArrayMore([1],[2]).concat([[3]])[2]; // ArrayMore [ 3 ]
 /* Native concat method, called by using parent() did not */
-console.log( new ArrayMore([1],[2]).parent().concat([[3]])[2] ); // [ 3 ]
+new ArrayMore([1],[2]).parent().concat([[3]])[2]; // [ 3 ]
 ```
 
 ### ArrayMore.copy
@@ -258,8 +256,8 @@ Create a copy of the array.
 var foo = new ArrayMore(1,2,3);
 var bar = foo.copy();
 var bar[1] = 200;
-console.log( foo ); // ArrayMore [ 1, 2, 3]
-console.log( bar ); // ArrayMore [ 1, 200, 3]
+foo; // ArrayMore [ 1, 2, 3]
+bar; // ArrayMore [ 1, 200, 3]
 ```
 This is not a deep copy. So, if some attributes is an object, any change will affect both arrays.
 
@@ -267,8 +265,8 @@ This is not a deep copy. So, if some attributes is an object, any change will af
 var oldBob = new ArrayMore({name:"bob"});
 var newBob = oldBob.copy();
 oldBob[0].name = "Mr. Bob";
-console.log( oldBob ); // ArrayMore [ {name:"Mr. Bob"} ]
-console.log( newBob ); // ArrayMore [ {name:"Mr. Bob"} ]
+oldBob; // ArrayMore [ {name:"Mr. Bob"} ]
+newBob; // ArrayMore [ {name:"Mr. Bob"} ]
 ```
 
 ### ArrayMore.concat
@@ -281,10 +279,10 @@ Create a new ArrayMore with elements of both arrays. Input data is cast to Array
 
 #### Examples
 ```javascript
-console.log(new ArrayMore(1,2,3).concat(new ArrayMore(4,5))); // ArrayMore [ 1, 2, 3, 4, 5 ]
-console.log(ArrayMore.cast([1,2,3]).concat([4,5])); // ArrayMore [ 1, 2, 3, 4, 5 ]
-console.log(ArrayMore.cast([1,2,3]).concat(4).concat(5)); // ArrayMore [ 1, 2, 3, 4, 5 ]
-console.log(ArrayMore.cast([1,2,3]).concat([1,2,3])); // ArrayMore [ 1, 2, 3, 1, 2, 3 ]
+new ArrayMore(1,2,3).concat(new ArrayMore(4,5)); // ArrayMore [ 1, 2, 3, 4, 5 ]
+ArrayMore.cast([1,2,3]).concat([4,5]);           // ArrayMore [ 1, 2, 3, 4, 5 ]
+ArrayMore.cast([1,2,3]).concat(4).concat(5);     // ArrayMore [ 1, 2, 3, 4, 5 ]
+ArrayMore.cast([1,2,3]).concat([1,2,3]);         // ArrayMore [ 1, 2, 3, 1, 2, 3 ]
 ```
 
 ### ArrayMore.isEmptyValues
@@ -319,13 +317,13 @@ Compare if two ArrayMore arrays are equals. Do that, using deep compare.
 
 #### Examples
 ```javascript
-console.log(new ArrayMore().equals([])); // true
-console.log(new ArrayMore(1, [2], [[3],[[4]]]).equals([1, [2], [[3],[[4]]]])); // true
-console.log(ArrayMore.cast([1,2,3,4]).equals([4,3,2,1])); // true
+new ArrayMore().equals([]); // true
+new ArrayMore(1, [2], [[3],[[4]]]).equals([1, [2], [[3],[[4]]]]); // true
+ArrayMore.cast([1,2,3,4]).equals([4,3,2,1]); // true
 
-console.log(ArrayMore.cast([1]).equals([2])); // false
-console.log(ArrayMore.cast([1,2,3,3]).equals([1,2,3,4])); // false
-console.log(ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4])); // false
+ArrayMore.cast([1]).equals([2]); // false
+ArrayMore.cast([1,2,3,3]).equals([1,2,3,4]); // false
+ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4]); // false
 ```
 When comparing objects, try to use the equals method.
 
@@ -344,9 +342,11 @@ When comparing objects, try to use the equals method.
       }
     }
 
-    console.log( ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(1) ] ) ) ); // true
-    console.log( ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ) ); // false
-    console.log( ArrayMore.cast( [ new Example(200) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ) ); // true
+    ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(1) ] ) ); // true
+    ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ 1 ] ) ); // true
+    ArrayMore.cast( [ new Example(2) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ); // false
+    ArrayMore.cast( [ new Example(200) ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ); // true
+    ArrayMore.cast( [ 200 ] ).equals( ArrayMore.cast( [ new Example(100) ] ) ); // true
 
 ```
 
@@ -360,7 +360,7 @@ Similar to the ArrayMore.equals method but cast elements. So, '2' is similar to 
 
 #### Example
 ```javascript
-console.log(ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4])); // true
+ArrayMore.cast([1,2,3,'4']).equals([1,2,3,4]); // true
 ```
 
 ### ArrayMore.isEmpty
@@ -379,8 +379,8 @@ Create a new array with the first n elements. If n is negative returns a new arr
 
 #### Example
 ```javascript
-console.log( new ArrayMore(1,2,3,4,5).take(2) ); // ArrayMore [ 1, 2 ]
-console.log( new ArrayMore(1,2,3,4,5).take(-2) ); // ArrayMore [ 3, 4, 5 ]
+new ArrayMore(1,2,3,4,5).take(2);  // ArrayMore [ 1, 2 ]
+new ArrayMore(1,2,3,4,5).take(-2); // ArrayMore [ 3, 4, 5 ]
 ```
 
 ### ArrayMore.head
@@ -407,7 +407,7 @@ Create a new array with all the previous elements more the new one received at t
 #### Example
 
 ```javascript
-console.log( new ArrayMore(1,2,3).append(4).append(5) ); // ArrayMore [ 1, 2, 3, 4, 5 ]
+new ArrayMore(1,2,3).append(4).append(5); // ArrayMore [ 1, 2, 3, 4, 5 ]
 ```
 
 ### ArrayMore.prepend
@@ -421,7 +421,7 @@ Create a new array with all the previous elements more the new one received at t
 #### Example
 
 ```javascript
-console.log( new ArrayMore(1,2,3).prepend(4).prepend(5) ); // ArrayMore [ 5, 4, 1, 2, 3 ]
+new ArrayMore(1,2,3).prepend(4).prepend(5); // ArrayMore [ 5, 4, 1, 2, 3 ]
 ```
 
 ### ArrayMore.has
@@ -433,11 +433,11 @@ Returns true if find the value into the array. If the value is a function, retur
 
 #### Example
 ```javascript
-console.log( new ArrayMore(1,2,3,4,5).has(3) ); // true
-console.log( new ArrayMore(1,2,3,4,5).has(6) ); // false
-console.log( new ArrayMore(1,2,3,4,5).has( (x) => x*x > 20) ); // true
-console.log( new ArrayMore(1,2,3,4,5).has( (x) => x*x > 40) ); // false
-console.log( new ArrayMore({name:"anna"},{name:"bob"}).has( n => n.name[0] === 'a' ) ); // true
+new ArrayMore(1,2,3,4,5).has(3); // true
+new ArrayMore(1,2,3,4,5).has(6); // false
+new ArrayMore(1,2,3,4,5).has( (x) => x*x > 20); // true
+new ArrayMore(1,2,3,4,5).has( (x) => x*x > 40); // false
+new ArrayMore({name:"anna"},{name:"bob"}).has( n => n.name[0] === 'a' ); // true
 ```
 ### ArrayMore.hasIndex
 ```javascript
@@ -445,11 +445,11 @@ ArrayMore.hasIndex(value)
 ```
 Similar to the ArrayMore.has, but returns the key position if found or -1 if not found.
 ```javascript
-console.log( new ArrayMore(1,2,3,4,5).hasIndex(3) ); // 2
-console.log( new ArrayMore(1,2,3,4,5).hasIndex(6) ); // -1
-console.log( new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 20) ); // 4
-console.log( new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 40) ); // -1
-console.log( new ArrayMore({name:"anna"},{name:"bob"}).hasIndex( n => n.name[0] === 'a' ) ); // 0
+new ArrayMore(1,2,3,4,5).hasIndex(3); // 2
+new ArrayMore(1,2,3,4,5).hasIndex(6); // -1
+new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 20); // 4
+new ArrayMore(1,2,3,4,5).hasIndex( (x) => x*x > 40); // -1
+new ArrayMore({name:"anna"},{name:"bob"}).hasIndex( n => n.name[0] === 'a' ); // 0
 ```
 
 ### ArrayMore.unique
@@ -460,7 +460,7 @@ Create a new array with just one occurrence of every value.
 
 #### Example
 ```javascript
-console.log( new ArrayMore(1,2,3,1,2,4).unique() ); // ArrayMore [ 1, 2, 3, 4 ]
+new ArrayMore(1,2,3,1,2,4).unique(); // ArrayMore [ 1, 2, 3, 4 ]
 ```
 
 ### ArrayMore.max
@@ -501,7 +501,7 @@ Return the normalized version of the values of the Array. The normalized values 
 
 ### Examples 
 ```javascript
-console.log(new ArrayMore(1,1,2,4,8).normalize()); // ArrayMore [ 0.0625, 0.0625, 0.125, 0.25, 0.5 ]
+new ArrayMore(1,1,2,4,8).normalize)); // ArrayMore [ 0.0625, 0.0625, 0.125, 0.25, 0.5 ]
 ```
 ### ArrayMore.integrate
 ```javascript
@@ -523,10 +523,10 @@ Get the first element of the array or the emptyValue if not exists or undefined.
 
 #### Examples
 ```javascript
-console.log(new ArrayMore(1,2,3).first()); // 1
-console.log(new ArrayMore(undefined,2,3).first()); // null
-console.log(new ArrayMore(undefined,2,3).first(-1)); // -1
-console.log(new ArrayMore().first(-1)); // -1
+new ArrayMore(1,2,3).first(); // 1
+new ArrayMore(undefined,2,3).first(); // null
+new ArrayMore(undefined,2,3).first(-1); // -1
+new ArrayMore().first(-1); // -1
 ```
 ### ArrayMore.get
 ```javascript
@@ -535,10 +535,10 @@ ArrayMore.get( key, emptyValue = null )
 Get any element of the array or the emptyValue if not exists or undefined.
 #### Examples
 ```javascript
-console.log(new ArrayMore(1,2,3).last()); // 3
-console.log(new ArrayMore(1,2,undefined).last()); // null
-console.log(new ArrayMore(1,2,undefined).last(-1)); // -1
-console.log(new ArrayMore().last(-1)); // -1
+new ArrayMore(1,2,3).last(); // 3
+new ArrayMore(1,2,undefined).last(); // null
+new ArrayMore(1,2,undefined).last(-1); // -1
+new ArrayMore().last(-1); // -1
 ```
 
 ### ArrayMore.getRotate
@@ -552,13 +552,13 @@ Looking to the array as a rotation values, get the value of the position.
 ```javascript
 //   0, 1, 2, 3, 4, 5, 6, 7, ...   position
 // [ 0, 1, 2, 3, 0, 1, 2, 3, ... ] value
-console.log(new ArrayMore(0,1,2,3).getRotate(5)); // 1
+new ArrayMore(0,1,2,3).getRotate(5); // 1
 ```
 The empty value still works to undefined values.
 ```javascript
 //   0, 1, 2, 3, 4, 5, 6, 7, ...   position
 // [ 0, 1, undefined, 3, 0, 1, undefined, 3, ... ] value
-console.log(new ArrayMore(0,1,undefined,3).getRotate(6,-1)); // -1
+new ArrayMore(0,1,undefined,3).getRotate(6,-1); // -1
 ```
 
 ### ArrayMore.derivate
@@ -572,8 +572,8 @@ derivate[n] = original[n] - original[n-1]
 
 #### Examples
 ```javascript
-console.log( new ArrayMore(1,2,4,8,16).derivate() ); // ArrayMore [ 1, 1, 2, 4, 8 ]
-console.log( new ArrayMore(1,2,3,4,5).derivate() ); // ArrayMore [ 1, 2, 3, 4, 5 ]
+new ArrayMore(1,2,4,8,16).derivate(); // ArrayMore [ 1, 1, 2, 4, 8 ]
+new ArrayMore(1,2,3,4,5).derivate();  // ArrayMore [ 1, 2, 3, 4, 5 ]
 ```
 
 ### ArrayMore.aggregate
