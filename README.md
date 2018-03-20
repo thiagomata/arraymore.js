@@ -512,7 +512,6 @@ ArrayMore.cast(data).overlaps(
 ```javascript
 ArrayMore.sqrt( emptyValue = [], invalidValue = NaN )
 ```
-### Example
 ```javascript
 new ArrayMore(1,4,9).sqrt(); // ArrayMore [ 1, 2, 3 ]
 ```
@@ -647,7 +646,6 @@ ArrayMore.cast([1,2,3,4,5]).less([100,200]); // ArrayMore [ -99, -198, -97, -196
 ArrayMore.diff( errorRate )
 ```
 The errorRate is the squared difference of the array values. It does not rotate. The errorRate to missing values is the single value squared.
-### Examples
 ```javascript
 ArrayMore.range(10).errorRate(new ArrayMore(10).fill(1)); // ArrayMore [ 1, 0, 1, 4, 9, 16, 25, 36, 49, 64 ]
 ArrayMore.range(10).errorRate(new ArrayMore(9).fill(4)); // ArrayMore [ 16, 9, 4, 1, 0, 1, 4, 9, 16, 81 ]
