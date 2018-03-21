@@ -33,6 +33,9 @@ module.exports = class ArrayMore extends Array {
     return new ArrayMore().parent().concat([v]);
   }
 
+  /**
+   * Cast array elements values
+   */
   static safeCast(value, castNoValueToNull=false, keepHoles=false) {
     if( value === undefined || value === null || Number.isNaN( value ) ) {
       if( castNoValueToNull ) {
@@ -111,6 +114,9 @@ module.exports = class ArrayMore extends Array {
     return a === b;
   }
 
+  /**
+   * Create an array from a to b using the steps
+   */
   static range(a, b=null, step=1) {
     if( b === null ) {
       b = a;
@@ -168,17 +174,29 @@ module.exports = class ArrayMore extends Array {
     return this._parent;
   }
 
+  /**
+   * Create a copy of the Array
+   */
   copy() {
     return this.slice(0);
   }
 
+  /**
+   * Create an atomic array with one element, the received value
+   */
   static atomic( value, castNoValueToNull = false ) {
     var atomicList  = new ArrayMore();
     atomicList.push( castNoValueToNull ? null : value );
     return atomicList;
   }
 
-  jokerValue(value, castNoValueToNull=false, keepHoles=true, touchArrayMore=false) {
+  /**
+   * Convert flexible input value, list or function to ready to use data
+   */
+  jokerValue(value, castNoValueToNull=false, keepHoles=true, touchArrayMore=false, thisRef = null ) {
+    if( thisRef === null ) {
+      thisRef = this;
+    }
     if( value  === undefined || value  === null || Number.isNaN( value  ) ) {
       return ArrayMore.atomic( value, castNoValueToNull );
     }
@@ -194,10 +212,7 @@ module.exports = class ArrayMore extends Array {
       }
       return ArrayMore.cast([value]);
     }
-    if( value.constructor === Function ) {
-      return ArrayMore.cast( value( this.copy() ), castNoValueToNull, keepHoles );
-    }
-    return ArrayMore.cast( value, castNoValueToNull, keepHoles );
+    return ArrayMore.cast( thisRef.castFunction( value ), castNoValueToNull, keepHoles );
   }
 
   /*
@@ -544,6 +559,20 @@ module.exports = class ArrayMore extends Array {
     );
   }
 
+  castFunction(value) {
+    if( value === null || value === undefined || Number.isNaN( value ) ) {
+      return value;
+    }
+    if( value.constructor !== Function ) {
+      return value;
+    }
+    const result = value(this.copy());
+    if( result.constructor === Array ) {
+      return ArrayMore.cast( result );
+    }
+    return result;
+  }
+
   rotate(rotation, emptyValue, operation, invalidValue=NaN) {
     if( this.isEmpty() ) {
       return ArrayMore.safeCast( emptyValue );
@@ -551,7 +580,7 @@ module.exports = class ArrayMore extends Array {
     return this.replaceNaN( invalidValue ).map(
       (x, key) => operation(
         x,
-        this.jokerValue( rotation ).getRotate( key, emptyValue )
+        this.castFunction( this.jokerValue( rotation ).getRotate( key, emptyValue ) )
       )
     );
   }
@@ -621,13 +650,42 @@ module.exports = class ArrayMore extends Array {
     );
   }
 
-  flat() {
+  flat( deep = false, thisRef = null ) {
+    if( thisRef === null ) {
+      thisRef = this;
+    }
+    if( deep ) {
+      return this.flatDeep();
+    }
     return this.map(
-      v => this.jokerValue(v)
+      v => this.jokerValue(v,false,true,false,thisRef),
+      thisRef
     ).
     reduce(
       (a,b) => a.concat(b),
       new ArrayMore()
+    )
+  }
+
+  flatDeep( thisRef = null ) {
+    if( thisRef === null ) {
+      thisRef = this;
+    }
+    return this.flat(false, thisRef).map(
+      value => {
+        if( value.constructor === Array || value.constructor === ArrayMore ) {
+          return value.flatDeep( thisRef );
+        }
+        if( value.constructor === Function ) {
+          return this.jokerValue(value,false,true,false,thisRef);
+        }
+        return [value];
+      },
+      thisRef
+    ).
+    reduce(
+      (a,b) => a.concat(b),
+      []
     )
   }
 }

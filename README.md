@@ -127,9 +127,9 @@ ArrayMore.cast([[[1]]])[0][0];  // ArrayMore [1]
 ArrayMore.range(1).map( x => 1 )             // ArrayMore [1]
 ```  
 ## Empty Value and Invalid Value
-Almost all the transformations can receive the emptyValue attribute and the invalidValue attribute. 
+Almost all the transformations can receive the emptyValue attribute and the invalidValue attribute.
 ### Using the Empty Value
-The optional empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list. 
+The optional empty value attribute defines what should be the result if the List is empty. The default emptyValue can change for some methods, but in general is a empty list.
 ```javascript
 new ArrayMore().abs();        // ArrayMore [] // default empty value
 new ArrayMore().abs(":(");    // ":(" defined empty value
@@ -203,7 +203,7 @@ new ArrayMore([1],[2]).parent().concat([[3]])[2]; // [ 3 ]
 ```javascript
 ArrayMore.copy()
 ```
-Create a copy of the array. 
+Create a copy of the array.
 
 ```javascript
 var foo = new ArrayMore(1,2,3);
@@ -248,9 +248,9 @@ ArrayMore.isUndefinedValues()
 Check if all the items of the array are undefined values.
 ### ArrayMore.equals
 ```javascript
-ArrayMore.equals( other, anyOrder = true ) 
+ArrayMore.equals( other, anyOrder = true )
 ```
-Compare if two ArrayMore arrays are equals. Do that, using deep compare. 
+Compare if two ArrayMore arrays are equals. Do that, using deep compare.
 ```javascript
 new ArrayMore().equals([]); // true
 new ArrayMore(1, [2], [[3],[[4]]]).equals([1, [2], [[3],[[4]]]]); // true
@@ -280,7 +280,7 @@ When comparing objects, try to use the equals method.
     ```
     ### ArrayMore.similar
     ```javascript
-ArrayMore.similar( other, anyOrder = true ) 
+ArrayMore.similar( other, anyOrder = true )
 ```
 Similar to the ArrayMore.equals method but cast elements. So, '2' is similar to 2, for example.
 
@@ -497,7 +497,7 @@ ArrayMore.overlaps(
   )
 ```
 Similar to aggregate, but where you can define what should be the search function and the get value function.
- 
+
 ```javascript
 var years = [1,2,3,4,5,6,7];
 var data = [{x:10,y:100},{x:3,y:30},{x:5,y:50},{x:11,y:110}]
@@ -656,27 +656,28 @@ ArrayMore.range(10).less(new ArrayMore(9).fill(4) ).squared(); // ArrayMore [ 16
 ```
 ### ArrayMore.flat
 ```javascript
-ArrayMore.flat()
+ArrayMore.flat(deep=false)
 ```
-Convert every array to its elements. This is not a recursive or deep flat.
+Convert every array to its elements.
 
 ```javascript
-var example = ArrayMore.cast([[1],[[2]],[[[3]]]]); 
-/* 
-ArrayMore [ 
-  ArrayMore [ 1 ], 
-  ArrayMore [ 
-    ArrayMore [ 2 ] 
+var example = ArrayMore.cast([[1],[[2]],[[[3]]]]);
+/*
+ArrayMore [
+  ArrayMore [ 1 ],
+  ArrayMore [
+    ArrayMore [ 2 ]
   ],
-  ArrayMore [ 
-    ArrayMore [ 
-      ArrayMore [ 3 ] 
-    ] 
-  ] 
+  ArrayMore [
+    ArrayMore [
+      ArrayMore [ 3 ]
+    ]
+  ]
 ]
 */
 example.flat(); // ArrayMore [ 1, ArrayMore [ 2 ], ArrayMore [ ArrayMore [ 3 ] ] ]
 example.flat().flat(); // ArrayMore [ 1, 2, ArrayMore [ 3 ] ]
 example.flat().flat().flat(); // ArrayMore [ 1, 2, 3 ]
 example.flat().flat().flat().flat(); // ArrayMore [ 1, 2, 3 ]
+example.flat(true); // ArrayMore [ 1, 2, 3 ]
 ```
