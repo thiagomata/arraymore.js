@@ -20,8 +20,4 @@ describe('integrate', () => {
   it('integrate of [-1,-2,-3] =>  [-1,-3,-6]', () => {
     expect(List.cast([-1,-2,-3]).integrate()).toEqual(List.cast([-1,-3,-6]));
   });
-
-  it('integrate should "work" with letters', () => {
-    expect(List.cast(['a','b','c']).integrate('-')).toEqual(List.cast(['a-','ba-','cba-']));
-  });
 });

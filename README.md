@@ -879,6 +879,6 @@ ArrayMore [ 1, 2, ArrayMore [ 3 ] ]
 ArrayMore [ 1, 2, 3 ]
 > example.flat().flat().flat().flat();
 ArrayMore [ 1, 2, 3 ]
-> example.flat(true); 
+> example.flat(true);
 ArrayMore [ 1, 2, 3 ]
 ```
