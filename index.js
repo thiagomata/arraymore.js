@@ -419,13 +419,11 @@ module.exports = class ArrayMore extends Array {
   }
 
   normalize( area = 1, emptyValue=[], invalidValue=NaN) {
-    if( area.constructor == Function ) {
-      area = area(this);
-    }
+    const areaSafe = this.jokerValue( area );
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
         const total = list.sum();
-        return list.map( x => x / total ).times(area);
+        return list.map( x => x / total ).times(areaSafe);
       }
     )
   }
@@ -447,8 +445,8 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  integrate(c=0, emptyValue=[], invalidValue=NaN) {
-    return this.accumulate( c, emptyValue, invalidValue ).head(-1);
+  integrate(c=0, freq=1, emptyValue=[], invalidValue=NaN) {
+    return this.times(freq).accumulate( c, emptyValue, invalidValue ).head(-1);
   }
 
   last(emptyValue=null) {
