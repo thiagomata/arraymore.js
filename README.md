@@ -591,6 +591,18 @@ ArrayMore [ 0, 0, 1, 2, 3, 4, 5 ]
 ArrayMore.last( emptyValue = null )
 ```
 Get the last element of the array or the emptyValue if not exists or undefined.
+
+```javascript
+> new ArrayMore(1,2,3).last();
+3
+> new ArrayMore(1,2,undefined).last();
+null
+> new ArrayMore(1,2,undefined).last(-1);
+-1
+> new ArrayMore().last(-1);
+-1
+```
+
 ### ArrayMore.first
 ```javascript
 ArrayMore.first( emptyValue = null )
@@ -612,13 +624,13 @@ ArrayMore.get( key, emptyValue = null )
 ```
 Get any element of the array or the emptyValue if not exists or undefined.
 ```javascript
-> new ArrayMore(1,2,3).last();
+> new ArrayMore(1,2,3).get(2);
 3
-> new ArrayMore(1,2,undefined).last();
+> new ArrayMore(1,2,undefined).get(2);
 null
-> new ArrayMore(1,2,undefined).last(-1);
+> new ArrayMore(1,undefined,3).get(1,-1);
 -1
-> new ArrayMore().last(-1);
+> new ArrayMore().get(10,-1);
 -1
 ```
 ### ArrayMore.getRotate
