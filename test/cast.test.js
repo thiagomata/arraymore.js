@@ -45,7 +45,7 @@ describe('cast', () => {
     expect(List.cast(NaN,false)).not.toEqual(List.cast([null],false));
   });
 
-  it('Casting keep holes', () => {
+  it('Casting array with values keep holes', () => {
     let arr = [1,2,3].concat(new Array(3)).concat([7,8,9]);
     let list = List.cast(arr,false,true);
     expect(list.length).toEqual(9);
@@ -53,4 +53,11 @@ describe('cast', () => {
     expect(list.map(x=>1).sum()).toEqual(6);
   });
 
+  it('Casting empty array keep holes', () => {
+    let arr = new Array(3).concat(new Array(4));
+    let list = List.cast(arr,false,true);
+    expect(list.length).toEqual(7);
+    // map do not iterates holes
+    expect(list.map(x=>1).sum()).toEqual(0);
+  });
 });

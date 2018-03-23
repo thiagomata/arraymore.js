@@ -8,7 +8,7 @@ class ArrayMore extends Array {
 ## Is the old Javascript Array - and more.
 This class extends the Javascript Array. So, all the previous features are still over there. The goal is keep all the javascript methods working as usual and not change the Array class.
 ## General Guidelines
-This project uses method chaining, call by copy and array rotation. So, if the result of the method call is an array, it should be a new array. The old array should be preserved.
+This project uses method chaining, call by copy and array rotation. Also, the input data intent to be very flexible jokers accepting numbers, arrays and functions.
 ### Method Chaining
 ```javascript
 > new ArrayMore(1,2,3,4).
@@ -27,11 +27,28 @@ ArrayMore [ 2, 3, 4, 5 ]
 > foo;
 ArrayMore [ 1, 2, 3, 4 ]
 ```
+### Jokers Inputs
+If the input data is a number it will be cast to an array with the number
+```javascript
+> new ArrayMore(1,2,3,4,5,6,7).plus(100);
+ArrayMore [ 101, 102, 103, 104, 105, 106, 107 ]
+```
+If the input data is a function. The result of that function will be cast to array.
+This function can receive the parent list as parameter.
+```javascript
+> new ArrayMore(1,2,3,4,5).plus( list => list.times(100) );
+ArrayMore [ 101, 202, 303, 404, 505, 606, 707 ]
+```
 ### Array Rotation
+If the input data is one array small than expected the cursor should go from the last element,
+back to the first one and keep reading.
 ```javascript
 > new ArrayMore(1,2,3,4,5,6,7).plus([10,100]);
 ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
+> new ArrayMore(1,2,3,4,5,6,7).plus([10,100,1000]);
+ArrayMore [ 11, 102, 1003, 14, 105, 1006, 17 ]
 ```
+
 ## Basic methods
 This new class provides some new expected methods like head(), tail(), equals(), append(), prepend() and copy().
 ## Mathematic
@@ -291,6 +308,10 @@ ArrayMore [ 1, 2, 3, 4, 5 ]
 ArrayMore [ 1, 2, 3, 4, 5 ]
 > ArrayMore.cast([1,2,3]).concat([1,2,3]);         
 ArrayMore [ 1, 2, 3, 1, 2, 3 ]
+> ArrayMore.cast([1,2,3]).concat( l => l);         
+ArrayMore [ 1, 2, 3, 1, 2, 3 ]
+> ArrayMore.cast([1,2,3]).concat( l => l.reverse() );         
+ArrayMore [ 1, 2, 3, 3, 2, 1 ]
 ```
 ### ArrayMore.isEmptyValues
 ```javascript

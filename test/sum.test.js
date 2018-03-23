@@ -10,11 +10,15 @@ describe('sum', () => {
   });
 
   it('sum of [] =>  null', () => {
-    expect(List.cast([]).sum()).toEqual(null);
+    expect(List.cast([]).sum()).toEqual(0);
   });
 
-  it('sum of new List =>  null', () => {
-    expect(new List().sum()).toEqual(null);
+  it('sum of new List =>  0', () => {
+    expect(new List().sum()).toEqual(0);
+  });
+
+  it('sum of new List null =>  null', () => {
+    expect(new List().sum(null)).toEqual(null);
   });
 
   it('sum("empty-list-value") of [] =>  123', () => {
@@ -22,7 +26,7 @@ describe('sum', () => {
   });
 
   it('sum should "work" with letters', () => {
-    expect(List.cast(['a','b','c']).sum()).toEqual("abc");
+    expect(List.cast(['a','b','c']).sum('')).toEqual("abc");
   });
 
 });

@@ -3,34 +3,40 @@ module.exports = class ArrayMore extends Array {
   /**
    * Cast any input to ArrayMore
    */
-  static cast(v, castNoValueToNull=false, keepHoles=false) {
-    if( v === undefined || v === null || Number.isNaN( v ) ) {
-      return ArrayMore.atomic( v, castNoValueToNull );
+  static cast(value, castNoValueToNull=false, keepHoles=false) {
+    if( value === undefined || value === null ||
+        Number.isNaN( value ) ) {
+          return ArrayMore.atomic( value, castNoValueToNull );
     }
-    if( v.constructor ===  ArrayMore ) {
-      return v;
+    if( value.constructor === ArrayMore ) {
+      return value;
     }
-    if( v.constructor === Array ) {
-      const isEmpty = v.every( e => e === undefined );
-      if( ! isEmpty && !keepHoles ) {
-        let result = new ArrayMore();
-        for( let i = 0; i < v.length; i += 1 ) {
-          let element = v[i];
-          result.push( ArrayMore.safeCast( element, castNoValueToNull, keepHoles ) );
-        }
-        return result;
+    if( value.constructor !== Array ) {
+      return ArrayMore.atomic( value, castNoValueToNull );
+    }
+    const isUndefinedValues = value.every( element => element === undefined );
+    if( isUndefinedValues ) {
+      let emptyList = new ArrayMore( value.length );
+      if( keepHoles ) {
+        return emptyList;
       }
-      if ( ! isEmpty && keepHoles ) {
-        let result = new ArrayMore( v.length );
-        for( let i in v ) {
-          let element = v[i];
-          result[i] = ArrayMore.safeCast( element, castNoValueToNull, keepHoles );
-        }
-        return result;
-      }
-      return new ArrayMore( v.length ).fill( undefined );
+      return emptyList.fill(undefined);
     }
-    return new ArrayMore().parent().concat([v]);
+    let result;
+    if( ! keepHoles ) {
+      result = new ArrayMore();
+      for( let i = 0; i < value.length; i += 1 ) {
+        let element = value[i];
+        result.push( ArrayMore.safeCast( element, castNoValueToNull, keepHoles ) );
+      }
+    } else {
+      result = new ArrayMore( value.length );
+      for( let i in value ) {
+        let element = value[i];
+        result[i] = ArrayMore.safeCast( element, castNoValueToNull, keepHoles );
+      }
+    }
+    return result;
   }
 
   /**
@@ -185,8 +191,12 @@ module.exports = class ArrayMore extends Array {
    * Create an atomic array with one element, the received value
    */
   static atomic( value, castNoValueToNull = false ) {
-    var atomicList  = new ArrayMore();
-    atomicList.push( castNoValueToNull ? null : value );
+    let atomicList  = new ArrayMore();
+    if( value === undefined || value === null || Number.isNaN( value ) ) {
+      atomicList.push( castNoValueToNull ? null : value );
+    } else {
+      atomicList.push( value );
+    }
     return atomicList;
   }
 
@@ -402,10 +412,10 @@ module.exports = class ArrayMore extends Array {
     )
   }
 
-  sum(emptyValue=null, invalidValue=NaN) {
+  sum( emptyValue=0, invalidValue=NaN ) {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
-        return list.reduce((x, y) => x + y);
+        return list.reduce((x, y) => x + y, emptyValue);
       }
     )
   }
@@ -535,8 +545,9 @@ module.exports = class ArrayMore extends Array {
     return ArrayMore.safeCast( this.parent().map( callback.bind(thisRef) ), castNoValueToNull, keepHoles );
   }
 
-  reduce(callback, initialValue=null, castNoValueToNull=false, keepHoles=false) {
-    var reduceResult;
+  reduce(callback, initialValue=null, emptyList = [], castNoValueToNull=false, keepHoles=false) {
+    let reduceResult;
+
     if( initialValue === null) {
       reduceResult = this.parent().reduce( callback );
     } else {
