@@ -1,4 +1,4 @@
-module.exports = class ArrayMore extends Array {
+class ArrayMore extends Array {
 
   /**
    * Cast any input to ArrayMore
@@ -697,4 +697,196 @@ module.exports = class ArrayMore extends Array {
       []
     )
   }
+
+  asKeyOfKV( arrValues = [1] , missingValue = null ) {
+    return ArrayMoreKV.asKV( this, arrValues, missingValue );
+  }
+
+  asValueOfKV( arrValues = [1] , missingValue = null ) {
+    return ArrayMoreKV.asKV( arrValues, this, missingValue );
+  }
+
+  countByValue(
+    extractKey = (v) => v,
+    castValue = (v) => 1,
+    reduce = (a,b) => a + b
+ ) {
+    return ArrayMoreKV.countByValue( this, extractKey, castValue, reduce );
+  }
+
+  countByFunc(
+    extractKey = (v) => v,
+    castValue = (v) => 1,
+    reduce = (a,b) => a + b
+  ) {
+    return ArrayMoreKV.countByFunc( this, extractKey, castValue, reduce );
+  }
+
+  groupByValue(
+    func = (v) => v,
+    castValue = (v) => [v],
+    reduce = (a,b) => a.concat(b)
+  ) {
+    return ArrayMoreKV.groupByValue( this, func, castValue, reduce );
+  }
+
+  groupByFunc(
+    extractKey = (v) => v,
+    castValue = (v) => [v],
+    reduce = (a,b) => a.concat(b)
+  ) {
+    return ArrayMoreKV.countByFunc( this, extractKey, castValue, reduce );
+  }
 }
+
+class ArrayMoreKV extends Array {
+
+  static asKV( arrKeys, arrValues, missingValue = null ) {
+    return new ArrayMoreKV().concat(
+      ArrayMore.cast(arrKeys).aggregate(
+        arrValues,
+        ( key, value ) => {
+          return {key: key, value: value};
+        },
+        ( key ) => {
+          return {key: key, value: missingValue }
+        }
+      )
+    );
+  }
+
+  static groupByValue(
+    data,
+    func = (v) => v,
+    castValue = (v) => [v],
+    reduce = (a,b) => a.concat(b)
+  ) {
+    return ArrayMoreKV.groupByFunc( data, func, castValue, reduce );
+  }
+
+  static countByValue(
+    data,
+    func = (v) => v,
+    castValue = (v) => 1,
+    reduce = (a,b) => a + b
+  ) {
+    return ArrayMoreKV.countByFunc( data, func );
+  }
+
+  static countByFunc(
+    data,
+    extractKey = (v) => v,
+    castValue = (v) => 1,
+    reduce = (a,b) => a + b
+  ) {
+    return ArrayMoreKV.groupByFunc(
+      data,
+      extractKey,
+      castValue,
+      reduce
+    );
+  }
+
+  static groupByFunc(
+    data,
+    extractKey = (v) => v,
+    castValue = (v) => [v],
+    reduce = (a,b) => a.concat(b)
+  ) {
+    var counts = new ArrayMore();
+    var results = new ArrayMore();
+    ArrayMore.cast( data ).forEach(
+      (value) => {
+        let result = extractKey( value );
+        let posResult = results.indexOf( result );
+        if( posResult === -1 ) {
+          results.push( result );
+          counts.push( ArrayMore.safeCast( castValue( value ) ) );
+        } else {
+          counts[ posResult ] = reduce(
+            counts[ posResult ],
+            castValue(value)
+          );
+        }
+      }
+    );
+    return ArrayMoreKV.asKV( results, counts );
+  }
+
+  findIndexKey( key ) {
+    return this.findIndex( kv => ArrayMore.comparable( key, kv.key ) );
+  }
+
+  findKey( key ) {
+    return this.find( kv => ArrayMore.comparable( key, kv.key ) );
+  }
+
+  findIndexValue( value ) {
+    return this.findIndex( kv => ArrayMore.comparable( value, kv.value ) );
+  }
+
+  findValue( value ) {
+    return this.find( kv => ArrayMore.comparable( value, kv.value ) );
+  }
+
+  sortByValue( func = (a,b) => a - b ) {
+    return this.sort(
+      ( kv1, kv2 ) => func(kv1.value, kv2.value)
+    )
+  }
+
+  sortByKey( func = (a,b) => a - b ) {
+    return this.sort(
+      ( kv1, kv2 ) => func(kv1.key, kv2.key)
+    )
+  }
+
+  getValues() {
+    const values = new Array().concat( this.map( kv => kv.value ) );
+    return new ArrayMore().concat(values);
+  }
+
+  getKeys() {
+    const keys = new Array().concat( this.map( kv => kv.key ) );
+    return new ArrayMore().concat(keys);
+  }
+
+  normalizeKeys( area = 1, emptyValue=[], invalidValue=NaN) {
+    var keys = this.getKeys().normalize( area, emptyValue, invalidValue );
+    var values = this.getValues();
+    return ArrayMoreKV.asKV( keys, values );
+  }
+
+  normalizeValues( area = 1, emptyValue=[], invalidValue=NaN) {
+    var keys = this.getKeys();
+    var values = this.getValues().normalize( area, emptyValue, invalidValue );
+    return ArrayMoreKV.asKV( keys, values );
+  }
+
+  union( otherKV, unionFunction = (x,y) => ArrayMore.cast(x).concat(y), notFoundValue = [] ) {
+    return this.aggregate( otherKV, unionFunction, notFoundValue );
+  }
+
+  aggregate( otherKV, aggregateFunction = (x,y) => x + y, notFoundValue = 0 ) {
+    var me = this;
+    var myKeys = this.getKeys();
+    var otherKeys = otherKV.getKeys();
+    var allKeys = myKeys.concat(otherKeys).unique().flat(true);
+    return new ArrayMoreKV().concat(
+      allKeys.map(
+        (key) => {
+          let myIndex = me.findIndexKey(key);
+          let otherIndex = otherKV.findIndexKey(key);
+          let myValue = ( myIndex == -1 ? notFoundValue : me[ myIndex ].value );
+          let otherValue = ( otherIndex == -1 ? notFoundValue : otherKV[ otherIndex ].value );
+          return {
+            key: key,
+            value: aggregateFunction( myValue, otherValue )
+          }
+        }
+      )
+    );
+  }
+}
+
+module.exports = ArrayMore;
