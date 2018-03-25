@@ -6,7 +6,12 @@
   <script src="./index.js"></script>
   <script>
   /* ugly, I know ... */
-  const ArrayMore = module.exports;
+  if( window.ArrayMore === undefined ) {
+    window.ArrayMore = module.exports;
+  }
+  if( window.List === undefined ) {
+    window.List = window.ArrayMore;
+  }
   </script>
 </head>
 <body>

@@ -1,4 +1,147 @@
-class ArrayMore extends Array {
+class ArrayMoreParent extends Array {
+
+  copy() {
+    return this.slice(0);
+  }
+
+  equals(other, anyOrder=true) {
+    return ArrayMore.comparable( this, other, false, anyOrder );
+  }
+
+  similar(other, anyOrder=true) {
+    return ArrayMore.comparable( this, other, true, anyOrder );
+  }
+
+  isEmpty() {
+    return ( this.length === 0 );
+  }
+
+  take(n) {
+    if( n < 0 ) {
+      return this.slice( n * -1 );
+    }
+    return this.slice(0, n);
+  }
+
+  has(value) {
+    if( value.constructor == Function ) {
+      return this.some( value );
+    }
+    return this.some(
+      ( element ) => ArrayMore.comparable( element, value )
+    );
+  }
+
+  hasIndex(value) {
+    if( value.constructor == Function ) {
+      return this.findIndex( value );
+    }
+    return this.findIndex(
+      ( element ) => ArrayMore.comparable( element, value )
+    );
+  }
+
+  unique() {
+    if (this.isEmpty()) {
+      return this;
+    }
+    if( this.isUndefinedValues() ) {
+      return ArrayMore.atomic( undefined );
+    }
+
+    var result = new ArrayMore();
+    var list = this.copy();
+    while( list.length ) {
+      let current = list.pop();
+      let exists = list.some(
+        element => ArrayMore.comparable( element, current )
+      );
+      if( ! exists ) {
+        result = result.prepend( current );
+      }
+    }
+    return result;
+  }
+
+  head(n=10) {
+    return this.take(n);
+  }
+
+  tail(n=10) {
+    if( n < 0 ) {
+      return this.slice( 0, this.length - ( n * -1 ) );
+    }
+    return this.slice( this.length - n );
+  }
+
+  castFunction(value) {
+    if( value === null || value === undefined || Number.isNaN( value ) ) {
+      return value;
+    }
+    if( value.constructor !== Function ) {
+      return value;
+    }
+    const result = value(this.copy());
+    if( result.constructor === Array ) {
+      return ArrayMore.cast( result );
+    }
+    return result;
+  }
+
+  append(value, castNoValueToNull=false, keepHoles=false) {
+    const jokerValue = ArrayMore.jokerValue(
+      this, value, castNoValueToNull, keepHoles, true
+    );
+    return this.copy().concat( jokerValue );
+  }
+
+  prepend(value, castNoValueToNull=false, keepHoles=false) {
+    const castArray = new Array().concat(this);
+    const jokerValue = ArrayMore.jokerValue(
+      this, value, castNoValueToNull, keepHoles, true
+    );
+    return jokerValue.concat( castArray );
+  }
+
+  /**
+   * Provides access to the parent method
+   */
+  parent() {
+    if( this._parent === undefined ) {
+      this._parent = {
+        concat: super.concat.bind(this),
+        copyWithin: super.copyWithin.bind(this),
+        entries: super.entries.bind(this),
+        every: super.every.bind(this),
+        fill: super.fill.bind(this),
+        filter: super.filter.bind(this),
+        find: super.find.bind(this),
+        findIndex: super.findIndex.bind(this),
+        forEach: super.forEach.bind(this),
+        includes: super.includes.bind(this),
+        indexOf: super.indexOf.bind(this),
+        join: super.join.bind(this),
+        keys: super.keys.bind(this),
+        lastIndexOf: super.lastIndexOf.bind(this),
+        map: super.map.bind(this),
+        pop: super.pop.bind(this),
+        push: super.push.bind(this),
+        reduce: super.reduce.bind(this),
+        reduceRight: super.reduceRight.bind(this),
+        reverse: super.reverse.bind(this),
+        shift: super.shift.bind(this),
+        slice: super.slice.bind(this),
+        some: super.some.bind(this),
+        sort: super.sort.bind(this),
+        splice: super.splice.bind(this),
+        unshift: super.unshift.bind(this),
+      };
+    }
+    return this._parent;
+  }
+}
+
+class ArrayMore extends ArrayMoreParent {
 
   /**
    * Cast any input to ArrayMore
@@ -8,7 +151,7 @@ class ArrayMore extends Array {
         Number.isNaN( value ) ) {
           return ArrayMore.atomic( value, castNoValueToNull );
     }
-    if( value.constructor === ArrayMore ) {
+    if( value.constructor === ArrayMore || value.constructor === ArrayMoreKV ) {
       return value;
     }
     if( value.constructor !== Array ) {
@@ -144,50 +287,6 @@ class ArrayMore extends Array {
   }
 
   /**
-   * Provides access to the parent method
-   */
-  parent() {
-    if( this._parent === undefined ) {
-      this._parent = {
-        concat: super.concat.bind(this),
-        copyWithin: super.copyWithin.bind(this),
-        entries: super.entries.bind(this),
-        every: super.every.bind(this),
-        fill: super.fill.bind(this),
-        filter: super.filter.bind(this),
-        find: super.find.bind(this),
-        findIndex: super.findIndex.bind(this),
-        forEach: super.forEach.bind(this),
-        includes: super.includes.bind(this),
-        indexOf: super.indexOf.bind(this),
-        join: super.join.bind(this),
-        keys: super.keys.bind(this),
-        lastIndexOf: super.lastIndexOf.bind(this),
-        map: super.map.bind(this),
-        pop: super.pop.bind(this),
-        push: super.push.bind(this),
-        reduce: super.reduce.bind(this),
-        reduceRight: super.reduceRight.bind(this),
-        reverse: super.reverse.bind(this),
-        shift: super.shift.bind(this),
-        slice: super.slice.bind(this),
-        some: super.some.bind(this),
-        sort: super.sort.bind(this),
-        splice: super.splice.bind(this),
-        unshift: super.unshift.bind(this),
-      };
-    }
-    return this._parent;
-  }
-
-  /**
-   * Create a copy of the Array
-   */
-  copy() {
-    return this.slice(0);
-  }
-
-  /**
    * Create an atomic array with one element, the received value
    */
   static atomic( value, castNoValueToNull = false ) {
@@ -203,10 +302,10 @@ class ArrayMore extends Array {
   /**
    * Convert flexible input value, list or function to ready to use data
    */
-  jokerValue(value, castNoValueToNull=false, keepHoles=true, touchArrayMore=false, thisRef = null ) {
-    if( thisRef === null ) {
-      thisRef = this;
-    }
+  static jokerValue( thisRef, value, castNoValueToNull=false, keepHoles=true, touchArrayMore=false ) {
+    // if( thisRef === null ) {
+    //   thisRef = this;
+    // }
     if( value  === undefined || value  === null || Number.isNaN( value  ) ) {
       return ArrayMore.atomic( value, castNoValueToNull );
     }
@@ -233,12 +332,13 @@ class ArrayMore extends Array {
     if( data === undefined ) {
       return this;
     }
-    const otherList = this.jokerValue( data, castNoValueToNull, keepHoles, false );
+    const otherList = ArrayMore.jokerValue( this, data, castNoValueToNull, keepHoles );
     if( ! otherList.isUndefinedValues() ) {
       return this.copy().parent().concat( otherList );
     }
+
     return this.copy().parent().concat(
-      ArrayMore.cast(data,castNoValueToNull,keepHoles)
+      otherList
     );
   }
 
@@ -313,89 +413,6 @@ class ArrayMore extends Array {
     return true;
   }
 
-  equals(other, anyOrder=true) {
-    return ArrayMore.comparable( this, other, false, anyOrder );
-  }
-
-  similar(other, anyOrder=true) {
-    return ArrayMore.comparable( this, other, true, anyOrder );
-  }
-
-  isEmpty() {
-    return ( this.length === 0 );
-  }
-
-  take(n) {
-    if( n < 0 ) {
-      return this.slice( n * -1 );
-    }
-    return this.slice(0, n);
-  }
-
-  head(n=10) {
-    return this.take(n);
-  }
-
-  tail(n=10) {
-    if( n < 0 ) {
-      return this.slice( 0, this.length - ( n * -1 ) );
-    }
-    return this.slice( this.length - n );
-  }
-
-  append(value, castNoValueToNull=false, keepHoles=false) {
-    return this.copy().concat(
-      this.jokerValue( value, castNoValueToNull, keepHoles, true ),
-      castNoValueToNull,
-      keepHoles );
-  }
-
-  prepend(value, castNoValueToNull=false, keepHoles=false) {
-    return this.
-      jokerValue( value, castNoValueToNull, keepHoles, false ).
-      concat( this, castNoValueToNull, keepHoles );
-  }
-
-  has(value) {
-    if( value.constructor == Function ) {
-      return this.some( value );
-    }
-    return this.some(
-      ( element ) => ArrayMore.comparable( element, value )
-    );
-  }
-
-  hasIndex(value) {
-    if( value.constructor == Function ) {
-      return this.findIndex( value );
-    }
-    return this.findIndex(
-      ( element ) => ArrayMore.comparable( element, value )
-    );
-  }
-
-  unique() {
-    if (this.isEmpty()) {
-      return this;
-    }
-    if( this.isUndefinedValues() ) {
-      return ArrayMore.atomic( undefined );
-    }
-
-    var result = new ArrayMore();
-    var list = this.copy();
-    while( list.length ) {
-      let current = list.pop();
-      let exists = list.some(
-        element => ArrayMore.comparable( element, current )
-      );
-      if( ! exists ) {
-        result = result.prepend( [ current ] );
-      }
-    }
-    return result;
-  }
-
   max(emptyValue=null, invalidValue=NaN) {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
@@ -429,7 +446,7 @@ class ArrayMore extends Array {
   }
 
   normalize( area = 1, emptyValue=[], invalidValue=NaN) {
-    const areaSafe = this.jokerValue( area );
+    const areaSafe = ArrayMore.jokerValue( this, area );
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
         const total = list.sum();
@@ -442,14 +459,14 @@ class ArrayMore extends Array {
     return this.applyOperation( emptyValue, invalidValue,
       (list) => {
         return list.
-        map( x => this.jokerValue(x) ).
+        map( x => ArrayMore.jokerValue(this, x) ).
         reduce(
           (x, y) => {
             const s = x.last();
             const yAcc = y.map(v => v + s);
             return x.concat(yAcc);
           },
-          this.jokerValue( c )
+          ArrayMore.jokerValue( this, c )
         )
       }
     )
@@ -508,7 +525,7 @@ class ArrayMore extends Array {
   }
 
   overlaps(ys, fSearch=(a,b) => a == b, fGet=(a) => a, valueEmpty=null) {
-    return this.jokerValue(ys).map(
+    return ArrayMore.jokerValue(this, ys).map(
       ( yv ) => {
         const p = this.hasIndex( ( xv ) => fSearch( xv, yv ) );
         if (p === -1) {
@@ -568,20 +585,6 @@ class ArrayMore extends Array {
     );
   }
 
-  castFunction(value) {
-    if( value === null || value === undefined || Number.isNaN( value ) ) {
-      return value;
-    }
-    if( value.constructor !== Function ) {
-      return value;
-    }
-    const result = value(this.copy());
-    if( result.constructor === Array ) {
-      return ArrayMore.cast( result );
-    }
-    return result;
-  }
-
   rotate(rotation, emptyValue, operation, invalidValue=NaN) {
     if( this.isEmpty() ) {
       return ArrayMore.safeCast( emptyValue );
@@ -589,7 +592,7 @@ class ArrayMore extends Array {
     return this.replaceNaN( invalidValue ).map(
       (x, key) => operation(
         x,
-        this.castFunction( this.jokerValue( rotation ).getRotate( key, emptyValue ) )
+        this.castFunction( ArrayMore.jokerValue( this, rotation ).getRotate( key, emptyValue ) )
       )
     );
   }
@@ -644,7 +647,7 @@ class ArrayMore extends Array {
   diff(otherArray) {
     return this.
     aggregate(
-      this.jokerValue(otherArray),
+      ArrayMore.jokerValue( this, otherArray),
       (x, y) => x - y,
       (v) => v
     );
@@ -667,7 +670,7 @@ class ArrayMore extends Array {
       return this.flatDeep();
     }
     return this.map(
-      v => this.jokerValue(v,false,true,false,thisRef),
+      v => ArrayMore.jokerValue(thisRef, v),
       thisRef
     ).
     reduce(
@@ -686,7 +689,7 @@ class ArrayMore extends Array {
           return value.flatDeep( thisRef );
         }
         if( value.constructor === Function ) {
-          return this.jokerValue(value,false,true,false,thisRef);
+          return ArrayMore.jokerValue(thisRef,value);
         }
         return [value];
       },
@@ -698,12 +701,27 @@ class ArrayMore extends Array {
     )
   }
 
-  asKeyOfKV( arrValues = [1] , missingValue = null ) {
-    return ArrayMoreKV.asKV( this, arrValues, missingValue );
+  resize( newSize, rotate = true, missingValue = null ) {
+    return new ArrayMore(newSize).fill(missingValue).map(
+      (element,pos) => {
+        if( rotate ) {
+          return this.getRotate(pos);
+        }
+        return this.get( pos, missingValue );
+      }
+    )
   }
 
-  asValueOfKV( arrValues = [1] , missingValue = null ) {
-    return ArrayMoreKV.asKV( arrValues, this, missingValue );
+  asKeyOfKV( arrValues = l => l , rotate = false, missingValue = null ) {
+    return ArrayMoreKV.asKV( this, this, arrValues, rotate, missingValue );
+  }
+
+  asValueOfKV( arrKeys = l => l , rotate = false, missingValue = null ) {
+    return ArrayMoreKV.asKV( this, arrKeys, this, rotate, missingValue );
+  }
+
+  asKeyValueOfKV( arrKeys, arrValues, rotate = true, missingValue = null ) {
+    return ArrayMoreKV.asKV( this, arrKeys, arrValues, rotate, missingValue );
   }
 
   countByValue(
@@ -711,7 +729,7 @@ class ArrayMore extends Array {
     castValue = (v) => 1,
     reduce = (a,b) => a + b
  ) {
-    return ArrayMoreKV.countByValue( this, extractKey, castValue, reduce );
+    return ArrayMoreKV.countByKey( this, extractKey, castValue, reduce );
   }
 
   countByFunc(
@@ -739,38 +757,54 @@ class ArrayMore extends Array {
   }
 }
 
-class ArrayMoreKV extends Array {
+class ArrayMoreKV extends ArrayMoreParent {
 
-  static asKV( arrKeys, arrValues, missingValue = null ) {
+    static asKV( context, arrKeys, arrValues, rotate, missingValue = null ) {
+
+    const castNoValueToNull = true;
+    const keepHoles = false;
+    const touchArrayMore = false;
+
+    const arrValuesMore = ArrayMore.jokerValue(
+      context, arrValues, castNoValueToNull, keepHoles, touchArrayMore
+    );
+
+    const arrKeysMore = ArrayMore.jokerValue(
+      context, arrKeys, castNoValueToNull, keepHoles, touchArrayMore
+    );
+
+    const maxSize = Math.max( arrKeysMore.length, arrValuesMore.length );
+
+    const arrKeysResize   = ArrayMore.cast( arrKeysMore   ).resize( maxSize, rotate, missingValue );
+    const arrValuesResize = ArrayMore.cast( arrValuesMore ).resize( maxSize, rotate, missingValue );
+
     return new ArrayMoreKV().concat(
-      ArrayMore.cast(arrKeys).aggregate(
-        arrValues,
-        ( key, value ) => {
-          return {key: key, value: value};
-        },
-        ( key ) => {
-          return {key: key, value: missingValue }
+      ArrayMore.cast(arrKeysResize).rotate(
+        arrValuesResize,
+        [],
+        (k,v) => {
+            return {key:k,value:v};
         }
       )
     );
   }
 
-  static groupByValue(
+  static groupByKey(
     data,
-    func = (v) => v,
+    extractKey = (v) => v,
     castValue = (v) => [v],
     reduce = (a,b) => a.concat(b)
   ) {
-    return ArrayMoreKV.groupByFunc( data, func, castValue, reduce );
+    return ArrayMoreKV.groupByFunc( data, extractKey, castValue, reduce );
   }
 
-  static countByValue(
+  static countByKey(
     data,
-    func = (v) => v,
+    extractKey = (v) => v,
     castValue = (v) => 1,
     reduce = (a,b) => a + b
   ) {
-    return ArrayMoreKV.countByFunc( data, func );
+    return ArrayMoreKV.countByFunc( data, extractKey );
   }
 
   static countByFunc(
@@ -793,15 +827,17 @@ class ArrayMoreKV extends Array {
     castValue = (v) => [v],
     reduce = (a,b) => a.concat(b)
   ) {
-    var counts = new ArrayMore();
-    var results = new ArrayMore();
-    ArrayMore.cast( data ).forEach(
+    let counts  = new ArrayMore();
+    let results = new ArrayMore();
+    ArrayMore.cast(  data ).forEach(
       (value) => {
         let result = extractKey( value );
         let posResult = results.indexOf( result );
         if( posResult === -1 ) {
           results.push( result );
-          counts.push( ArrayMore.safeCast( castValue( value ) ) );
+          const castedValued = castValue( value );
+          const safeCasted = ArrayMore.safeCast( castedValued );
+          counts.push( safeCasted );
         } else {
           counts[ posResult ] = reduce(
             counts[ posResult ],
@@ -810,7 +846,14 @@ class ArrayMoreKV extends Array {
         }
       }
     );
-    return ArrayMoreKV.asKV( results, counts );
+    return ArrayMoreKV.asKV( data, results, counts );
+  }
+
+  /**
+   * Create a copy of the ArrayMoreKV
+   */
+  copy() {
+    return this.slice(0);
   }
 
   findIndexKey( key ) {
@@ -839,6 +882,64 @@ class ArrayMoreKV extends Array {
     return this.sort(
       ( kv1, kv2 ) => func(kv1.key, kv2.key)
     )
+  }
+
+  groupByKey() {
+    return ArrayMoreKV.groupByKey(
+      this,
+      (row) => row.key,
+      (row) => [row.value],
+      (acc,value) => acc.concat(value)
+    );
+  }
+
+  countByKey() {
+    return ArrayMoreKV.countByKey(
+      this,
+      (row) => row.key,
+      (row) => 1,
+      (acc,value) => acc + value
+    );
+  }
+
+  groupByValue() {
+    return ArrayMoreKV.groupByKey(
+      this,
+      (row) => row.value,
+      (row) => [row.key],
+      (acc,key) => acc.concat(key)
+    );
+  }
+
+  countByValue() {
+    return ArrayMoreKV.groupByKey(
+      this,
+      (row) => row.value,
+      (row) => 1,
+      (acc,key) => acc + key
+    );
+  }
+
+  transformKeys( transformation = (key) => key ) {
+    return this.map(
+      row => {
+        return {
+          key: transformation(row.key),
+          value: row.value
+        }
+      }
+    );
+  }
+
+  transformValues( transformation = (value) => value ) {
+    return this.map(
+      row => {
+        return {
+          key: row.key,
+          value: transformation(row.value)
+        }
+      }
+    );
   }
 
   getValues() {
