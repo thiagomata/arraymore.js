@@ -720,40 +720,40 @@ class ArrayMore extends ArrayMoreParent {
     return ArrayMoreKV.asKV( this, arrKeys, this, rotate, missingValue );
   }
 
-  asKeyValueOfKV( arrKeys, arrValues, rotate = true, missingValue = null ) {
+  asKeyValueOfKV( arrKeys, arrValues, rotate = false, missingValue = null ) {
     return ArrayMoreKV.asKV( this, arrKeys, arrValues, rotate, missingValue );
   }
 
   countByValue(
-    extractKey = (v) => v,
-    castValue = (v) => 1,
-    reduce = (a,b) => a + b
+    extractKey    = (v) => v,
+    extractValue  = (v) => 1,
+    reduce        = (a,b) => a + b
  ) {
-    return ArrayMoreKV.countByKey( this, extractKey, castValue, reduce );
+    return ArrayMoreKV.countByFunc( this, extractKey, extractValue, reduce );
   }
 
   countByFunc(
-    extractKey = (v) => v,
-    castValue = (v) => 1,
-    reduce = (a,b) => a + b
+    extractKey    , // = (v) => v,
+    extractValue  , // = (v) => 1,
+    reduce          // = (a,b) => a + b
   ) {
-    return ArrayMoreKV.countByFunc( this, extractKey, castValue, reduce );
+    return ArrayMoreKV.countByFunc( this, extractKey, extractValue, reduce );
   }
 
   groupByValue(
     func = (v) => v,
-    castValue = (v) => [v],
+    extractValue = (v) => [v],
     reduce = (a,b) => a.concat(b)
   ) {
-    return ArrayMoreKV.groupByValue( this, func, castValue, reduce );
+    return ArrayMoreKV.groupByFunc( this, func, extractValue, reduce );
   }
 
   groupByFunc(
-    extractKey = (v) => v,
-    castValue = (v) => [v],
-    reduce = (a,b) => a.concat(b)
+    extractKey    , // = (v) => v,
+    extractValue  , // = (v) => [v],
+    reduce          // = (a,b) => a.concat(b)
   ) {
-    return ArrayMoreKV.countByFunc( this, extractKey, castValue, reduce );
+    return ArrayMoreKV.groupByFunc( this, extractKey, extractValue, reduce );
   }
 }
 
@@ -765,13 +765,15 @@ class ArrayMoreKV extends ArrayMoreParent {
     const keepHoles = false;
     const touchArrayMore = false;
 
-    const arrValuesMore = ArrayMore.jokerValue(
-      context, arrValues, castNoValueToNull, keepHoles, touchArrayMore
-    );
+    const arrValuesMore = arrValues === undefined ? new ArrayMore() :
+      ArrayMore.jokerValue(
+        context, arrValues, castNoValueToNull, keepHoles, touchArrayMore
+      );
 
-    const arrKeysMore = ArrayMore.jokerValue(
-      context, arrKeys, castNoValueToNull, keepHoles, touchArrayMore
-    );
+    const arrKeysMore = arrKeys === undefined ? new ArrayMore() :
+      ArrayMore.jokerValue(
+        context, arrKeys, castNoValueToNull, keepHoles, touchArrayMore
+      );
 
     const maxSize = Math.max( arrKeysMore.length, arrValuesMore.length );
 
@@ -792,16 +794,16 @@ class ArrayMoreKV extends ArrayMoreParent {
   static groupByKey(
     data,
     extractKey = (v) => v,
-    castValue = (v) => [v],
+    extractValue = (v) => [v],
     reduce = (a,b) => a.concat(b)
   ) {
-    return ArrayMoreKV.groupByFunc( data, extractKey, castValue, reduce );
+    return ArrayMoreKV.groupByFunc( data, extractKey, extractValue, reduce );
   }
 
   static countByKey(
     data,
     extractKey = (v) => v,
-    castValue = (v) => 1,
+    extractValue = (v) => 1,
     reduce = (a,b) => a + b
   ) {
     return ArrayMoreKV.countByFunc( data, extractKey );
@@ -810,13 +812,13 @@ class ArrayMoreKV extends ArrayMoreParent {
   static countByFunc(
     data,
     extractKey = (v) => v,
-    castValue = (v) => 1,
+    extractValue = (v) => 1,
     reduce = (a,b) => a + b
   ) {
     return ArrayMoreKV.groupByFunc(
       data,
       extractKey,
-      castValue,
+      extractValue,
       reduce
     );
   }
@@ -824,7 +826,7 @@ class ArrayMoreKV extends ArrayMoreParent {
   static groupByFunc(
     data,
     extractKey = (v) => v,
-    castValue = (v) => [v],
+    extractValue = (v) => [v],
     reduce = (a,b) => a.concat(b)
   ) {
     let counts  = new ArrayMore();
@@ -835,25 +837,18 @@ class ArrayMoreKV extends ArrayMoreParent {
         let posResult = results.indexOf( result );
         if( posResult === -1 ) {
           results.push( result );
-          const castedValued = castValue( value );
+          const castedValued = extractValue( value );
           const safeCasted = ArrayMore.safeCast( castedValued );
           counts.push( safeCasted );
         } else {
           counts[ posResult ] = reduce(
             counts[ posResult ],
-            castValue(value)
+            extractValue(value)
           );
         }
       }
     );
     return ArrayMoreKV.asKV( data, results, counts );
-  }
-
-  /**
-   * Create a copy of the ArrayMoreKV
-   */
-  copy() {
-    return this.slice(0);
   }
 
   findIndexKey( key ) {
@@ -873,13 +868,13 @@ class ArrayMoreKV extends ArrayMoreParent {
   }
 
   sortByValue( func = (a,b) => a - b ) {
-    return this.sort(
+    return this.copy().sort(
       ( kv1, kv2 ) => func(kv1.value, kv2.value)
     )
   }
 
   sortByKey( func = (a,b) => a - b ) {
-    return this.sort(
+    return this.copy().sort(
       ( kv1, kv2 ) => func(kv1.key, kv2.key)
     )
   }
@@ -921,7 +916,7 @@ class ArrayMoreKV extends ArrayMoreParent {
   }
 
   transformKeys( transformation = (key) => key ) {
-    return this.map(
+    return this.copy().map(
       row => {
         return {
           key: transformation(row.key),
@@ -932,7 +927,7 @@ class ArrayMoreKV extends ArrayMoreParent {
   }
 
   transformValues( transformation = (value) => value ) {
-    return this.map(
+    return this.copy().map(
       row => {
         return {
           key: row.key,
