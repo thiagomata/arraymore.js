@@ -935,12 +935,13 @@ class ArrayMoreKV extends ArrayMoreParent {
 
   groupRowsByKey() {
     return this.groupRowsByFunc(
+      (row) => row.key,
+      (row) => [row.value]
     );
   }
 
   groupRowsByValue() {
     return this.groupRowsByFunc(
-      (row) => row.value
     );
   }
 
