@@ -21,6 +21,51 @@ describe('equals', () => {
     expect(new List(1, 2).equals([1, 2])).toEqual(true);
   });
 
+  it('should equals be true to same object elements', () => {
+    expect(new List({a:1}, {b:2}).equals([{a:1}, {b:2}])).toEqual(true);
+  });
+
+  it('should equals be false to diff object elements', () => {
+    expect(new List({a:1}, {b:3}).equals([{a:1}, {b:2}])).toEqual(false);
+  });
+
+  it('should equals be false to diff a > b object elements', () => {
+    expect(new List({a:1}, {b:2,c:1}).equals([{a:1}, {b:2}])).toEqual(false);
+  });
+
+  it('should equals be false to diff a < b object elements', () => {
+    expect(new List({a:1}, {b:2}).equals([{a:1}, {b:2,c:1}])).toEqual(false);
+  });
+
+  it('should equals be false to diff a.x != b.x object elements', () => {
+    expect(new List({a:1}, {b:2,c:[10,11]}).equals([{a:1}, {b:2,c:[10,12]}])).toEqual(false);
+  });
+
+  it('should equals be false to diff a.x = b.x object elements', () => {
+    expect(new List({a:1}, {b:2,c:[10,11]}).equals([{a:1}, {b:2,c:[10,11]}])).toEqual(true);
+  });
+
+  it('should equals be false to diff class objects', () => {
+    function Foo( v ) {
+      this.v = v;
+    }
+    function Bar( v ) {
+      this.v = v;
+    }
+    let foo = new Foo(1);
+    let bar = new Bar(1);
+    expect(new List(foo).equals([bar])).toEqual(false);
+  });
+
+  it('should equals be true to same class objects', () => {
+    function Foo( v ) {
+      this.v = v;
+    }
+    let foo = new Foo(1);
+    let fooEqual = new Foo(1);
+    expect(new List(foo).equals([fooEqual])).toEqual(true);
+  });
+
   it('should equals by default ignore order', () => {
     expect(new List(1, 2, 3).equals([2, 1, 3])).toEqual(true);
   });

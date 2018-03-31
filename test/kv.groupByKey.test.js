@@ -1,21 +1,21 @@
 const List = require('../index');
-describe('groupByKey', () => {
+describe('groupRowsByKey', () => {
 
   var arrKv = new List(10,5,6,10,8,9,10).asKeyOfKV(
     new List(1,2,3,1,1,2,2)
   )
 
-  const emptyArrKv = new List().asKeyValueOfKV([]);
+  var emptyArrKv = new List().asKeyValueOfKV([]);
 
-  it('arrKv groupByKey().findKey(10) =  [ 1, 1, 2 ]', () => {
+  it('arrKv groupRowsByKey().findRowByKey(1) =  [ 10, 10, 8 ]', () => {
     expect(
-      arrKv.groupByKey().findKey(10).value
-    ).toEqual([ 1, 1, 2 ]);
+      arrKv.groupRowsByKey().findRowByKey(1).value
+    ).toEqual([ 10, 10, 8 ]);
   });
 
   it('emptyArrKv getKeys = [] ', () => {
     expect(
-      emptyArrKv.getKeys()
+      emptyArrKv.groupRowsByKey()
     ).toEqual([]);
   });
 });

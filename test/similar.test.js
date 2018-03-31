@@ -65,6 +65,38 @@ describe('similar', () => {
     expect(new List(1, 2).similar([1,'2'])).toEqual(true);
   });
 
+  it('should similar be true to diff class objects with same attributes', () => {
+    function Foo( v ) {
+      this.v = v;
+      this.someMethod = function() {
+        return 123;
+      }
+    }
+    function Bar( v ) {
+      this.v = v;
+      this.somethingElse = function() {
+        return 456;
+      }
+    }
+    let foo = new Foo(1);
+    let bar = new Bar(1);
+    expect(new List(foo).similar([bar])).toEqual(true);
+  });
+
+  it('should similar be false to diff class objects with diff attributes', () => {
+    function Foo( v ) {
+      this.v = v;
+    }
+    function Bar( v ) {
+      this.v = v;
+      this.x = 3;
+    }
+    let foo = new Foo(1);
+    let bar = new Bar(1);
+    expect(new List(foo).similar([bar])).toEqual(false);
+    expect(new List(bar).similar([foo])).toEqual(false);
+  });
+
   it('should similar call object similar method', () => {
 
     class Example {

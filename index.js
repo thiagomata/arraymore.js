@@ -49,8 +49,8 @@ class ArrayMoreParent extends Array {
       return ArrayMore.atomic( undefined );
     }
 
-    var result = new ArrayMore();
-    var list = this.copy();
+    let result = new ArrayMore();
+    let list = this.copy();
     while( list.length ) {
       let current = list.pop();
       let exists = list.some(
@@ -107,8 +107,9 @@ class ArrayMoreParent extends Array {
    * Provides access to the parent method
    */
   parent() {
-    if( this._parent === undefined ) {
-      this._parent = {
+    // if( this._parent === undefined ) {
+    //   this._parent =
+    return {
         concat: super.concat.bind(this),
         copyWithin: super.copyWithin.bind(this),
         entries: super.entries.bind(this),
@@ -134,10 +135,28 @@ class ArrayMoreParent extends Array {
         some: super.some.bind(this),
         sort: super.sort.bind(this),
         splice: super.splice.bind(this),
-        unshift: super.unshift.bind(this),
+        unshift: super.unshift.bind(this)
       };
+    // }
+    // return this._parent;
+  }
+
+  isEmptyValues() {
+    return this.every( v => v == undefined );
+  }
+
+  isNullValues() {
+    if( this.length === 0 ) {
+      return true;
     }
-    return this._parent;
+    if( this.isUndefinedValues() ) {
+      return false;
+    }
+    return this.every( v => v === null );
+  }
+
+  isUndefinedValues() {
+    return this.every( v => v === undefined );
   }
 }
 
@@ -151,7 +170,7 @@ class ArrayMore extends ArrayMoreParent {
         Number.isNaN( value ) ) {
           return ArrayMore.atomic( value, castNoValueToNull );
     }
-    if( value.constructor === ArrayMore || value.constructor === ArrayMoreKV ) {
+    if( value instanceof ArrayMoreParent ) {
       return value;
     }
     if( value.constructor !== Array ) {
@@ -210,7 +229,7 @@ class ArrayMore extends ArrayMoreParent {
           if( a == undefined ) {
             return null;
           }
-          if ( a.constructor === Array || a.constructor === ArrayMore ) {
+          if ( a instanceof Array ) {
             return ArrayMore.cast(a,castSimilar);
           }
           return null;
@@ -222,7 +241,7 @@ class ArrayMore extends ArrayMoreParent {
         if( b == undefined ) {
           return null;
         }
-        if ( b.constructor === Array || b.constructor === ArrayMore  ) {
+        if ( b instanceof Array  ) {
           return ArrayMore.cast(b,castSimilar);
         }
         return null;
@@ -237,11 +256,14 @@ class ArrayMore extends ArrayMoreParent {
     }
 
     if( listA !== null && listB !== null ) {
-      return listA.listComparable( listB, castSimilar, anyOrder );
+      return ArrayMore.listComparable(
+        listA, listB, castSimilar, anyOrder
+      );
     }
 
     if( listA !== null || listB !== null ) {
-      return ArrayMore.cast(a,castSimilar).listComparable(
+      return ArrayMore.listComparable(
+        ArrayMore.cast(a,castSimilar),
         ArrayMore.cast(b,castSimilar),
         castSimilar,
         anyOrder
@@ -256,8 +278,40 @@ class ArrayMore extends ArrayMoreParent {
       return b.equals( a );
     }
 
-    if( castSimilar ) {
-      return a == b;
+    if( castSimilar && a == b) {
+      return true;
+    }
+
+    if ( a === b ) {
+      return true
+    }
+
+    if( a === undefined || b === undefined ) {
+      return false;
+    }
+
+    if( a instanceof Object && b instanceof Object ) {
+      if( a.constructor == b.constructor || castSimilar ) {
+        for( let prop in a ) {
+          if( a.hasOwnProperty( prop ) && a[ prop ].constructor != Function ) {
+            if( ! b.hasOwnProperty( prop ) ) {
+              return false;
+            }
+            if( ! ArrayMore.comparable( a[ prop ], b[ prop ], castSimilar, anyOrder ) ) {
+              return false;
+            }
+          }
+        }
+        for( let prop in b ) {
+          if( b.hasOwnProperty( prop ) && b[ prop ].constructor != Function ) {
+            if( ! a.hasOwnProperty( prop ) ) {
+              return false;
+            }
+          }
+        }
+        return true;
+      }
+      return false
     }
 
     return a === b;
@@ -271,15 +325,15 @@ class ArrayMore extends ArrayMoreParent {
       b = a;
       a = 0;
     }
-    var list = new ArrayMore();
+    let list = new ArrayMore();
     if( a < b ) {
       step = Math.abs( step );
-      for( var i = a; i < b; i += step ) {
+      for( let i = a; i < b; i += step ) {
           list.push(i);
       }
     } else {
       step = Math.abs( step ) * -1;
-      for( var i = a; i > b; i += step ) {
+      for( let i = a; i > b; i += step ) {
           list.push(i);
       }
     }
@@ -342,36 +396,17 @@ class ArrayMore extends ArrayMoreParent {
     );
   }
 
-  isEmptyValues() {
-    return this.every( v => v == undefined );
-  }
-
-  isNullValues() {
-    if( this.length === 0 ) {
-      return true;
-    }
-    if( this.isUndefinedValues() ) {
-      return false;
-    }
-    return this.every( v => v === null );
-  }
-
-  isUndefinedValues() {
-    return this.every( v => v === undefined );
-  }
-
-  listComparable(otherList, castSimilar=false, anyOrder=true) {
-    const thisList = this;
-    if( otherList.length != this.length ) {
+  static listComparable( thisList, otherList, castSimilar=false, anyOrder=true) {
+    if( otherList.length != thisList.length ) {
       return false;
     }
 
-    if( this.isEmptyValues() || otherList.isEmptyValues() ) {
-      return this.isEmptyValues() === ArrayMore.cast(otherList).isEmptyValues();
+    if( thisList.isEmptyValues() || otherList.isEmptyValues() ) {
+      return thisList.isEmptyValues() === ArrayMore.cast(otherList).isEmptyValues();
     }
 
     if( ! anyOrder ) {
-      return this.every(
+      return thisList.every(
         ( element, key ) => {
           return ArrayMore.comparable( element, otherList[ key ], castSimilar, anyOrder );
         }
@@ -724,34 +759,34 @@ class ArrayMore extends ArrayMoreParent {
     return ArrayMoreKV.asKV( this, arrKeys, arrValues, rotate, missingValue );
   }
 
-  countByValue(
+  countByFunc(
     extractKey    = (v) => v,
     extractValue  = (v) => 1,
     reduce        = (a,b) => a + b
+  ) {
+    return ArrayMoreKV.groupByFunc( this, extractKey, extractValue, reduce );
+  }
+
+  countByValue(
+    extractKey    ,
+    extractValue  ,
+    reduce
  ) {
-    return ArrayMoreKV.countByFunc( this, extractKey, extractValue, reduce );
-  }
-
-  countByFunc(
-    extractKey    , // = (v) => v,
-    extractValue  , // = (v) => 1,
-    reduce          // = (a,b) => a + b
-  ) {
-    return ArrayMoreKV.countByFunc( this, extractKey, extractValue, reduce );
-  }
-
-  groupByValue(
-    func = (v) => v,
-    extractValue = (v) => [v],
-    reduce = (a,b) => a.concat(b)
-  ) {
-    return ArrayMoreKV.groupByFunc( this, func, extractValue, reduce );
+    return this.countByFunc( extractKey, extractValue, reduce );
   }
 
   groupByFunc(
-    extractKey    , // = (v) => v,
-    extractValue  , // = (v) => [v],
-    reduce          // = (a,b) => a.concat(b)
+    extractKey    ,
+    extractValue  ,
+    reduce
+  ) {
+    return ArrayMoreKV.groupByFunc( this, extractKey, extractValue, reduce );
+  }
+
+  groupByValue(
+    extractKey    ,
+    extractValue  ,
+    reduce
   ) {
     return ArrayMoreKV.groupByFunc( this, extractKey, extractValue, reduce );
   }
@@ -759,7 +794,7 @@ class ArrayMore extends ArrayMoreParent {
 
 class ArrayMoreKV extends ArrayMoreParent {
 
-    static asKV( context, arrKeys, arrValues, rotate, missingValue = null ) {
+  static asKV( context, arrKeys, arrValues, rotate, missingValue = null ) {
 
     const castNoValueToNull = true;
     const keepHoles = false;
@@ -788,38 +823,6 @@ class ArrayMoreKV extends ArrayMoreParent {
             return {key:k,value:v};
         }
       )
-    );
-  }
-
-  static groupByKey(
-    data,
-    extractKey = (v) => v,
-    extractValue = (v) => [v],
-    reduce = (a,b) => a.concat(b)
-  ) {
-    return ArrayMoreKV.groupByFunc( data, extractKey, extractValue, reduce );
-  }
-
-  static countByKey(
-    data,
-    extractKey = (v) => v,
-    extractValue = (v) => 1,
-    reduce = (a,b) => a + b
-  ) {
-    return ArrayMoreKV.countByFunc( data, extractKey );
-  }
-
-  static countByFunc(
-    data,
-    extractKey = (v) => v,
-    extractValue = (v) => 1,
-    reduce = (a,b) => a + b
-  ) {
-    return ArrayMoreKV.groupByFunc(
-      data,
-      extractKey,
-      extractValue,
-      reduce
     );
   }
 
@@ -855,7 +858,7 @@ class ArrayMoreKV extends ArrayMoreParent {
     return this.findIndex( kv => ArrayMore.comparable( key, kv.key ) );
   }
 
-  findKey( key ) {
+  findRowByKey( key ) {
     return this.find( kv => ArrayMore.comparable( key, kv.key ) );
   }
 
@@ -863,7 +866,7 @@ class ArrayMoreKV extends ArrayMoreParent {
     return this.findIndex( kv => ArrayMore.comparable( value, kv.value ) );
   }
 
-  findValue( value ) {
+  findRowByValue( value ) {
     return this.find( kv => ArrayMore.comparable( value, kv.value ) );
   }
 
@@ -879,39 +882,65 @@ class ArrayMoreKV extends ArrayMoreParent {
     )
   }
 
-  groupByKey() {
-    return ArrayMoreKV.groupByKey(
+  countRowsByFunc(
+    extractKey   = (row) => row.key,
+    extractValue = (row) => 1,
+    reduce       = (a,b) => a + b
+  ) {
+    return ArrayMoreKV.groupByFunc(
       this,
-      (row) => row.key,
-      (row) => [row.value],
-      (acc,value) => acc.concat(value)
+      extractKey,
+      extractValue,
+      reduce
     );
   }
 
-  countByKey() {
-    return ArrayMoreKV.countByKey(
-      this,
-      (row) => row.key,
-      (row) => 1,
-      (acc,value) => acc + value
-    );
-  }
-
-  groupByValue() {
-    return ArrayMoreKV.groupByKey(
-      this,
+  countRowsByValue() {
+    return this.countRowsByFunc(
       (row) => row.value,
-      (row) => [row.key],
-      (acc,key) => acc.concat(key)
     );
   }
 
-  countByValue() {
-    return ArrayMoreKV.groupByKey(
-      this,
+  countRowsByKey() {
+    return this.countRowsByFunc();
+  }
+
+  sumValuesByKey() {
+    return this.countRowsByFunc(
+      (row) => row.key,
+      (row) => row.value
+    );
+  }
+
+  sumKeysByValue() {
+    return this.countRowsByFunc(
       (row) => row.value,
-      (row) => 1,
-      (acc,key) => acc + key
+      (row) => row.key
+    );
+  }
+
+  groupRowsByFunc(
+    extractKey   = (row) => row.value,
+    extractValue = (row) => [row.key],
+    reduce       = (acc,key) => acc.concat(key)
+
+  ) {
+    return ArrayMoreKV.groupByFunc(
+      this,
+      extractKey,
+      extractValue,
+      reduce
+    );
+  }
+
+  groupRowsByKey() {
+    return this.groupRowsByFunc(
+    );
+  }
+
+  groupRowsByValue() {
+    return this.groupRowsByFunc(
+      (row) => row.value
     );
   }
 
@@ -948,15 +977,15 @@ class ArrayMoreKV extends ArrayMoreParent {
   }
 
   normalizeKeys( area = 1, emptyValue=[], invalidValue=NaN) {
-    var keys = this.getKeys().normalize( area, emptyValue, invalidValue );
-    var values = this.getValues();
-    return ArrayMoreKV.asKV( keys, values );
+    let keys = this.getKeys().normalize( area, emptyValue, invalidValue );
+    let values = this.getValues();
+    return ArrayMoreKV.asKV( this, keys, values );
   }
 
   normalizeValues( area = 1, emptyValue=[], invalidValue=NaN) {
-    var keys = this.getKeys();
-    var values = this.getValues().normalize( area, emptyValue, invalidValue );
-    return ArrayMoreKV.asKV( keys, values );
+    let keys = this.getKeys();
+    let values = this.getValues().normalize( area, emptyValue, invalidValue );
+    return ArrayMoreKV.asKV( this, keys, values );
   }
 
   union( otherKV, unionFunction = (x,y) => ArrayMore.cast(x).concat(y), notFoundValue = [] ) {
@@ -964,10 +993,10 @@ class ArrayMoreKV extends ArrayMoreParent {
   }
 
   aggregate( otherKV, aggregateFunction = (x,y) => x + y, notFoundValue = 0 ) {
-    var me = this;
-    var myKeys = this.getKeys();
-    var otherKeys = otherKV.getKeys();
-    var allKeys = myKeys.concat(otherKeys).unique().flat(true);
+    let me = this;
+    let myKeys = this.getKeys();
+    let otherKeys = otherKV.getKeys();
+    let allKeys = myKeys.concat(otherKeys).unique().flat(true);
     return new ArrayMoreKV().concat(
       allKeys.map(
         (key) => {
