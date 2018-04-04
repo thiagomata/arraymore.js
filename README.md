@@ -19,25 +19,6 @@ This project uses method chaining, call by copy and array rotation. Also, the in
 ArrayMore [ 14, 21, 29, 36 ]
 ```
 
-Creating Key Values Chaining
-```javascript
-> ArrayMore.range(1,10).
-  asKeyOfKV( l => l.mod(3) ).
-  groupKeysByValue().
-  transformValues( values => {
-    return {
-      max:   values.max(),
-      avg:   values.avg(),
-      min:   values.min(),
-      count: values.length
-    }
-  }).sortByKey("DESC");
-ArrayMoreKV [
-  { key: 2, value: { max: 8, avg: 5, min: 2, count: 3 } },
-  { key: 1, value: { max: 7, avg: 4, min: 1, count: 3 } },
-  { key: 0, value: { max: 9, avg: 6, min: 3, count: 3 } } ]
-
-```
 ### Call by Copy
 ```javascript
 > var foo = new ArrayMore(1,2,3,4);
@@ -67,6 +48,27 @@ back to the first one and keep reading.
 ArrayMore [ 11, 102, 13, 104, 15, 106, 17 ]
 > new ArrayMore(1,2,3,4,5,6,7).plus([10,100,1000]);
 ArrayMore [ 11, 102, 1003, 14, 105, 1006, 17 ]
+```
+### Key Value Features
+
+Creating Key Values Chaining
+```javascript
+> ArrayMore.range(1,10).
+  asKeyOfKV( list => list.mod(3) ).
+  groupKeysByValue().
+  transformValues( values => {
+    return {
+      max:   values.max(),
+      avg:   values.avg(),
+      min:   values.min(),
+      count: values.length
+    }
+  }).sortByKey("DESC");
+ArrayMoreKV [
+  { key: 2, value: { max: 8, avg: 5, min: 2, count: 3 } },
+  { key: 1, value: { max: 7, avg: 4, min: 1, count: 3 } },
+  { key: 0, value: { max: 9, avg: 6, min: 3, count: 3 } } ]
+
 ```
 
 ## Basic methods
@@ -225,7 +227,8 @@ ArrayMore [1,2,3,NaN,5]
 > new ArrayMore([1,2,3,"a",5]).abs([],-1); // defined invalidValue
 ArrayMore [1,2,3,-1,5]
 ```
-## Transformations
+# Methods
+## ArrayMore
 ### ArrayMore.abs
 ```javascript
 ArrayMore.abs( emptyValue = [], invalidValue = NaN )
@@ -943,3 +946,148 @@ ArrayMore [ 1, 2, 3 ]
 > example.flat(true);
 ArrayMore [ 1, 2, 3 ]
 ```
+## ArrayMoreKV
+
+### ArrayMoreKV.append                
+Same behavior of ArrayMore.append
+
+### ArrayMoreKV.castFunction          
+Same behavior of ArrayMore.castFunction
+
+### ArrayMoreKV.copy                  
+Same behavior of ArrayMore.copy
+
+### ArrayMoreKV.equals                
+Same behavior of ArrayMore.equals
+
+### ArrayMoreKV.has                   
+Same behavior of ArrayMore.has
+
+### ArrayMoreKV.hasIndex              
+Same behavior of ArrayMore.hasIndex
+
+### ArrayMoreKV.head
+Same behavior of ArrayMore.head
+
+### ArrayMoreKV.isEmpty               
+Same behavior of ArrayMore.isEmpty
+
+### ArrayMoreKV.isEmptyValues         
+Same behavior of ArrayMore.isEmptyValues
+
+### ArrayMoreKV.isNullValues          
+Same behavior of ArrayMore.isNullValues
+
+### ArrayMoreKV.isUndefinedValues     
+Same behavior of ArrayMore.isUndefinedValues
+
+### ArrayMoreKV.parent                
+Same behavior of ArrayMore.parent
+
+### ArrayMoreKV.prepend               
+Same behavior of ArrayMore.prepend
+
+### ArrayMoreKV.similar
+Same behavior of ArrayMore.similar
+
+### ArrayMoreKV.tail                  
+Same behavior of ArrayMore.tail
+
+### ArrayMoreKV.take                  
+Same behavior of ArrayMore.take
+
+### ArrayMoreKV.unique                
+Same behavior of ArrayMore.unique
+
+
+### ArrayMoreKV.aggregate
+
+Combine two KeyValue Arrays. Similar behavior of ArrayMore.aggregate
+
+### ArrayMoreKV.countRowsByFunc
+
+Count the total of rows based on the function result.
+
+### ArrayMoreKV.countRowsByKey
+
+Count the total of rows with the same key.
+
+### ArrayMoreKV.countRowsByValue      
+
+Count the total of rows with the same value.
+
+### ArrayMoreKV.findIndexKey
+
+Search for some key and returns the position of the first found.
+
+### ArrayMoreKV.findIndexValue        
+
+Search for some value and returns the position of the first found.
+
+### ArrayMoreKV.findRowByKey
+
+Search for some key and returns the row of the first found.
+
+### ArrayMoreKV.findRowByValue
+
+Search for some value and returns the row of the first found.
+
+### ArrayMoreKV.flip
+
+Convert keys in values and values in keys.
+
+### ArrayMoreKV.getKeys
+
+Get the keys of the ArrayKeyValue.
+
+### ArrayMoreKV.getValues             
+
+Get the values of the ArrayKeyValue.
+
+### ArrayMoreKV.groupKeysByValue
+
+Group the keys from rows that have the same value.
+
+### ArrayMoreKV.groupRowsByFunc
+
+Group the rows that have the same function result.
+
+### ArrayMoreKV.groupValuesByKey
+
+Group the values from rows that have the same key.
+ 
+### ArrayMoreKV.normalizeKeys         
+
+Normalize the keys. Similar to the ArrayMore.normalize.
+
+### ArrayMoreKV.normalizeValues
+
+Normalize the values. Similar to the ArrayMore.normalize.
+
+### ArrayMoreKV.sortByKey
+
+Sort the array by the key.
+
+### ArrayMoreKV.sortByValue
+
+sort the array by the value.
+
+### ArrayMoreKV.sumKeysByValue
+
+Sum the key of the rows with the same value.
+
+### ArrayMoreKV.sumValuesByKey        
+
+Sum the values of the rows with the same key.
+
+### ArrayMoreKV.transformKeys
+
+Apply one function that changes the array of keys.
+
+### ArrayMoreKV.transformValues       
+
+Apply one function that changes the array of values.
+
+### ArrayMoreKV.union 
+
+Create a new Array with the union of two ArrayMoreKV.
