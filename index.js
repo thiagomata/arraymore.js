@@ -5,11 +5,11 @@ class ArrayMoreParent extends Array {
   }
 
   equals(other, anyOrder=true) {
-    return ArrayMore.comparable( this, other, false, anyOrder );
+    return ArrayMore.equals( this, other, false, anyOrder );
   }
 
   similar(other, anyOrder=true) {
-    return ArrayMore.comparable( this, other, true, anyOrder );
+    return ArrayMore.equals( this, other, true, anyOrder );
   }
 
   isEmpty() {
@@ -23,25 +23,25 @@ class ArrayMoreParent extends Array {
     return this.slice(0, n);
   }
 
-  has(value) {
+  has( value, castSimilar = false ) {
     if( value.constructor == Function ) {
       return this.some( value );
     }
     return this.some(
-      ( element ) => ArrayMore.comparable( element, value )
+      ( element ) => ArrayMore.equals( element, value, castSimilar )
     );
   }
 
-  hasIndex(value) {
+  hasIndex( value, castSimilar = false ) {
     if( value.constructor == Function ) {
       return this.findIndex( value );
     }
     return this.findIndex(
-      ( element ) => ArrayMore.comparable( element, value )
+      ( element ) => ArrayMore.equals( element, value, castSimilar )
     );
   }
 
-  unique() {
+  unique( castSimilar = false ) {
     if (this.isEmpty()) {
       return this;
     }
@@ -54,7 +54,7 @@ class ArrayMoreParent extends Array {
     while( list.length ) {
       let current = list.pop();
       let exists = list.some(
-        element => ArrayMore.comparable( element, current )
+        element => ArrayMore.equals( element, current, castSimilar )
       );
       if( ! exists ) {
         result = result.prepend( current );
@@ -162,21 +162,22 @@ class ArrayMoreParent extends Array {
 
 class ArrayMore extends ArrayMoreParent {
 
-  /**
-   * Cast any input to ArrayMore
-   */
   static cast(value, castNoValueToNull=false, keepHoles=false) {
-    if( value === undefined || value === null ||
-        Number.isNaN( value ) ) {
-          return ArrayMore.atomic( value, castNoValueToNull );
+
+    if( value === undefined || value === null || Number.isNaN( value ) ) {
+      return ArrayMore.atomic( value, castNoValueToNull );
     }
+
     if( value instanceof ArrayMoreParent ) {
       return value;
     }
-    if( value.constructor !== Array ) {
+
+    if( ! ( value instanceof Array ) ) {
       return ArrayMore.atomic( value, castNoValueToNull );
     }
+
     const isUndefinedValues = value.every( element => element === undefined );
+
     if( isUndefinedValues ) {
       let emptyList = new ArrayMore( value.length );
       if( keepHoles ) {
@@ -184,85 +185,84 @@ class ArrayMore extends ArrayMoreParent {
       }
       return emptyList.fill(undefined);
     }
+
     let result;
+
     if( ! keepHoles ) {
       result = new ArrayMore();
-      for( let i = 0; i < value.length; i += 1 ) {
-        let element = value[i];
+      let key;
+      for( key = 0; key < value.length; key += 1 ) {
+        let element = value[key];
         result.push( ArrayMore.safeCast( element, castNoValueToNull, keepHoles ) );
       }
     } else {
       result = new ArrayMore( value.length );
-      for( let i in value ) {
-        let element = value[i];
-        result[i] = ArrayMore.safeCast( element, castNoValueToNull, keepHoles );
+      let key;
+      for( key in value ) {
+        let element = value[key];
+        result[key] = ArrayMore.safeCast( element, castNoValueToNull, keepHoles );
       }
     }
     return result;
   }
 
-  /**
-   * Cast array elements values
-   */
-  static safeCast(value, castNoValueToNull=false, keepHoles=false) {
+  static safeCast( value, castNoValueToNull = false, keepHoles = false ) {
     if( value === undefined || value === null || Number.isNaN( value ) ) {
       if( castNoValueToNull ) {
         return null;
       }
       return value;
     }
-    if( value.constructor === Array ) {
+    if( value instanceof Array ) {
       return ArrayMore.cast( value, castNoValueToNull, keepHoles );
     }
     return value;
   }
 
 
-  /**
-   * Cast and convert a and b and check if they are equivalent
-   *
-   * @return boolean true if a equivalent b
-   */
-  static comparable(a, b, castSimilar=false, anyOrder=true) {
-    const listA = (
-        () => {
-          if( a == undefined ) {
-            return null;
-          }
-          if ( a instanceof Array ) {
-            return ArrayMore.cast(a,castSimilar);
-          }
-          return null;
-        }
-    )();
+  static castValueToList( value, castSimilar ) {
+    if( value == undefined ) {
+      return null;
+    }
+    if ( value instanceof Array ) {
+      return ArrayMore.cast( value, castSimilar);
+    }
+    return null;
+  }
 
-    const listB = (
-      () => {
-        if( b == undefined ) {
-          return null;
-        }
-        if ( b instanceof Array  ) {
-          return ArrayMore.cast(b,castSimilar);
-        }
-        return null;
-      }
-    )();
+  static equals(a, b, castSimilar=false, anyOrder=true) {
 
-    if( ! castSimilar && (
-        (listA === null && listB !== null || listB === null && listA !== null)
-      )
-    ) {
+    if( a === b ) {
+      return true;
+    }
+
+    if( castSimilar && a == b ) {
+      return true;
+    }
+
+    const listA = ArrayMore.castValueToList( a, castSimilar );
+    const listB = ArrayMore.castValueToList( b, castSimilar );
+
+    const isListANull = ( listA === null );
+    const isListBNull = ( listB === null );
+
+    const diffListNulls = ( isListANull != isListBNull );
+
+    if( ! castSimilar && diffListNulls ) {
       return false;
     }
 
-    if( listA !== null && listB !== null ) {
-      return ArrayMore.listComparable(
+    const allListsAreNotNull = ( listA !== null && listB !== null );
+    const someListIsNotNull  = ( listA !== null || listB !== null );
+
+    if( allListsAreNotNull ) {
+      return ArrayMore.listEquals(
         listA, listB, castSimilar, anyOrder
       );
     }
 
-    if( listA !== null || listB !== null ) {
-      return ArrayMore.listComparable(
+    if( someListIsNotNull ) {
+      return ArrayMore.listEquals(
         ArrayMore.cast(a,castSimilar),
         ArrayMore.cast(b,castSimilar),
         castSimilar,
@@ -270,20 +270,15 @@ class ArrayMore extends ArrayMoreParent {
       );
     }
 
-    if( a !== undefined && a.equals !== undefined ) {
+    const aHasEqualsMethod = ( a !== undefined && a.equals !== undefined );
+    const bHasEqualsMethod = ( b !== undefined && b.equals !== undefined );
+
+    if( aHasEqualsMethod ) {
       return a.equals( b );
     }
 
-    if( b !== undefined && b.equals !== undefined ) {
+    if( bHasEqualsMethod ) {
       return b.equals( a );
-    }
-
-    if( castSimilar && a == b) {
-      return true;
-    }
-
-    if ( a === b ) {
-      return true
     }
 
     if( a === undefined || b === undefined ) {
@@ -291,58 +286,65 @@ class ArrayMore extends ArrayMoreParent {
     }
 
     if( a instanceof Object && b instanceof Object ) {
-      if( a.constructor == b.constructor || castSimilar ) {
-        for( let prop in a ) {
-          if( a.hasOwnProperty( prop ) && a[ prop ].constructor != Function ) {
-            if( ! b.hasOwnProperty( prop ) ) {
-              return false;
-            }
-            if( ! ArrayMore.comparable( a[ prop ], b[ prop ], castSimilar, anyOrder ) ) {
-              return false;
-            }
-          }
-        }
-        for( let prop in b ) {
-          if( b.hasOwnProperty( prop ) && b[ prop ].constructor != Function ) {
-            if( ! a.hasOwnProperty( prop ) ) {
-              return false;
-            }
-          }
-        }
-        return true;
-      }
-      return false
+      return ArrayMore.objectEquals( a, b, castSimilar, anyOrder );
     }
 
-    return a === b;
+    return false;
   }
 
-  /**
+  static objectEquals( a, b, castSimilar, anyOrder ) {
+
+    const sameClass = ( a.constructor == b.constructor );
+
+    if( ! sameClass && ! castSimilar ) {
+      return false;
+    }
+
+    for( let prop in a ) {
+      if( a.hasOwnProperty( prop ) && a[ prop ].constructor != Function ) {
+        if( ! b.hasOwnProperty( prop ) ) {
+          return false;
+        }
+        if( ! ArrayMore.equals( a[ prop ], b[ prop ], castSimilar, anyOrder ) ) {
+          return false;
+        }
+      }
+    }
+    for( let prop in b ) {
+      if( b.hasOwnProperty( prop ) && b[ prop ].constructor != Function ) {
+        if( ! a.hasOwnProperty( prop ) ) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /**``
    * Create an array from a to b using the steps
    */
-  static range(a, b=null, step=1) {
-    if( b === null ) {
-      b = a;
-      a = 0;
+  static range(start, end = null, step=1) {
+    if( end === null ) {
+      end = start;
+      start = 0;
     }
     let list = new ArrayMore();
-    if( a < b ) {
+    if( start < end ) {
       step = Math.abs( step );
-      for( let i = a; i < b; i += step ) {
-          list.push(i);
+      let number;
+      for( number = start; number < end; number += step ) {
+          list.push(number);
       }
     } else {
       step = Math.abs( step ) * -1;
-      for( let i = a; i > b; i += step ) {
-          list.push(i);
+      let number;
+      for( number = start; number > end; number += step ) {
+          list.push(number);
       }
     }
     return list;
   }
 
-  /**
-   * Create an atomic array with one element, the received value
-   */
   static atomic( value, castNoValueToNull = false ) {
     let atomicList  = new ArrayMore();
     if( value === undefined || value === null || Number.isNaN( value ) ) {
@@ -353,13 +355,7 @@ class ArrayMore extends ArrayMoreParent {
     return atomicList;
   }
 
-  /**
-   * Convert flexible input value, list or function to ready to use data
-   */
   static jokerValue( thisRef, value, castNoValueToNull=false, keepHoles=true, touchArrayMore=false ) {
-    // if( thisRef === null ) {
-    //   thisRef = this;
-    // }
     if( value  === undefined || value  === null || Number.isNaN( value  ) ) {
       return ArrayMore.atomic( value, castNoValueToNull );
     }
@@ -378,10 +374,6 @@ class ArrayMore extends ArrayMoreParent {
     return ArrayMore.cast( thisRef.castFunction( value ), castNoValueToNull, keepHoles );
   }
 
-  /*
-   * When we extends the Array the concat method did not behaves as expected.
-   * So, we have to make a ugly bugfix over the push of empty value arrays
-   */
   concat(data=undefined, castNoValueToNull=false, keepHoles=false) {
     if( data === undefined ) {
       return this;
@@ -396,7 +388,7 @@ class ArrayMore extends ArrayMoreParent {
     );
   }
 
-  static listComparable( thisList, otherList, castSimilar=false, anyOrder=true) {
+  static listEquals( thisList, otherList, castSimilar=false, anyOrder=true) {
     if( otherList.length != thisList.length ) {
       return false;
     }
@@ -408,7 +400,7 @@ class ArrayMore extends ArrayMoreParent {
     if( ! anyOrder ) {
       return thisList.every(
         ( element, key ) => {
-          return ArrayMore.comparable( element, otherList[ key ], castSimilar, anyOrder );
+          return ArrayMore.equals( element, otherList[ key ], castSimilar, anyOrder );
         }
       )
     }
@@ -417,7 +409,7 @@ class ArrayMore extends ArrayMoreParent {
       every(
         otherElement =>  thisList.some(
           thisElement => {
-            return ArrayMore.comparable(
+            return ArrayMore.equals(
               thisElement,
               otherElement,
               castSimilar,
@@ -433,7 +425,7 @@ class ArrayMore extends ArrayMoreParent {
       every(
         thisElement =>  otherList.some(
           otherElement => {
-            return ArrayMore.comparable(
+            return ArrayMore.equals(
               otherElement,
               thisElement,
               castSimilar,
@@ -671,6 +663,10 @@ class ArrayMore extends ArrayMoreParent {
     return this.rotate( value, emptyValue, (x,y) => Math.pow(x,y), invalidValue )
   }
 
+  mod(value=2, emptyValue=[], invalidValue=NaN) {
+    return this.rotate( value, emptyValue, (x,y) => x % y, invalidValue )
+  }
+
   sin(value=1, emptyValue=[], invalidValue=NaN) {
     return this.rotate( value, emptyValue, (x,y) => Math.sin(x*y), invalidValue )
   }
@@ -755,8 +751,38 @@ class ArrayMore extends ArrayMoreParent {
     return ArrayMoreKV.asKV( this, arrKeys, this, rotate, missingValue );
   }
 
-  asKeyValueOfKV( arrKeys, arrValues, rotate = false, missingValue = null ) {
+  asContextOfKV( arrKeys, arrValues, rotate = false, missingValue = null ) {
     return ArrayMoreKV.asKV( this, arrKeys, arrValues, rotate, missingValue );
+  }
+
+  asKV(
+    extractKey    = (value, key ) => key,
+    extractValue  = value => value,
+    rotate        = false,
+    missingValue  = null
+  ) {
+    let keyFunction;
+    let valueFunction;
+
+    if( extractKey instanceof Array  ) {
+      keyFunction = extractKey;
+    } else {
+      keyFunction = list => list.map( extractKey );
+    }
+
+    if( extractValue instanceof Array  ) {
+      valueFunction = extractValue;
+    } else {
+      valueFunction = list => list.map( extractValue );
+    }
+
+    return ArrayMoreKV.asKV(
+      this,
+      keyFunction,
+      valueFunction,
+      rotate,
+      missingValue
+    );
   }
 
   countByFunc(
@@ -854,29 +880,45 @@ class ArrayMoreKV extends ArrayMoreParent {
     return ArrayMoreKV.asKV( data, results, counts );
   }
 
-  findIndexKey( key ) {
-    return this.findIndex( kv => ArrayMore.comparable( key, kv.key ) );
+  findIndexKey( key, castSimilar = false ) {
+    return this.findIndex( kv => ArrayMore.equals( key, kv.key, castSimilar ) );
   }
 
-  findRowByKey( key ) {
-    return this.find( kv => ArrayMore.comparable( key, kv.key ) );
+  findRowByKey( key, castSimilar = false ) {
+    return this.find( kv => ArrayMore.equals( key, kv.key, castSimilar ) );
   }
 
-  findIndexValue( value ) {
-    return this.findIndex( kv => ArrayMore.comparable( value, kv.value ) );
+  findIndexValue( value, castSimilar = false ) {
+    return this.findIndex( kv => ArrayMore.equals( value, kv.value, castSimilar ) );
   }
 
-  findRowByValue( value ) {
-    return this.find( kv => ArrayMore.comparable( value, kv.value ) );
+  findRowByValue( value, castSimilar = false ) {
+    return this.find( kv => ArrayMore.equals( value, kv.value, castSimilar ) );
   }
 
   sortByValue( func = (a,b) => a - b ) {
+    if( func === "ASC" ) {
+      return this.sortByValue();
+    }
+    if( func === "DESC" ) {
+      return this.sortByValue(
+        (a,b) => b - a
+      )
+    }
     return this.copy().sort(
       ( kv1, kv2 ) => func(kv1.value, kv2.value)
     )
   }
 
   sortByKey( func = (a,b) => a - b ) {
+    if( func === "ASC" ) {
+      return this.sortByKey();
+    }
+    if( func === "DESC" ) {
+      return this.sortByKey(
+        (a,b) => b - a
+      )
+    }
     return this.copy().sort(
       ( kv1, kv2 ) => func(kv1.key, kv2.key)
     )
@@ -933,14 +975,16 @@ class ArrayMoreKV extends ArrayMoreParent {
     );
   }
 
-  groupRowsByKey() {
+//  groupRowsByKey() {
+  groupValuesByKey() {
     return this.groupRowsByFunc(
       (row) => row.key,
       (row) => [row.value]
     );
   }
 
-  groupRowsByValue() {
+  // groupRowsByValue() {
+  groupKeysByValue() {
     return this.groupRowsByFunc(
     );
   }
@@ -975,6 +1019,10 @@ class ArrayMoreKV extends ArrayMoreParent {
   getKeys() {
     const keys = new Array().concat( this.map( kv => kv.key ) );
     return new ArrayMore().concat(keys);
+  }
+
+  flip() {
+    return ArrayMoreKV.asKV( this, this.getValues(), this.getKeys() );
   }
 
   normalizeKeys( area = 1, emptyValue=[], invalidValue=NaN) {

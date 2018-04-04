@@ -18,6 +18,26 @@ This project uses method chaining, call by copy and array rotation. Also, the in
       round();
 ArrayMore [ 14, 21, 29, 36 ]
 ```
+
+Creating Key Values Chaining
+```javascript
+> ArrayMore.range(1,10).
+  asKeyOfKV( l => l.mod(3) ).
+  groupKeysByValue().
+  transformValues( values => {
+    return {
+      max:   values.max(),
+      avg:   values.avg(),
+      min:   values.min(),
+      count: values.length
+    }
+  }).sortByKey("DESC");
+ArrayMoreKV [
+  { key: 2, value: { max: 8, avg: 5, min: 2, count: 3 } },
+  { key: 1, value: { max: 7, avg: 4, min: 1, count: 3 } },
+  { key: 0, value: { max: 9, avg: 6, min: 3, count: 3 } } ]
+
+```
 ### Call by Copy
 ```javascript
 > var foo = new ArrayMore(1,2,3,4);
@@ -838,6 +858,14 @@ ArrayMore.pow( value = 2, emptyValue = [], invalidValue = NaN )
 ```javascript
 > new ArrayMore(1,2,3,4,5,6,7,8,9,10).pow(3);
 ArrayMore [ 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000 ]
+```
+### ArrayMore.mod
+```javascript
+ArrayMore.mod( value = 2, emptyValue = [], invalidValue = NaN )
+```
+```javascript
+> new ArrayMore(1,2,3,4,5,6,7,8,9,10).mod(3);
+ArrayMore [ 1, 2, 0, 1, 2, 0, 1, 2, 0, 1 ]
 ```
 ### ArrayMore.sin
 ```javascript
