@@ -948,11 +948,64 @@ ArrayMore [ 1, 2, 3 ]
 ```
 ## ArrayMoreKV
 
+### Constructors
+
+#### ArrayMore.asKeyOfKV
+```javascript
+> ArrayMore.range(0,5).asKeyOfKV( l => l.times(3) )
+ArrayMoreKV [
+  { key: 0, value: 0 },
+  { key: 1, value: 3 },
+  { key: 2, value: 6 },
+  { key: 3, value: 9 },
+  { key: 4, value: 12 } ]
+```
+#### ArrayMore.asValueOfKV
+```javascript
+ArrayMore.range(0,5).asValueOfKV( l => l.times(3) )
+ArrayMoreKV [
+  { key: 0, value: 0 },
+  { key: 3, value: 1 },
+  { key: 6, value: 2 },
+  { key: 9, value: 3 },
+  { key: 12, value: 4 } ]
+```
+#### ArrayMore.asContextOfKV
+
+```javascript
+> ArrayMore.range(0,5).asContextOfKV( l => l.more(10), l => l.times(3) )
+ArrayMoreKV [
+  { key: 10, value: 0 },
+  { key: 11, value: 3 },
+  { key: 12, value: 6 },
+  { key: 13, value: 9 },
+  { key: 14, value: 12 } ]
+```
+
+#### ArrayMore.asKV
+
+```javascript
+ > ArrayMore.range(0,5).asKV( v => v % 2 )
+ ArrayMoreKV [
+  { key: 0, value: 0 },
+  { key: 1, value: 1 },
+  { key: 0, value: 2 },
+  { key: 1, value: 3 },
+  { key: 0, value: 4 } ]
+```
+
+```javascript
+ > ArrayMore.range(0,5).asKV( k => k + 100, v => v * 10 )
+ArrayMoreKV [
+  { key: 100, value: 0 },
+  { key: 101, value: 10 },
+  { key: 102, value: 20 },
+  { key: 103, value: 30 },
+  { key: 104, value: 40 } ]
+```
+
 ### ArrayMoreKV.append                
 Same behavior of ArrayMore.append
-
-### ArrayMoreKV.castFunction          
-Same behavior of ArrayMore.castFunction
 
 ### ArrayMoreKV.copy                  
 Same behavior of ArrayMore.copy
@@ -999,7 +1052,6 @@ Same behavior of ArrayMore.take
 ### ArrayMoreKV.unique                
 Same behavior of ArrayMore.unique
 
-
 ### ArrayMoreKV.aggregate
 
 Combine two KeyValue Arrays. Similar behavior of ArrayMore.aggregate
@@ -1038,11 +1090,11 @@ Convert keys in values and values in keys.
 
 ### ArrayMoreKV.getKeys
 
-Get the keys of the ArrayKeyValue.
+Extract the keys of the ArrayMoreKV.
 
 ### ArrayMoreKV.getValues             
 
-Get the values of the ArrayKeyValue.
+Extract the values of the ArrayMoreKV.
 
 ### ArrayMoreKV.groupKeysByValue
 
@@ -1090,4 +1142,4 @@ Apply one function that changes the array of values.
 
 ### ArrayMoreKV.union 
 
-Create a new Array with the union of two ArrayMoreKV.
+Create a new ArrayMoreKV with the union of two ArrayMoreKV.
