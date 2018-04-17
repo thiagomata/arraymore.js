@@ -5,6 +5,17 @@ describe('equals', () => {
     expect(List.equals(3,3)).toEqual(true);
   });
 
+  it('should equals be able to compare equal Number values without cast', () => {
+    expect(List.equals(3,new Number(3))).toEqual(false);
+  });
+
+  it('should equals be able to compare equal Number values with cast', () => {
+    expect(List.equals(3,new Number(3),true)).toEqual(true);
+    expect(List.equals(" 3",new Number(3),true)).toEqual(true);
+    expect(List.equals(new Number(3),3,true)).toEqual(true);
+    expect(List.equals(new Number(3)," 3",true)).toEqual(true);
+  });
+
   it('should equals be able to compare diff simple values', () => {
     expect(List.equals(3,4)).toEqual(false);
   });
@@ -73,6 +84,46 @@ describe('equals', () => {
     expect(List.equals(1,[1])).toEqual(false);
   });
 
+  it('should same data be equal', () => {
+    expect(List.equals(new Date(2000,1,2),new Date(2000,1,2))).toEqual(true);
+  });
+
+  it('should diff data be not equal', () => {
+    expect(List.equals(new Date(2000,1,2),new Date(2000,2,3))).toEqual(false);
+  });
+
+  it('should same data as number not be equal to date without cast', () => {
+    expect(List.equals(1 * new Date(2000,1,2),new Date(2000,1,2))).toEqual(false);
+  });
+
+  it('should same data as Number not be equal to date without cast', () => {
+    expect(List.equals(new Number(1 * new Date(2000,1,2)),new Date(2000,1,2))).toEqual(false);
+  });
+
+  it('should same data as number be equal to date with cast', () => {
+    expect(List.equals(1 * new Date(2000,1,2),new Date(2000,1,2),true)).toEqual(true);
+  });
+
+  it('should same data as Number be equal to date with cast', () => {
+    expect(List.equals(new Number(1 * new Date(2000,1,2)),new Date(2000,1,2),true)).toEqual(true);
+  });
+
+  it('should same data be equal to date as number with cast', () => {
+    expect(List.equals(new Date(2000,1,2),1 * new Date(2000,1,2),true)).toEqual(true);
+  });
+
+  it('should same data be equal to date as Number with cast', () => {
+    expect(List.equals(new Date(2000,1,2),new Number(1 * new Date(2000,1,2)),true)).toEqual(true);
+  });
+
+  it('should diff data be diff to date as number with cast', () => {
+    expect(List.equals(new Date(2000,1,2),1 + 1 * new Date(2000,1,2),true)).toEqual(false);
+  });
+
+  it('should diff data be diff to date as Number with cast', () => {
+    expect(List.equals(new Date(2000,1,2),new Number(1 + 1 * new Date(2000,1,2)),true)).toEqual(false);
+  });
+
   it('equals [undefined] with [null]', () => {
     expect(List.equals([undefined],[null])).toEqual(true);
   });
@@ -104,12 +155,45 @@ describe('equals', () => {
       }
     }
 
+
     expect( List.equals( [ new Example(2) ], [ new Example(1) ] ) ).toEqual(true);
     expect( List.equals( [ new Example(2) ], [ new Example(100) ] ) ).toEqual(false);
     expect( List.equals( [ new Example(2) ], [1] ) ).toEqual(true);
     expect( List.equals( [ new Example(2) ], [100] ) ).toEqual(false);
     expect( List.equals( [2], [ new Example(1) ] ) ).toEqual(true);
     expect( List.equals( [2], [ new Example(100) ] ) ).toEqual(false);
+  });
+  it('should equals call object toString method', () => {
+
+    class Wow {
+      constructor( x ) {
+        this.x = x;
+      }
+
+      toString() {
+        return this.x + "!";
+      }
+    }
+
+    class Uau {
+      constructor( x ) {
+        this.x = x;
+      }
+
+      toString() {
+        return this.x + "!";
+      }
+    }
+    expect( List.equals( new Wow(2), "2!" ) ).toEqual(false);
+    expect( List.equals( new Wow(2), "2!",true ) ).toEqual(true);
+    expect( List.equals( new Wow(2), new Uau(2),true ) ).toEqual(true);
+    expect( List.equals( "2!", new Wow(2) ) ).toEqual(false);
+    expect( List.equals( "2!", new Wow(2),true ) ).toEqual(true);
+  });
+
+  it('last case should try json stringify', () => {
+
+    expect( List.equals( Symbol("a"), {}, true ) ).toEqual(false);
   });
 
 });

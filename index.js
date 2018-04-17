@@ -24,7 +24,7 @@ class ArrayMoreParent extends Array {
   }
 
   has( value, castSimilar = false ) {
-    if( value.constructor == Function ) {
+    if( value instanceof Function ) {
       return this.some( value );
     }
     return this.some(
@@ -33,7 +33,7 @@ class ArrayMoreParent extends Array {
   }
 
   hasIndex( value, castSimilar = false ) {
-    if( value.constructor == Function ) {
+    if( value instanceof Function ) {
       return this.findIndex( value );
     }
     return this.findIndex(
@@ -78,7 +78,7 @@ class ArrayMoreParent extends Array {
     if( value === null || value === undefined || Number.isNaN( value ) ) {
       return value;
     }
-    if( value.constructor !== Function ) {
+    if( ! ( value instanceof Function ) ) {
       return value;
     }
     const result = value(this.copy());
@@ -270,8 +270,8 @@ class ArrayMore extends ArrayMoreParent {
       );
     }
 
-    const aHasEqualsMethod = ( a !== undefined && a.equals !== undefined );
-    const bHasEqualsMethod = ( b !== undefined && b.equals !== undefined );
+    const aHasEqualsMethod = ( a !== undefined && a !== null && a.equals !== undefined );
+    const bHasEqualsMethod = ( b !== undefined && b !== null && b.equals !== undefined );
 
     if( aHasEqualsMethod ) {
       return a.equals( b );
@@ -289,6 +289,23 @@ class ArrayMore extends ArrayMoreParent {
       return ArrayMore.objectEquals( a, b, castSimilar, anyOrder );
     }
 
+    if( castSimilar && ( a instanceof Object || b instanceof Object ) ) {
+
+      try {
+        if( "" + a === a || "" + b === b ) {
+          return "" + a === "" + b;
+        }
+      } catch(e) {}
+
+      try {
+        if( Number(a) === a || Number(b) === b ) {
+          return 1 * a === 1 * b;
+        }
+      } catch(e) {}
+
+      return JSON.stringify( a ) == JSON.stringify( b );
+    }
+
     return false;
   }
 
@@ -301,7 +318,7 @@ class ArrayMore extends ArrayMoreParent {
     }
 
     for( let prop in a ) {
-      if( a.hasOwnProperty( prop ) && a[ prop ].constructor != Function ) {
+      if( a.hasOwnProperty( prop ) && ! ( a[ prop ] instanceof Function ) ) {
         if( ! b.hasOwnProperty( prop ) ) {
           return false;
         }
@@ -311,11 +328,14 @@ class ArrayMore extends ArrayMoreParent {
       }
     }
     for( let prop in b ) {
-      if( b.hasOwnProperty( prop ) && b[ prop ].constructor != Function ) {
+      if( b.hasOwnProperty( prop ) && ! ( b[ prop ] instanceof Function ) ) {
         if( ! a.hasOwnProperty( prop ) ) {
           return false;
         }
       }
+    }
+    if( a instanceof Date || b instanceof Date ) {
+      return 1 * a == 1 * b;
     }
     return true;
   }
@@ -359,7 +379,7 @@ class ArrayMore extends ArrayMoreParent {
     if( value  === undefined || value  === null || Number.isNaN( value  ) ) {
       return ArrayMore.atomic( value, castNoValueToNull );
     }
-    if( value.constructor === ArrayMore ) {
+    if( value instanceof ArrayMore ) {
       if( ! touchArrayMore ) {
         return value;
       }
@@ -716,10 +736,10 @@ class ArrayMore extends ArrayMoreParent {
     }
     return this.flat(false, thisRef).map(
       value => {
-        if( value.constructor === Array || value.constructor === ArrayMore ) {
+        if( value instanceof Array || value instanceof ArrayMore ) {
           return value.flatDeep( thisRef );
         }
-        if( value.constructor === Function ) {
+        if( value instanceof Function ) {
           return ArrayMore.jokerValue(thisRef,value);
         }
         return [value];
@@ -863,7 +883,7 @@ class ArrayMoreKV extends ArrayMoreParent {
     ArrayMore.cast(  data ).forEach(
       (value) => {
         let result = extractKey( value );
-        let posResult = results.indexOf( result );
+        let posResult = results.hasIndex( result );
         if( posResult === -1 ) {
           results.push( result );
           const castedValued = extractValue( value );
