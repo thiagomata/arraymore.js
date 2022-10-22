@@ -1081,6 +1081,225 @@ class ArrayMoreKV extends ArrayMoreParent {
       )
     );
   }
+
+  last(emptyValue=null) {
+    return this.getByPosition(this.length - 1, emptyValue );
+  }
+
+  first(emptyValue=null) {
+    return this.getByPosition(0, emptyValue );
+  }
+
+  getByPosition(position, emptyValue=null) {
+    return ( this[position] === undefined ) ? emptyValue : this[position];
+  }
+
+  findByKey(key, emptyValue=null) {
+    return this.find(
+      (kv) => ArrayMore.equals(kv.key, key, false)
+    )
+  }
+
+  findByValue(value, emptyValue=null) {
+    return this.find(
+      (kv) => ArrayMore.equals(kv.value, value, false)
+    )
+  }
+
+  sqrt(emptyValue=[], invalidValue=NaN) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.map( x => Math.sqrt(x) )
+    )
+  }
+
+  round(precision=0, emptyValue=[], invalidValue=NaN) {
+    const factor = Math.pow(10,precision);
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.times(factor).map( x => Math.round(x) ).div(factor)
+    )
+  }
+
+  abs(emptyValue=[], invalidValue=NaN) {
+    return this.applyOperation( emptyValue, invalidValue,
+      (list) => list.map( x => Math.abs(x) )
+    )
+  }
+
+  map(callback, thisRef=undefined, castNoValueToNull=false, keepHoles=false) {
+    if( thisRef === undefined ) {
+      return ArrayMore.safeCast( this.parent().map( callback ), castNoValueToNull, keepHoles );
+    }
+    return ArrayMore.safeCast( this.parent().map( callback.bind(thisRef) ), castNoValueToNull, keepHoles );
+  }
+
+  reduce(callback, initialValue=null, emptyList = [], castNoValueToNull=false, keepHoles=false) {
+    let reduceResult;
+
+    if( initialValue === null) {
+      reduceResult = this.parent().reduce( callback );
+    } else {
+      reduceResult = this.parent().reduce( callback, initialValue );
+    }
+    return ArrayMore.safeCast( reduceResult, castNoValueToNull, keepHoles );
+  }
+
+  replaceNaN(invalidValue=NaN) {
+    if( Number.isNaN( invalidValue ) ) {
+      return this;
+    }
+    if( Number.isNaN( 1 * invalidValue ) ) {
+      throw new Error( "invalid value replacer must be a valid number" );
+    }
+    return this.map(
+      x => Number.isNaN( 1 * x ) ? invalidValue : x
+    );
+  }
+
+  rotate(rotation, emptyValue, operation, invalidValue=NaN) {
+    if( this.isEmpty() ) {
+      return ArrayMore.safeCast( emptyValue );
+    }
+    return this.replaceNaN( invalidValue ).map(
+      (x, key) => operation(
+        x,
+        this.castFunction( ArrayMore.jokerValue( this, rotation ).getRotate( key, emptyValue ) )
+      )
+    );
+  }
+
+  applyOperation(emptyValue, invalidValue, operation) {
+    if( this.isEmpty() ) {
+      return ArrayMore.safeCast( emptyValue );
+    }
+    return operation(
+      this.replaceNaN(
+        invalidValue
+      )
+    );
+  }
+
+  valuesPlus(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().plus( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesMore(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().more( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesLess(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().less( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesTimes(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().times( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesDiv(value=1, emptyValue=[], invalidValue) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().div( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesSquared(emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().squared( emptyValue, invalidValue )
+    );
+  }
+
+  valuesPow(value=2, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().pow( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesMod(value=2, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().mod( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesSin(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().sin( value, emptyValue, invalidValue )
+    );
+  }
+
+  valuesCos(value=1, emptyValue=[], invalidValue=NaN) {
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      this.getValues().cos( value, emptyValue, invalidValue )
+    );
+  }
+
+  derivate() {
+    const lastK = this.length - 1;
+    var newValues = new ArrayMore();
+    for( var i = 0; i < this.length; i++ ) {
+      if( i == 0 ) {
+        newValues.push( this[ i ].value );
+        continue;
+      }
+      const previousValues   = newValues.sum();
+      const currentDiffValue = this[ i ].value - previousValues;
+      const previousKeyValue = this[ i - 1 ].key;
+      const currentDiffKey   = this[ i ].key - previousKeyValue;
+      newValues.push( currentDiffValue / currentDiffKey );
+    }
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      newValues,
+    );
+  }
+
+  integrate(c = 0) {
+    const lastK = this.length - 1;
+    var newValues = new ArrayMore();
+    for( var i = 0; i < this.length; i++ ) {
+      const isFirst = ( i === 0 );
+      if ( isFirst ) {
+        newValues.push( this[ 0 ].value + c );
+        continue;
+      }
+      const deltaKey = this[ i ].key - this[ i - 1 ].key;
+      newValues.push(
+        newValues[ i - 1 ] +
+        ( this[ i ].value * deltaKey )
+      );
+    }
+    return ArrayMoreKV.asKV(
+      this,
+      this.getKeys(),
+      newValues,
+    );
+  }
 }
 
 module.exports = ArrayMore;
